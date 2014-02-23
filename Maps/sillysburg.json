@@ -1,0 +1,45 @@
+{
+	"city-name": "Sillysburg",
+	"starting-cash": 500000,
+	"starting-date": 0,
+	"intro":"This is a ficticious map without any real-world reference just to test the features of the game.",
+	"tmx-name": "sillysburg.tmx",
+	"bg-name":"sillysburg-bg.jpg",
+	"goals":[[{ "type":"metric",
+				"caption":"1% of trips made on system",
+				"metric-key":"trips-made-proportion",
+				"metric-stat":"single-value",
+				"metric-target":0.01
+				},
+			   {"type":"metric",
+			   "caption":"Serve 2% of population",
+				"metric-key":"population-proportion-served",
+				"metric-stat":"single-value",
+				"metric-target":0.02}
+			],
+			[{ "type":"metric",
+				"caption":"5% of trips made on system",
+				"metric-key":"trips-made-proportion",
+				"metric-stat":"single-value",
+				"metric-target":0.05
+				},
+			   {"type":"metric",
+			   "caption":"Serve 10% of population",
+				"metric-key":"population-proportion-served",
+				"metric-stat":"single-value",
+				"metric-target":0.1}
+			],
+			[{ "type":"metric",
+				"caption":"20% of trips made on system",
+				"metric-key":"trips-made-proportion",
+				"metric-stat":"single-value",
+				"metric-target":0.2
+				},
+			   {"type":"metric",
+			   "caption":"Serve 50% of population",
+				"metric-key":"population-proportion-served",
+				"metric-stat":"single-value",
+				"metric-target":0.5}
+			]
+		]
+}

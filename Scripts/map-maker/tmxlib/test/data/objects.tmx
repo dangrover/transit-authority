@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="8" height="8" tilewidth="32" tileheight="32">
+ <tileset firstgid="1" name="Desert" tilewidth="32" tileheight="32" spacing="1" margin="1">
+  <image source="tmw_desert_spacing.png" width="265" height="199"/>
+ </tileset>
+ <objectgroup color="#ff0000" name="Objects" width="8" height="8">
+  <object name="Rect" x="32" y="32" width="64" height="96"/>
+  <object name="Ellipse" x="128" y="32" width="96" height="64">
+   <ellipse/>
+  </object>
+  <object name="Signpost" gid="46" x="192" y="224"/>
+  <object name="Banner" x="32" y="160">
+   <polygon points="0,0 64,0 64,96 32,64 0,96"/>
+  </object>
+  <object name="Handle" x="128" y="160">
+   <polyline points="-32,0 64,0 128,0"/>
+  </object>
+ </objectgroup>
+</map>

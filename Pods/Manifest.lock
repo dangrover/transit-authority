@@ -1,0 +1,20 @@
+PODS:
+  - CorePlot (1.4)
+  - FMDB (2.1):
+    - FMDB/standard
+  - FMDB/common (2.1)
+  - FMDB/standard (2.1):
+    - FMDB/common
+  - TestFlightSDK (2.1.1b)
+
+DEPENDENCIES:
+  - CorePlot (~> 1.4)
+  - FMDB
+  - TestFlightSDK
+
+SPEC CHECKSUMS:
+  CorePlot: 620ec9763d92cc0478eae469c515132df317e24e
+  FMDB: 8e5b7e0c644a13a70be0ec5dbffc6b30e524ab5d
+  TestFlightSDK: 2dc092bf16239551bdf6d31ea6bba265b6785287
+
+COCOAPODS: 0.26.2
