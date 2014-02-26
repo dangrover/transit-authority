@@ -6,19 +6,20 @@ import wand
 from PIL import Image
 from util import *
 
-# Set up projections
-# spherical mercator (most common target map projection of osm data imported with osm2pgsql)
-merc = mapnik.Projection('+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over')
-longlat = mapnik.Projection('+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs')
 
-TILE_SIZE = 16
+######################
+# Constants
 
-LAND_GID=9
+TILE_SIZE = 16 #tile size in non-retina pixels
+
+# Tile IDs for different things in the tile set
+LAND_GID=9 
 WATER_GID=29
 PARK_GID=30
 AIRPORT_GID=74
 
-# BOUNDS FORMAT: w, n, e, s
+# Some pre-determined geographical bounds for generating levels
+# Format: w, n, e, s
 CITIES = {
     "boston":{
         "bounds":[-71.1372, 42.3063,-71.006, 42.3816]
@@ -39,7 +40,16 @@ CITIES = {
     }
 }
 
+# The geographical scale used. 
 SCALE_TILES_PER_MILE = 25
+
+######################
+
+# Set up projections
+# spherical mercator (most common target map projection of osm data imported with osm2pgsql)
+merc = mapnik.Projection('+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over')
+longlat = mapnik.Projection('+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs')
+
 
 def get_tileset(name, path):
     pil_image = Image.open(path)
