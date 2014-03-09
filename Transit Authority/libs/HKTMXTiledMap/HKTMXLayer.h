@@ -87,7 +87,7 @@ struct HKTMXAnimCacheEntry {
 @interface HKTMXLayer : CCNode <CCBlendProtocol>
 {
 	CCTMXTilesetInfo	*tileset_;
-	CCTexture2D			*texture_;
+	CCTexture			*texture_;
 	NSString			*layerName_;
 	CGSize				layerSize_;
 	CGSize				mapTileSize_;

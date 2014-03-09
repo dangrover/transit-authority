@@ -3,6 +3,7 @@
  *
  * Copyright (c) 2008-2010 Ricardo Quesada
  * Copyright (c) 2011 Zynga Inc.
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,6 +33,7 @@
 #import "ccGLStateCache.h"
 #import "CCDirector.h"
 #import "Support/TransformUtils.h"
+#import "CCNode_Private.h"
 
 // external
 #import "kazmath/GL/matrix.h"
@@ -58,16 +60,16 @@
 
 +(id) atlasWithTileFile:(NSString*)tile tileWidth:(NSUInteger)w tileHeight:(NSUInteger)h itemsToRender: (NSUInteger) c
 {
-	return [[[self alloc] initWithTileFile:tile tileWidth:w tileHeight:h itemsToRender:c] autorelease];
+	return [[self alloc] initWithTileFile:tile tileWidth:w tileHeight:h itemsToRender:c];
 }
 
 -(id) initWithTileFile:(NSString*)filename tileWidth:(NSUInteger)w tileHeight:(NSUInteger)h itemsToRender: (NSUInteger) c
 {
-	CCTexture2D *texture = [[CCTextureCache sharedTextureCache] addImage:filename];
+	CCTexture *texture = [[CCTextureCache sharedTextureCache] addImage:filename];
 	return [self initWithTexture:texture tileWidth:w tileHeight:h itemsToRender:c];
 }
 
--(id) initWithTexture:(CCTexture2D*)texture tileWidth:(NSUInteger)w tileHeight:(NSUInteger)h itemsToRender: (NSUInteger) c;
+-(id) initWithTexture:(CCTexture*)texture tileWidth:(NSUInteger)w tileHeight:(NSUInteger)h itemsToRender: (NSUInteger) c;
 {
 	if( (self=[super init]) ) {
 		
@@ -84,7 +86,6 @@
 		
 		if( ! _textureAtlas ) {
 			CCLOG(@"cocos2d: Could not initialize CCAtlasNode. Invalid Texture");
-			[self release];
 			return nil;
 		}
 
@@ -102,12 +103,6 @@
 	return self;
 }
 
--(void) dealloc
-{
-	[_textureAtlas release];
-
-	[super dealloc];
-}
 
 #pragma mark CCAtlasNode - Atlas generation
 
@@ -130,49 +125,48 @@
 
 	ccGLBlendFunc( _blendFunc.src, _blendFunc.dst );
 	
-	GLfloat colors[4] = { _displayedColor.r / 255.0f,
-                          _displayedColor.g / 255.0f,
-                          _displayedColor.b / 255.0f,
-                          _displayedOpacity / 255.0f};
-	[_shaderProgram setUniformLocation:_uniformColor with4fv:colors count:1];
+	[_shaderProgram setUniformLocation:_uniformColor with4fv:&_displayColor count:1];
 
 	[_textureAtlas drawNumberOfQuads:_quadsToDraw fromIndex:0];
 }
 
 #pragma mark CCAtlasNode - RGBA protocol
 
-- (ccColor3B) color
+- (CCColor*) color
 {
 	if (_opacityModifyRGB)
-		return _colorUnmodified;
+		return [CCColor colorWithCcColor3b:_colorUnmodified];
 
 	return super.color;
 }
 
--(void) setColor:(ccColor3B)color3
+-(void) setColor:(CCColor*)color
 {
-	_colorUnmodified = color3;
+	ccColor4F color4f = color.ccColor4f;
+	_colorUnmodified = color.ccColor3b;
 
 	if( _opacityModifyRGB ){
-		color3.r = color3.r * _displayedOpacity/255;
-		color3.g = color3.g * _displayedOpacity/255;
-		color3.b = color3.b * _displayedOpacity/255;
+		// premultiply the alpha back in.
+		color4f.r *= color4f.a;
+		color4f.g *= color4f.a;
+		color4f.b *= color4f.a;
+		color = [CCColor colorWithCcColor4f:color4f];
 	}
-    [super setColor:color3];
+	[super setColor:color];
 }
 
--(void) setOpacity:(GLubyte) anOpacity
+-(void) setOpacity:(CGFloat) anOpacity
 {
     [super setOpacity:anOpacity];
 
 	// special opacity for premultiplied textures
 	if( _opacityModifyRGB )
-		[self setColor: _colorUnmodified];
+		[self setColor: [CCColor colorWithCcColor3b:_colorUnmodified]];
 }
 
 -(void) setOpacityModifyRGB:(BOOL)modify
 {
-	ccColor3B oldColor	= self.color;
+	CCColor* oldColor	= self.color;
 	_opacityModifyRGB	= modify;
 	self.color			= oldColor;
 }
@@ -197,14 +191,14 @@
 	}
 }
 
--(void) setTexture:(CCTexture2D*)texture
+-(void) setTexture:(CCTexture*)texture
 {
 	_textureAtlas.texture = texture;
 	[self updateBlendFunc];
 	[self updateOpacityModifyRGB];
 }
 
--(CCTexture2D*) texture
+-(CCTexture*) texture
 {
 	return _textureAtlas.texture;
 }

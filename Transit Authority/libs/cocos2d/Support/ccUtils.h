@@ -25,9 +25,8 @@ extern "C" {
 	- If "value" is 16, it will return 16.
 	- If "value" is 17, it will return 32.
 
- @since v0.99.5
  */
-unsigned long ccNextPOT( unsigned long value );
+unsigned long CCNextPOT( unsigned long value );
 
 #ifdef __cplusplus
 }

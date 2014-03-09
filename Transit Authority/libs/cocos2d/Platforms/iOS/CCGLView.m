@@ -78,7 +78,9 @@ Copyright (C) 2008 Apple Inc. All Rights Reserved.
 #import "../../ccMacros.h"
 #import "../../CCConfiguration.h"
 #import "../../Support/OpenGL_Internal.h"
+#import "CCScene.h"
 
+#import "CCDirector_Private.h"
 
 //CLASS IMPLEMENTATIONS:
 
@@ -91,7 +93,6 @@ Copyright (C) 2008 Apple Inc. All Rights Reserved.
 
 @synthesize surfaceSize=_size;
 @synthesize pixelFormat=_pixelformat, depthFormat=_depthFormat;
-@synthesize touchDelegate=_touchDelegate;
 @synthesize context=_context;
 @synthesize multiSampling=_multiSampling;
 
@@ -102,22 +103,22 @@ Copyright (C) 2008 Apple Inc. All Rights Reserved.
 
 + (id) viewWithFrame:(CGRect)frame
 {
-	return [[[self alloc] initWithFrame:frame] autorelease];
+	return [[self alloc] initWithFrame:frame];
 }
 
 + (id) viewWithFrame:(CGRect)frame pixelFormat:(NSString*)format
 {
-	return [[[self alloc] initWithFrame:frame pixelFormat:format] autorelease];
+	return [[self alloc] initWithFrame:frame pixelFormat:format];
 }
 
 + (id) viewWithFrame:(CGRect)frame pixelFormat:(NSString*)format depthFormat:(GLuint)depth
 {
-	return [[[self alloc] initWithFrame:frame pixelFormat:format depthFormat:depth preserveBackbuffer:NO sharegroup:nil multiSampling:NO numberOfSamples:0] autorelease];
+	return [[self alloc] initWithFrame:frame pixelFormat:format depthFormat:depth preserveBackbuffer:NO sharegroup:nil multiSampling:NO numberOfSamples:0];
 }
 
 + (id) viewWithFrame:(CGRect)frame pixelFormat:(NSString*)format depthFormat:(GLuint)depth preserveBackbuffer:(BOOL)retained sharegroup:(EAGLSharegroup*)sharegroup multiSampling:(BOOL)multisampling numberOfSamples:(unsigned int)samples
 {
-	return [[[self alloc] initWithFrame:frame pixelFormat:format depthFormat:depth preserveBackbuffer:retained sharegroup:sharegroup multiSampling:multisampling numberOfSamples:samples] autorelease];
+	return [[self alloc] initWithFrame:frame pixelFormat:format depthFormat:depth preserveBackbuffer:retained sharegroup:sharegroup multiSampling:multisampling numberOfSamples:samples];
 }
 
 - (id) initWithFrame:(CGRect)frame
@@ -139,11 +140,17 @@ Copyright (C) 2008 Apple Inc. All Rights Reserved.
 		_multiSampling = sampling;
 		_requestedSamples = nSamples;
 		_preserveBackbuffer = retained;
+		
+		// Default to "retina" being enabled.
+		self.contentScaleFactor = [UIScreen mainScreen].scale;
 
 		if( ! [self setupSurfaceWithSharegroup:sharegroup] ) {
-			[self release];
 			return nil;
 		}
+        
+        /** Multiple touch default enabled
+         */
+        self.multipleTouchEnabled = YES;
 
 		CHECK_GL_ERROR_DEBUG();
 	}
@@ -164,7 +171,6 @@ Copyright (C) 2008 Apple Inc. All Rights Reserved.
 		_size = [eaglLayer bounds].size;
 
 		if( ! [self setupSurfaceWithSharegroup:nil] ) {
-			[self release];
 			return nil;
 		}
 
@@ -208,8 +214,6 @@ Copyright (C) 2008 Apple Inc. All Rights Reserved.
 {
 	CCLOGINFO(@"cocos2d: deallocing %@", self);
 
-	[_renderer release];
-	[super dealloc];
 }
 
 - (void) layoutSubviews
@@ -323,40 +327,32 @@ Copyright (C) 2008 Apple Inc. All Rights Reserved.
 	return CGRectMake((rect.origin.x - bounds.origin.x) / bounds.size.width * _size.width, (rect.origin.y - bounds.origin.y) / bounds.size.height * _size.height, rect.size.width / bounds.size.width * _size.width, rect.size.height / bounds.size.height * _size.height);
 }
 
-// Pass the touches to the superview
 #pragma mark CCGLView - Touch Delegate
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
-	if(_touchDelegate)
-	{
-		[_touchDelegate touchesBegan:touches withEvent:event];
-	}
+    // dispatch touch to responder manager
+    [[CCDirector sharedDirector].responderManager touchesBegan:touches withEvent:event];
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
-	if(_touchDelegate)
-	{
-		[_touchDelegate touchesMoved:touches withEvent:event];
-	}
+    // dispatch touch to responder manager
+    [[CCDirector sharedDirector].responderManager touchesMoved:touches withEvent:event];
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
-	if(_touchDelegate)
-	{
-		[_touchDelegate touchesEnded:touches withEvent:event];
-	}
-}
-- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
-{
-	if(_touchDelegate)
-	{
-		[_touchDelegate touchesCancelled:touches withEvent:event];
-	}
+    // dispatch touch to responder manager
+    [[CCDirector sharedDirector].responderManager touchesEnded:touches withEvent:event];
 }
 
+- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    // dispatch touch to responder manager
+    [[CCDirector sharedDirector].responderManager touchesCancelled:touches withEvent:event];
+}
+ 
 @end
 
 

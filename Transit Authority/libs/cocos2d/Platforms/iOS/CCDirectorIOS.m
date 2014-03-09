@@ -3,6 +3,7 @@
  *
  * Copyright (c) 2010 Ricardo Quesada
  * Copyright (c) 2011 Zynga Inc.
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,8 +34,6 @@
 
 // cocos2d imports
 #import "CCDirectorIOS.h"
-#import "CCTouchDelegateProtocol.h"
-#import "CCTouchDispatcher.h"
 #import "../../CCScheduler.h"
 #import "../../CCActionManager.h"
 #import "../../CCTextureCache.h"
@@ -42,7 +41,6 @@
 #import "../../CCScene.h"
 #import "../../CCGLProgram.h"
 #import "../../ccGLStateCache.h"
-#import "../../CCLayer.h"
 #import "../../ccFPSImages.h"
 #import "../../CCConfiguration.h"
 
@@ -59,11 +57,7 @@
 #import "../../Support/CCProfiling.h"
 #endif
 
-
-#pragma mark -
-#pragma mark Director - global variables (optimization)
-
-CGFloat	__ccContentScaleFactor = 1;
+#import "CCDirector_Private.h"
 
 #pragma mark -
 #pragma mark Director
@@ -87,15 +81,6 @@ CGFloat	__ccContentScaleFactor = 1;
 	// override me
 }
 
--(CCTouchDispatcher*) touchDispatcher
-{
-	return nil;
-}
-
--(void) setTouchDispatcher:(CCTouchDispatcher*)touchDispatcher
-{
-	//
-}
 @end
 
 
@@ -103,21 +88,11 @@ CGFloat	__ccContentScaleFactor = 1;
 #pragma mark -
 #pragma mark CCDirectorIOS
 
-@interface CCDirectorIOS ()
--(void) updateContentScaleFactor;
-@end
-
 @implementation CCDirectorIOS
 
 - (id) init
 {
 	if( (self=[super init]) ) {
-
-		__ccContentScaleFactor = 1;
-		_isContentScaleSupported = NO;
-
-		_touchDispatcher = [[CCTouchDispatcher alloc] init];
-
 		// running thread is main thread on iOS
 		_runningThread = [NSThread currentThread];
 		
@@ -128,19 +103,13 @@ CGFloat	__ccContentScaleFactor = 1;
 	return self;
 }
 
-- (void) dealloc
-{
-	[_touchDispatcher release];
-
-	[super dealloc];
-}
 
 //
 // Draw the Scene
 //
 - (void) drawScene
-{
-	/* calculate "global" dt */
+{	
+    /* calculate "global" dt */
 	[self calculateDeltaTime];
 
 	CCGLView *openGLview = (CCGLView*)[self view];
@@ -175,6 +144,7 @@ CGFloat	__ccContentScaleFactor = 1;
 
 	if( _displayStats )
 		[self calculateMPF];
+    
 }
 
 -(void) setViewport
@@ -183,28 +153,27 @@ CGFloat	__ccContentScaleFactor = 1;
 	glViewport(0, 0, size.width, size.height );
 }
 
--(void) setProjection:(ccDirectorProjection)projection
+-(void) setProjection:(CCDirectorProjection)projection
 {
-	CGSize size = _winSizeInPixels;
 	CGSize sizePoint = _winSizeInPoints;
     
 	[self setViewport];
 
 	switch (projection) {
-		case kCCDirectorProjection2D:
+		case CCDirectorProjection2D:
 
 			kmGLMatrixMode(KM_GL_PROJECTION);
 			kmGLLoadIdentity();
 
 			kmMat4 orthoMatrix;
-			kmMat4OrthographicProjection(&orthoMatrix, 0, size.width / CC_CONTENT_SCALE_FACTOR(), 0, size.height / CC_CONTENT_SCALE_FACTOR(), -1024, 1024 );
+			kmMat4OrthographicProjection(&orthoMatrix, 0, sizePoint.width, 0, sizePoint.height, -1024, 1024 );
 			kmGLMultMatrix( &orthoMatrix );
 
 			kmGLMatrixMode(KM_GL_MODELVIEW);
 			kmGLLoadIdentity();
 			break;
 
-		case kCCDirectorProjection3D:
+		case CCDirectorProjection3D:
 		{
 			float zeye = [self getZEye];
 
@@ -214,7 +183,7 @@ CGFloat	__ccContentScaleFactor = 1;
 			kmGLLoadIdentity();
 
 			// issue #1334
-			kmMat4PerspectiveProjection( &matrixPerspective, 60, (GLfloat)size.width/size.height, 0.1f, zeye*2);
+			kmMat4PerspectiveProjection( &matrixPerspective, 60, (GLfloat)sizePoint.width/sizePoint.height, 0.1f, zeye*2);
 //			kmMat4PerspectiveProjection( &matrixPerspective, 60, (GLfloat)size.width/size.height, 0.1f, 1500);
 
 			kmGLMultMatrix(&matrixPerspective);
@@ -230,7 +199,7 @@ CGFloat	__ccContentScaleFactor = 1;
 			break;
 		}
 
-		case kCCDirectorProjectionCustom:
+		case CCDirectorProjectionCustom:
 			if( [_delegate respondsToSelector:@selector(updateProjection)] )
 				[_delegate updateProjection];
 			break;
@@ -243,6 +212,7 @@ CGFloat	__ccContentScaleFactor = 1;
 	_projection = projection;
 
 	ccSetProjectionMatrixDirty();
+	[self createStatsLabel];
 }
 
 // override default logic
@@ -257,125 +227,19 @@ CGFloat	__ccContentScaleFactor = 1;
 	[self performSelector:@selector(drawScene) onThread:thread withObject:nil waitUntilDone:YES];
 }
 
-#pragma mark Director - TouchDispatcher
-
--(CCTouchDispatcher*) touchDispatcher
-{
-	return _touchDispatcher;
-}
-
--(void) setTouchDispatcher:(CCTouchDispatcher*)touchDispatcher
-{
-	if( touchDispatcher != _touchDispatcher ) {
-		[_touchDispatcher release];
-		_touchDispatcher = [touchDispatcher retain];
-	}
-}
-
-#pragma mark Director - Retina Display
-
--(CGFloat) contentScaleFactor
-{
-	return __ccContentScaleFactor;
-}
-
--(void) setContentScaleFactor:(CGFloat)scaleFactor
-{
-	if( scaleFactor != __ccContentScaleFactor ) {
-
-		__ccContentScaleFactor = scaleFactor;
-		_winSizeInPixels = CGSizeMake( _winSizeInPoints.width * scaleFactor, _winSizeInPoints.height * scaleFactor );
-
-		if( __view )
-			[self updateContentScaleFactor];
-
-		// update projection
-		[self setProjection:_projection];
-	}
-}
-
--(void) updateContentScaleFactor
-{
-	NSAssert( [__view respondsToSelector:@selector(setContentScaleFactor:)], @"cocos2d v2.0+ runs on iOS 4 or later");
-
-	[__view setContentScaleFactor: __ccContentScaleFactor];
-	_isContentScaleSupported = YES;
-}
-
--(BOOL) enableRetinaDisplay:(BOOL)enabled
-{
-	// Already enabled ?
-	if( enabled && __ccContentScaleFactor == 2 )
-		return YES;
-
-	// Already disabled
-	if( ! enabled && __ccContentScaleFactor == 1 )
-		return YES;
-
-	// setContentScaleFactor is not supported
-	if (! [__view respondsToSelector:@selector(setContentScaleFactor:)])
-		return NO;
-
-	// SD device
-	if ([[UIScreen mainScreen] scale] == 1.0)
-		return NO;
-
-	float newScale = enabled ? 2 : 1;
-	[self setContentScaleFactor:newScale];
-
-	// Load Hi-Res FPS label
-	[[CCFileUtils sharedFileUtils] buildSearchResolutionsOrder];
-	[self createStatsLabel];
-
-	return YES;
-}
-
 // overriden, don't call super
 -(void) reshapeProjection:(CGSize)size
 {
-	_winSizeInPoints = [__view bounds].size;
-	_winSizeInPixels = CGSizeMake(_winSizeInPoints.width * __ccContentScaleFactor, _winSizeInPoints.height *__ccContentScaleFactor);
-
+	_winSizeInPixels = size;
+	_winSizeInPoints = CGSizeMake(size.width/__ccContentScaleFactor, size.height/__ccContentScaleFactor);
+	
 	[self setProjection:_projection];
   
 	if( [_delegate respondsToSelector:@selector(directorDidReshapeProjection:)] )
 		[_delegate directorDidReshapeProjection:self];
 }
 
-static void
-GLToClipTransform(kmMat4 *transformOut)
-{
-	kmMat4 projection;
-	kmGLGetMatrix(KM_GL_PROJECTION, &projection);
-	
-	kmMat4 modelview;
-	kmGLGetMatrix(KM_GL_MODELVIEW, &modelview);
-	
-	kmMat4Multiply(transformOut, &projection, &modelview);
-}
-
 #pragma mark Director Point Convertion
-
--(CGPoint)convertToGL:(CGPoint)uiPoint
-{
-	kmMat4 transform;
-	GLToClipTransform(&transform);
-	
-	kmMat4 transformInv;
-	kmMat4Inverse(&transformInv, &transform);
-	
-	// Calculate z=0 using -> transform*[0, 0, 0, 1]/w
-	kmScalar zClip = transform.mat[14]/transform.mat[15];
-	
-	CGSize glSize = __view.bounds.size;
-	kmVec3 clipCoord = {2.0*uiPoint.x/glSize.width - 1.0, 1.0 - 2.0*uiPoint.y/glSize.height, zClip};
-	
-	kmVec3 glCoord;
-	kmVec3TransformCoord(&glCoord, &clipCoord, &transformInv);
-	
-//	NSLog(@"uiPoint: %@, glPoint: %@", NSStringFromCGPoint(uiPoint), NSStringFromCGPoint(ccp(glCoord.x, glCoord.y)));
-	return ccp(glCoord.x, glCoord.y);
-}
 
 -(CGPoint)convertTouchToGL:(UITouch*)touch
 {
@@ -383,26 +247,8 @@ GLToClipTransform(kmMat4 *transformOut)
 	return [self convertToGL:uiPoint];
 }
 
-
--(CGPoint)convertToUI:(CGPoint)glPoint
-{
-	kmMat4 transform;
-	GLToClipTransform(&transform);
-		
-	kmVec3 clipCoord;
-	// Need to calculate the zero depth from the transform.
-	kmVec3 glCoord = {glPoint.x, glPoint.y, 0.0};
-	kmVec3TransformCoord(&clipCoord, &glCoord, &transform);
-	
-	CGSize glSize = __view.bounds.size;
-	return ccp(glSize.width*(clipCoord.x*0.5 + 0.5), glSize.height*(-clipCoord.y*0.5 + 0.5));
-}
-
 -(void) end
 {
-	// don't release the event handlers
-	// They are needed in case the director is run again
-	[_touchDispatcher removeAllDelegates];
 
 	[super end];
 }
@@ -417,13 +263,9 @@ GLToClipTransform(kmMat4 *transformOut)
 
 		if( view ) {
 			// set size
-			_winSizeInPixels = CGSizeMake(_winSizeInPoints.width * __ccContentScaleFactor, _winSizeInPoints.height *__ccContentScaleFactor);
-
-			if( __ccContentScaleFactor != 1 )
-				[self updateContentScaleFactor];
-
-			[view setTouchDelegate: _touchDispatcher];
-			[_touchDispatcher setDispatchEvents: YES];
+			CGFloat scale = view.contentScaleFactor;
+			CGSize size = view.bounds.size;
+			_winSizeInPixels = CGSizeMake(size.width * scale, size.height * scale);
 		}
 	}
 }
@@ -436,10 +278,6 @@ GLToClipTransform(kmMat4 *transformOut)
 		ret = (BOOL) [_delegate shouldAutorotateToInterfaceOrientation:interfaceOrientation];
 
 	return ret;
-}
-
-- (BOOL)prefersStatusBarHidden{
-    return YES;
 }
 
 // Commented. See issue #1453 for further info: http://code.google.com/p/cocos2d-iphone/issues/detail?id=1453
@@ -504,21 +342,24 @@ GLToClipTransform(kmMat4 *transformOut)
 
 #pragma mark helper
 
--(void)getFPSImageData:(unsigned char**)datapointer length:(NSUInteger*)len
+-(void)getFPSImageData:(unsigned char**)datapointer length:(NSUInteger*)len contentScale:(CGFloat *)scale
 {
-	int device = [[CCConfiguration sharedConfiguration] runningDevice];
+	NSInteger device = [[CCConfiguration sharedConfiguration] runningDevice];
 
-	if( device == kCCDeviceiPadRetinaDisplay) {
+	if( device == CCDeviceiPadRetinaDisplay) {
 		*datapointer = cc_fps_images_ipadhd_png;
 		*len = cc_fps_images_ipadhd_len();
+		*scale = 2;
 		
-	} else if( device == kCCDeviceiPhoneRetinaDisplay || device == kCCDeviceiPhone5RetinaDisplay ) {
+	} else if( device == CCDeviceiPhoneRetinaDisplay || device == CCDeviceiPhone5RetinaDisplay ) {
 		*datapointer = cc_fps_images_hd_png;
 		*len = cc_fps_images_hd_len();
+		*scale = 2;
 
 	} else {
 		*datapointer = cc_fps_images_png;
 		*len = cc_fps_images_len();
+		*scale = 1;
 	}
 }
 
@@ -549,7 +390,7 @@ GLToClipTransform(kmMat4 *transformOut)
 {
 	[super startAnimation];
 
-    if(_isAnimating)
+    if(_animating)
         return;
 
 	gettimeofday( &_lastUpdate, NULL);
@@ -573,12 +414,12 @@ GLToClipTransform(kmMat4 *transformOut)
 	[_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 #endif
 
-    _isAnimating = YES;
+    _animating = YES;
 }
 
 - (void) stopAnimation
 {
-    if(!_isAnimating)
+    if(!_animating)
         return;
 
 	CCLOG(@"cocos2d: animation stopped");
@@ -591,7 +432,7 @@ GLToClipTransform(kmMat4 *transformOut)
 
 	[_displayLink invalidate];
 	_displayLink = nil;
-    _isAnimating = NO;
+    _animating = NO;
 }
 
 // Overriden in order to use a more stable delta time
@@ -627,21 +468,16 @@ GLToClipTransform(kmMat4 *transformOut)
 //
 -(void) threadMainLoop
 {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	@autoreleasepool {
 
-	[_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+		[_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 
-	// start the run loop
-	[[NSRunLoop currentRunLoop] run];
+		// start the run loop
+		[[NSRunLoop currentRunLoop] run];
 
-	[pool release];
+	}
 }
 
--(void) dealloc
-{
-	[_displayLink release];
-	[super dealloc];
-}
 @end
 
 #endif // __CC_PLATFORM_IOS

@@ -64,6 +64,11 @@ kmMat4* const kmMat4Identity(kmMat4* pOut)
 	return pOut;
 }
 
+// supress "no prototype" warnings
+float get(const kmMat4 * pIn, int row, int col);
+void set(kmMat4 * pIn, int row, int col, float value);
+void swap(kmMat4 * pIn, int r1, int c1, int r2, int c2);
+int gaussj(kmMat4 *a, kmMat4 *b);
 
 float get(const kmMat4 * pIn, int row, int col)
 {
@@ -215,7 +220,7 @@ kmMat4* const kmMat4Transpose(kmMat4* pOut, const kmMat4* pIn)
  */
 kmMat4* const kmMat4Multiply(kmMat4* pOut, const kmMat4* pM1, const kmMat4* pM2)
 {
-#if defined(__ARM_NEON__)
+#if defined(_ARM_ARCH_7)
 
 	float mat[16];
 

@@ -2,8 +2,8 @@
  * cocos2d for iPhone: http://www.cocos2d-iphone.org
  *
  * Copyright (c) 2008 Radu Gruian
- *
  * Copyright (c) 2011 Vit Valentin
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,63 +25,143 @@
  * THE SOFTWARE.
  *
  *
- * Orignal code by Radu Gruian: http://www.codeproject.com/Articles/30838/Overhauser-Catmull-Rom-Splines-for-Camera-Animatio.So
+ * Orignal code by Radu Gruian
  *
  * Adapted to cocos2d-x by Vit Valentin
  *
  * Adapted from cocos2d-x to cocos2d-iphone by Ricardo Quesada
+ *
  */
-
 
 #import "CCActionInterval.h"
 
-/** An Array that contain control points.
- Used by CCCardinalSplineTo and (By) and CCCatmullRomTo (and By) actions.
+#ifdef __cplusplus
+extern "C" {
+#endif
+    
+    /**
+     *  Returns the Cardinal Spline position for a given set of control points, tension and time.
+     *
+     *
+     *  @param p0      Control point 0.
+     *  @param p1      Control point 1.
+     *  @param p2      Control point 2.
+     *  @param p3      Control point 3.
+     *  @param tension Tension.
+     *  @param t       Normalized time.
+     *
+     *  @return A calculated cardinal spline point.
+     */
+    CGPoint CCCardinalSplineAt( CGPoint p0, CGPoint p1, CGPoint p2, CGPoint p3, CGFloat tension, CCTime t );
+    
+#ifdef __cplusplus
+}
+#endif
+
+
+#pragma mark - CCPointArray
+/** 
+ *  A simple array that is used to contain the spline control points.
  */
-@interface CCPointArray : NSObject <NSCopying>
-{
+@interface CCPointArray : NSObject <NSCopying> {
 	NSMutableArray	*_controlPoints;
 }
 
-/** Array that contains the control points */
-@property (nonatomic,readwrite,retain) NSMutableArray *controlPoints;
+/** Array that contains the control points. */
+@property (nonatomic,readwrite,strong) NSMutableArray *controlPoints;
 
-/** creates and initializes a Points array with capacity */
- +(id) arrayWithCapacity:(NSUInteger)capacity;
+/**
+ *  Creates and initializes a Points array with capacity.
+ *
+ *  @param capacity Capacity of the array.
+ *
+ *  @return New point array.
+ */
++ (id)arrayWithCapacity:(NSUInteger)capacity;
 
-/** initializes a Catmull Rom config with a capacity hint */
--(id) initWithCapacity:(NSUInteger)capacity;
+/**
+ *  Initializes a Points array with capacity.
+ *
+ *  @param capacity Capacity of the array.
+ *
+ *  @return New point array.
+ */
+- (id)initWithCapacity:(NSUInteger)capacity;
 
-/** appends a control point */
--(void) addControlPoint:(CGPoint)controlPoint;
 
-/** inserts a controlPoint at index */
--(void) insertControlPoint:(CGPoint)controlPoint atIndex:(NSUInteger)index;
+/// -----------------------------------------------------------------------
+/// @name Point Array Management
+/// -----------------------------------------------------------------------
 
-/** replaces an existing controlPoint at index */
--(void) replaceControlPoint:(CGPoint)controlPoint atIndex:(NSUInteger)index;
+/**
+ *  Appends a control point.
+ *
+ *  @param controlPoint Control point to append.
+ */
+- (void)addControlPoint:(CGPoint)controlPoint;
 
-/** get the value of a controlPoint at a given index */
--(CGPoint) getControlPointAtIndex:(NSInteger)index;
+/**
+ *  Inserts a controlPoint.
+ *
+ *  @param controlPoint Control point to insert.
+ *  @param index        Index of point.
+ */
+- (void)insertControlPoint:(CGPoint)controlPoint atIndex:(NSUInteger)index;
 
-/** deletes a control point at a given index */
--(void) removeControlPointAtIndex:(NSUInteger)index;
+/**
+ *  Replaces an existing control point.
+ *
+ *  @param controlPoint New control point.
+ *  @param index        Index of point to replace.
+ */
+- (void)replaceControlPoint:(CGPoint)controlPoint atIndex:(NSUInteger)index;
 
-/** returns the number of objects of the control point array */
--(NSUInteger) count;
+/**
+ *  Retrieves a control point.
+ *
+ *  @param index Index of control point to retrieve.
+ *
+ *  @return A control point.
+ */
+- (CGPoint)getControlPointAtIndex:(NSInteger)index;
 
-/** returns a new copy of the array reversed. User is responsible for releasing this copy */
--(CCPointArray*) reverse;
+/**
+ *  Deletes a control point.
+ *
+ *  @param index Index of control point to delete.
+ */
+- (void)removeControlPointAtIndex:(NSUInteger)index;
 
-/** reverse the current control point array inline, without generating a new one */
--(void) reverseInline;
+/**
+ *  Returns the number of control points in the array.
+ *
+ *  @return Number of control points.
+ */
+- (NSUInteger)count;
+
+/**
+ *  Creates a new copy of the array, in reversed order. 
+ *  User is responsible for releasing this array.
+ *
+ *  @return New point array.
+ */
+- (CCPointArray*)reverse;
+
+/** Reverses the current control point array. */
+- (void)reverseInline;
+
 @end
 
-/** Cardinal Spline path.
- http://en.wikipedia.org/wiki/Cubic_Hermite_spline#Cardinal_spline
+
+#pragma mark - CCActionCardinalSplineTo
+/** 
+ *  Creates an action, based on a cardinal sline path.
+ *  @see http://www.codeproject.com/Articles/30838/Overhauser-Catmull-Rom-Splines-for-Camera-Animatio.So
+ *
+ *  The spline calculates a 2D cardinal spline vector, based on the control points and applied tension.
+ *  All cocos2d splines are based on tension. Splines based on tension, are guaranteed to pass through all control points.
  */
-@interface CCCardinalSplineTo : CCActionInterval
-{
+@interface CCActionCardinalSplineTo : CCActionInterval {
 	CCPointArray	*_points;
 	CGFloat			_deltaT;
 	CGFloat			_tension;
@@ -89,63 +169,115 @@
 	CGPoint			_accumulatedDiff;
 }
 
-/** Array of control points */
- @property (nonatomic,readwrite,retain) CCPointArray *points;
+/** The array of control points associated with the cardinal spline. */
+@property (nonatomic,readwrite,strong) CCPointArray *points;
 
-/** creates an action with a Cardinal Spline array of points and tension */
-+(id) actionWithDuration:(ccTime)duration points:(CCPointArray*)points tension:(CGFloat)tension;
+/**
+ *  Creates a cardinal spline action, based on control points and tension.
+ *  A tension of 0, will return a curve following the straight lines in the point array.
+ *  Increase value of tension to smooth out the curve.
+ *
+ *  @param duration Action duration.
+ *  @param points   Points to use for spline.
+ *  @param tension  The tension of the spline curve.
+ *
+ *  @return New spline action.
+ */
++ (id)actionWithDuration:(CCTime)duration points:(CCPointArray*)points tension:(CGFloat)tension;
 
-/** initializes the action with a duration and an array of points */
--(id) initWithDuration:(ccTime)duration points:(CCPointArray*)points tension:(CGFloat)tension;
+/**
+ *  Initializes a cardinal spline action, based on control points and tension.
+ *  A tension of 0, will return a curve following the straight lines in the point array.
+ *  Increase value of tension to smooth out the curve.
+ *
+ *  @param duration Action duration.
+ *  @param points   Points to use for spline.
+ *  @param tension  The tension of the spline curve.
+ *
+ *  @return New spline action.
+ */
+- (id)initWithDuration:(CCTime)duration points:(CCPointArray*)points tension:(CGFloat)tension;
 
 @end
 
-/** Cardinal Spline path.
- http://en.wikipedia.org/wiki/Cubic_Hermite_spline#Cardinal_spline
+
+#pragma mark - CCActionCardinalSplineBy
+/** 
+ *  Creates an action, based on a cardinal spline path.
+ *
+ *  Adds a start position to the spline.
+ *  @see CCActionCardinalSplineTo for further information.
  */
-@interface CCCardinalSplineBy : CCCardinalSplineTo
-{
+@interface CCActionCardinalSplineBy : CCActionCardinalSplineTo {
 	CGPoint		_startPosition;
 }
-// XXX: To make BridgeSupport happy
--(void) startWithTarget:(id)target;
+
 @end
 
-/** An action that moves the target with a CatmullRom curve to a destination point.
- A Catmull Rom is a Cardinal Spline with a tension of 0.5.
- http://en.wikipedia.org/wiki/Cubic_Hermite_spline#Catmull.E2.80.93Rom_spline
+
+#pragma mark - CCActionCatmullRomTo
+/** 
+ *  Creates an action, based on a catmull-rom spline path.
+ *
+ *  A Catmull Rom is a Cardinal Spline with a tension of 0.5.
+ *  See CCActionCardinalSplineTo for further information.
  */
-@interface CCCatmullRomTo : CCCardinalSplineTo
-{
-}
-/** creates an action with a Cardinal Spline array of points and tension */
-+(id) actionWithDuration:(ccTime)dt points:(CCPointArray*)points;
+@interface CCActionCatmullRomTo : CCActionCardinalSplineTo
 
-/** initializes the action with a duration and an array of points */
--(id) initWithDuration:(ccTime)dt points:(CCPointArray*)points;
-@end
-
-/** An action that moves the target with a CatmullRom curve by a certain distance.
-  A Catmull Rom is a Cardinal Spline with a tension of 0.5.
- http://en.wikipedia.org/wiki/Cubic_Hermite_spline#Catmull.E2.80.93Rom_spline
+/**
+ *  Creates an action, performing a catmull-rom spline.
+ *  This is similar to creating a cardinal spline, with a tension of 0.5.
+ *
+ *  @param dt     Action duration.
+ *  @param points Points to use for spline.
+ *
+ *  @return New catmull-rom action.
  */
-@interface CCCatmullRomBy : CCCardinalSplineBy
-{
-}
-/** creates an action with a Cardinal Spline array of points and tension */
-+(id) actionWithDuration:(ccTime)dt points:(CCPointArray*)points;
++ (id)actionWithDuration:(CCTime)dt points:(CCPointArray*)points;
 
-/** initializes the action with a duration and an array of points */
--(id) initWithDuration:(ccTime)dt points:(CCPointArray*)points;
+/**
+ *  Initializes an action, performing a catmull-rom spline.
+ *  This is similar to creating a cardinal spline, with a tension of 0.5.
+ *
+ *  @param dt     Action duration.
+ *  @param points Points to use for spline.
+ *
+ *  @return New catmull-rom action.
+ */
+- (id)initWithDuration:(CCTime)dt points:(CCPointArray*)points;
+
 @end
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
-/** Returns the Cardinal Spline position for a given set of control points, tension and time */
-CGPoint ccCardinalSplineAt( CGPoint p0, CGPoint p1, CGPoint p2, CGPoint p3, CGFloat tension, ccTime t );
+#pragma mark - CCActionCatmullRomBy
+/**
+ *  Creates an action, based on a catmull-rom spline path.
+ *
+ *  A Catmull Rom is a Cardinal Spline with a tension of 0.5.
+ *  See CCActionCardinalSplineTo for further information.
+ */
+@interface CCActionCatmullRomBy : CCActionCardinalSplineBy
 
-#ifdef __cplusplus
-}
-#endif
+/**
+ *  Creates an action, performing a catmull-rom spline.
+ *  This is similar to creating a cardinal spline, with a tension of 0.5.
+ *
+ *  @param dt     Action duration.
+ *  @param points Points to use for spline.
+ *
+ *  @return New catmull-rom action.
+ */
++ (id)actionWithDuration:(CCTime)dt points:(CCPointArray*)points;
+
+/**
+ *  Initializes an action, performing a catmull-rom spline.
+ *  This is similar to creating a cardinal spline, with a tension of 0.5.
+ *
+ *  @param dt     Action duration.
+ *  @param points Points to use for spline.
+ *
+ *  @return New catmull-rom action.
+ */
+- (id)initWithDuration:(CCTime)dt points:(CCPointArray*)points;
+
+@end

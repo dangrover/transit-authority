@@ -2,6 +2,7 @@
  * cocos2d for iPhone: http://www.cocos2d-iphone.org
  *
  * Copyright (c) 2009 Jason Booth
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,11 +36,16 @@
 #import <UIKit/UIKit.h>
 #endif // iPHone
 
-typedef enum
+/**
+ *  Image format when saving render textures
+ */
+typedef NS_ENUM(NSInteger, CCRenderTextureImageFormat)
 {
-	kCCImageFormatJPEG = 0,
-	kCCImageFormatPNG = 1,
-} tCCImageFormat;
+	/** Image will be saved as JPEG */
+	CCRenderTextureImageFormatJPEG = 0,
+	/** Image will be saved as PNG */
+	CCRenderTextureImageFormatPNG = 1,
+};
 
 
 /**
@@ -50,14 +56,13 @@ typedef enum
  the render texture to your scene and treat it like any other CCNode.
  There are also functions for saving the render texture to disk in PNG or JPG format.
 
- @since v0.8.1
  */
 @interface CCRenderTexture : CCNode
 {
 	GLuint				_FBO;
 	GLuint				_depthRenderBufffer;
 	GLint				_oldFBO;
-	CCTexture2D*		_texture;
+	CCTexture*		_texture;
 	CCSprite*			_sprite;
 	GLenum				_pixelFormat;
 
@@ -74,12 +79,12 @@ typedef enum
  The blending function can be changed in runtime by calling:
 	- [[renderTexture sprite] setBlendFunc:(ccBlendFunc){GL_ONE, GL_ONE_MINUS_SRC_ALPHA}];
 */
-@property (nonatomic,readwrite, retain) CCSprite* sprite;
+@property (nonatomic,readwrite, strong) CCSprite* sprite;
 
 /** Valid flags: GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT, GL_STENCIL_BUFFER_BIT. They can be OR'ed. Valid when "autoDraw is YES. */
 @property (nonatomic, readwrite) GLbitfield clearFlags;
 /** Clear color value. Valid only when "autoDraw" is YES. */
-@property (nonatomic, readwrite) ccColor4F clearColor;
+@property (nonatomic, strong) CCColor* clearColor;
 /** Value for clearDepth. Valid only when autoDraw is YES. */
 @property (nonatomic, readwrite) GLclampf clearDepth;
 /** Value for clear Stencil. Valid only when autoDraw is YES */
@@ -89,68 +94,167 @@ typedef enum
  */
 @property (nonatomic, readwrite) BOOL autoDraw;
 
+// ---------------------------------------------------------------------
+/**
+ *  @name Create CCRenderTexture.
+ */
 
-/** initializes a RenderTexture object with width and height in Points and a pixel format( only RGB and RGBA formats are valid ) and depthStencil format*/
-+(id)renderTextureWithWidth:(int)w height:(int)h pixelFormat:(CCTexture2DPixelFormat) format depthStencilFormat:(GLuint)depthStencilFormat;
+/**
+ *  initializes a RenderTexture object with width and height in Points and a pixel format( only RGB and RGBA formats are valid ) and depthStencil format
+ *
+ *  @param w                  Width of render target.
+ *  @param h                  Height of render target.
+ *  @param format             Pixel format of render target.
+ *  @param depthStencilFormat Stencil format of render target.
+ *
+ *  @return An initialized CCRenderTarget object.
+ */
++(id)renderTextureWithWidth:(int)w height:(int)h pixelFormat:(CCTexturePixelFormat) format depthStencilFormat:(GLuint)depthStencilFormat;
 
-/** creates a RenderTexture object with width and height in Points and a pixel format, only RGB and RGBA formats are valid */
-+(id)renderTextureWithWidth:(int)w height:(int)h pixelFormat:(CCTexture2DPixelFormat) format;
+/**
+ *  Creates a RenderTexture object with width and height in Points and a pixel format, only RGB and RGBA formats are valid
+ *
+ *  @param w      Width of render target.
+ *  @param h      Height of render target.
+ *  @param format Pixel format of render target.
+ *
+ *  @return An initialized CCRenderTarget object.
+ */
++(id)renderTextureWithWidth:(int)w height:(int)h pixelFormat:(CCTexturePixelFormat) format;
 
-/** creates a RenderTexture object with width and height in Points, pixel format is RGBA8888 */
+/**
+ *  Creates a RenderTexture object with width and height in Points, pixel format is RGBA8888
+ *
+ *  @param w Width of render target.
+ *  @param h Height of render target.
+ *
+ *  @return An initialized CCRenderTarget object.
+ */
 +(id)renderTextureWithWidth:(int)w height:(int)h;
 
-/** initializes a RenderTexture object with width and height in Points and a pixel format, only RGB and RGBA formats are valid */
--(id)initWithWidth:(int)w height:(int)h pixelFormat:(CCTexture2DPixelFormat) format;
+/**
+ *  Initializes a RenderTexture object with width and height in Points and a pixel format, only RGB and RGBA formats are valid
+ *
+ *  @param w      Width of render target.
+ *  @param h      Height of render target.
+ *  @param format Pixel format of render target.
+ *
+ *  @return An initialized CCRenderTarget object.
+ */
+-(id)initWithWidth:(int)w height:(int)h pixelFormat:(CCTexturePixelFormat) format;
 
-/** initializes a RenderTexture object with width and height in Points and a pixel format( only RGB and RGBA formats are valid ) and depthStencil format*/
-- (id)initWithWidth:(int)w height:(int)h pixelFormat:(CCTexture2DPixelFormat)format depthStencilFormat:(GLuint)depthStencilFormat;
+/**
+ *  Initializes a RenderTexture object with width and height in Points and a pixel format( only RGB and RGBA formats are valid ) and depthStencil format
+ *
+ *  @param w                  Width of render target.
+ *  @param h                  Height of render target.
+ *  @param format             Pixel format of render target.
+ *  @param depthStencilFormat Stencil format of render target.
+ *
+ *  @return An initialized CCRenderTarget object.
+ */
+- (id)initWithWidth:(int)w height:(int)h pixelFormat:(CCTexturePixelFormat)format depthStencilFormat:(GLuint)depthStencilFormat;
 
-/** starts grabbing */
+/** 
+ *  Starts rendering to the texture whitout clearing the texture first. 
+ */
 -(void)begin;
 
-/** starts rendering to the texture while clearing the texture first.
- This is more efficient then calling -clear first and then -begin */
+/**
+ *  starts rendering to the texture while clearing the texture first.
+ *  This is more efficient then calling -clear first and then -begin.
+ *
+ *  @param r Red color.
+ *  @param g Green color.
+ *  @param b Blue color.
+ *  @param a Alpha.
+ */
 -(void)beginWithClear:(float)r g:(float)g b:(float)b a:(float)a;
 
-/** starts rendering to the texture while clearing the texture first.
- This is more efficient then calling -clear first and then -begin */
+/**
+ *  starts rendering to the texture while clearing the texture first.
+ *  This is more efficient then calling -clear first and then -begin.
+ *
+ *  @param r Red color.
+ *  @param g Green color.
+ *  @param b Blue color.
+ *  @param a Alpha.
+ *  @param depthValue Depth value.
+ */
 - (void)beginWithClear:(float)r g:(float)g b:(float)b a:(float)a depth:(float)depthValue;
 
-/** starts rendering to the texture while clearing the texture first.
- This is more efficient then calling -clear first and then -begin */
+/**
+ *  starts rendering to the texture while clearing the texture first.
+ *  This is more efficient then calling -clear first and then -begin.
+ *
+ *  @param r Red color.
+ *  @param g Green color.
+ *  @param b Blue color.
+ *  @param a Alpha.
+ *  @param depthValue Depth value.
+ *  @param stencilValue Stencil value.
+ */
 - (void)beginWithClear:(float)r g:(float)g b:(float)b a:(float)a depth:(float)depthValue stencil:(int)stencilValue;
 
-
-/** ends grabbing */
+/** 
+ *  Ends grabbing 
+ */
 -(void)end;
 
-/** clears the texture with a color */
+/**
+ *  Clears the texture with a color
+ *
+ *  @param r Red color.
+ *  @param g Green color.
+ *  @param b Blue color.
+ *  @param a Alpha.
+ */
 -(void)clear:(float)r g:(float)g b:(float)b a:(float)a;
 
-/** clears the texture with a specified depth value */
+/**
+ *  Clears the texture with a specified depth value.
+ *
+ *  @param depthValue Depth value.
+ */
 - (void)clearDepth:(float)depthValue;
 
-/** clears the texture with a specified stencil value */
+/**
+ *  Clears the texture with a specified stencil value.
+ *
+ *  @param stencilValue Stencil value.
+ */
 - (void)clearStencil:(int)stencilValue;
 
-/* creates a new CGImage from with the texture's data.
- Caller is responsible for releasing it by calling CGImageRelease().
+/* 
+ *  Creates a new CGImage from with the texture's data.
+ *  Caller is responsible for releasing it by calling CGImageRelease().
  */
 -(CGImageRef) newCGImage;
 
-/** saves the texture into a file using JPEG format. The file will be saved in the Documents folder.
- Returns YES if the operation is successful.
+/**
+ *  Saves the texture into a file using JPEG format. The file will be saved in the Documents folder.
+ *
+ *  @param name Filename to save image to.
+ *
+ *  @return YES if the operation is successful.
  */
 -(BOOL)saveToFile:(NSString*)name;
 
-/** saves the texture into a file. The format could be JPG or PNG. The file will be saved in the Documents folder.
-  Returns YES if the operation is successful.
+/**
+ *  Saves the texture into a file. The format could be JPG or PNG. The file will be saved in the Documents folder.
+ *
+ *  @param name   Filename to save image to.
+ *  @param format File format.
+ *
+ *  @return YES if the operation is successful.
  */
--(BOOL)saveToFile:(NSString*)name format:(tCCImageFormat)format;
+-(BOOL)saveToFile:(NSString*)name format:(CCRenderTextureImageFormat)format;
 
 #ifdef __CC_PLATFORM_IOS
 
-/* returns an autoreleased UIImage from the texture */
+/**
+ *  Returns an autoreleased UIImage from the texture 
+ */
 -(UIImage *) getUIImage;
 
 #endif // __CC_PLATFORM_IOS

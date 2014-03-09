@@ -220,7 +220,6 @@ kmVec3* kmVec3TransformCoord(kmVec3* pOut, const kmVec3* pV, const kmMat4* pM)
         Out = 1⁄bw(bx, by, bz)
 	*/
 
-    
     kmVec4 v;
     kmVec4 inV;
     kmVec4Fill(&inV, pV->x, pV->y, pV->z, 1.0);

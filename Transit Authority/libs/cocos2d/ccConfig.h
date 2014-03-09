@@ -3,6 +3,7 @@
  *
  * Copyright (c) 2008-2010 Ricardo Quesada
  * Copyright (c) 2011 Zynga Inc.
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +34,6 @@
  If you enable it, make sure that Chipmunk is in the search path.
  Disabled by default
 
- @since v2.1
  */
 #ifndef CC_ENABLE_CHIPMUNK_INTEGRATION
 #define CC_ENABLE_CHIPMUNK_INTEGRATION 0
@@ -42,7 +42,6 @@
 /** @def CC_CHIPMUNK_IMPORT
  Which file to import if using Chipmunk.
  Change it to "ObjectiveChipmunk.h" or define it as a preprocessor macro if you are using ObjectiveChipmunk.
- @since v2.1
  */
 #if CC_ENABLE_CHIPMUNK_INTEGRATION && !defined(CC_CHIPMUNK_IMPORT)
 #define CC_CHIPMUNK_IMPORT "chipmunk.h"
@@ -54,7 +53,6 @@
  
  Disabled by default
  
- @since v2.1
  */
 #ifndef CC_ENABLE_BOX2D_INTEGRATION
 #define CC_ENABLE_BOX2D_INTEGRATION 0
@@ -67,7 +65,6 @@
  
  Enabled by default. Disable to be compatible with v2.0 and older versions.
 
- @since v2.1
  */
 #ifndef CC_ENABLE_STACKABLE_ACTIONS
 #define CC_ENABLE_STACKABLE_ACTIONS 1
@@ -88,24 +85,10 @@
 
  Default value: Enabled by default
 
- @since v2.0.0
- */
+  */
 #ifndef CC_ENABLE_GL_STATE_CACHE
 #define CC_ENABLE_GL_STATE_CACHE 1
 #endif
-
-/** @def CC_ENABLE_DEPRECATED
- If enabled, cocos2d will compile all deprecated methods, classes and free functions. Also, renamed constants will be active as well.
- Enable it only when migrating a v1.0 or earlier v2.0 versions to the most recent cocos2d version.
- 
- Default value: Enabled by default
- 
- @since v2.0.0
- */
-#ifndef CC_ENABLE_DEPRECATED
-#define CC_ENABLE_DEPRECATED 1
-#endif
-
 
 /** @def CC_FIX_ARTIFACTS_BY_STRECHING_TEXEL
  If enabled, the texture coordinates will be calculated by using this formula:
@@ -125,7 +108,6 @@
 
  To enabled set it to 1. Disabled by default.
 
- @since v0.99.5
  */
 #ifndef CC_FIX_ARTIFACTS_BY_STRECHING_TEXEL
 #define CC_FIX_ARTIFACTS_BY_STRECHING_TEXEL 0
@@ -230,19 +212,6 @@
 #define CC_TEXTURE_ATLAS_USE_VAO 1
 #endif
 
-
-/** @def CC_USE_LA88_LABELS
- If enabled, it will use LA88 (Luminance Alpha 16-bit textures) for CCLabelTTF objects.
- If it is disabled, it will use A8 (Alpha 8-bit textures).
- LA88 textures are 6% faster than A8 textures, but they will consume 2x memory.
-
- This feature is enabled by default.
-
- @since v0.99.5
- */
-#ifndef CC_USE_LA88_LABELS
-#define CC_USE_LA88_LABELS 1
-#endif
 
 /** @def CC_SPRITE_DEBUG_DRAW
  If enabled, all subclasses of CCSprite will draw a bounding box.

@@ -7,9 +7,9 @@
 //
 
 #import "CCTMXTiledMap+Extras.h"
-#import "CCTMXTiledMap.h"
+#import "CCTiledMap.h"
 
-@implementation CCTMXTiledMap (Extras)
+@implementation CCTiledMap (Extras)
 - (CGPoint) tileCoordinateFromNodeCoordinate:(CGPoint)nodeCoordinate{
     return CGPointMake(floor(nodeCoordinate.x / (self.tileSize.width / CC_CONTENT_SCALE_FACTOR())),
                 self.mapSize.height - floor(nodeCoordinate.y / (self.tileSize.height/ CC_CONTENT_SCALE_FACTOR())) - 1);
@@ -17,7 +17,8 @@
 
 
 @end
-@implementation HKTMXTiledMap (Extras)
+
+@implementation CCTiledMap (Extras)
 - (CGPoint) tileCoordinateFromNodeCoordinate:(CGPoint)nodeCoordinate{
     return CGPointMake(floor(nodeCoordinate.x / (self.tileSize.width)),
                        self.mapSize.height - floor(nodeCoordinate.y / (self.tileSize.height)) - 1);

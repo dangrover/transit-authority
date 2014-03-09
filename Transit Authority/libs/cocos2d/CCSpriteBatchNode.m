@@ -2,9 +2,9 @@
  * cocos2d for iPhone: http://www.cocos2d-iphone.org
  *
  * Copyright (C) 2009 Matt Oswald
- *
  * Copyright (c) 2009-2010 Ricardo Quesada
  * Copyright (c) 2011 Zynga Inc.
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,8 +30,6 @@
 #import "ccConfig.h"
 #import "CCSprite.h"
 #import "CCSpriteBatchNode.h"
-#import "CCGrid.h"
-#import "CCDrawingPrimitives.h"
 #import "CCTextureCache.h"
 #import "CCShaderCache.h"
 #import "CCGLProgram.h"
@@ -40,11 +38,17 @@
 #import "Support/CGPointExtension.h"
 #import "Support/TransformUtils.h"
 #import "Support/CCProfiling.h"
+#import "CCSprite_Private.h"
+
+#import "CCNode_Private.h"
+#import "CCSpriteBatchNode_Private.h"
+
+#import "CCTexture_Private.h"
 
 // external
 #import "kazmath/GL/matrix.h"
 
-const NSUInteger defaultCapacity = 29;
+const NSUInteger defaultCapacity = 0;
 
 #pragma mark -
 #pragma mark CCSpriteBatchNode
@@ -65,14 +69,14 @@ const NSUInteger defaultCapacity = 29;
 /*
  * creation with CCTexture2D
  */
-+(id)batchNodeWithTexture:(CCTexture2D *)tex
++(id)batchNodeWithTexture:(CCTexture *)tex
 {
-	return [[[self alloc] initWithTexture:tex capacity:defaultCapacity] autorelease];
+	return [[self alloc] initWithTexture:tex capacity:defaultCapacity];
 }
 
-+(id)batchNodeWithTexture:(CCTexture2D *)tex capacity:(NSUInteger)capacity
++(id)batchNodeWithTexture:(CCTexture *)tex capacity:(NSUInteger)capacity
 {
-	return [[[self alloc] initWithTexture:tex capacity:capacity] autorelease];
+	return [[self alloc] initWithTexture:tex capacity:capacity];
 }
 
 /*
@@ -80,27 +84,27 @@ const NSUInteger defaultCapacity = 29;
  */
 +(id)batchNodeWithFile:(NSString*)fileImage capacity:(NSUInteger)capacity
 {
-	return [[[self alloc] initWithFile:fileImage capacity:capacity] autorelease];
+	return [[self alloc] initWithFile:fileImage capacity:capacity];
 }
 
 +(id)batchNodeWithFile:(NSString*) imageFile
 {
-	return [[[self alloc] initWithFile:imageFile capacity:defaultCapacity] autorelease];
+	return [[self alloc] initWithFile:imageFile capacity:defaultCapacity];
 }
 
 -(id)init
 {
-    return [self initWithTexture:[[[CCTexture2D alloc] init] autorelease] capacity:0];
+    return [self initWithTexture:[[CCTexture alloc] init] capacity:0];
 }
 
 -(id)initWithFile:(NSString *)fileImage capacity:(NSUInteger)capacity
 {
-	CCTexture2D *tex = [[CCTextureCache sharedTextureCache] addImage:fileImage];
+	CCTexture *tex = [[CCTextureCache sharedTextureCache] addImage:fileImage];
 	return [self initWithTexture:tex capacity:capacity];
 }
 
 // Designated initializer
--(id)initWithTexture:(CCTexture2D *)tex capacity:(NSUInteger)capacity
+-(id)initWithTexture:(CCTexture *)tex capacity:(NSUInteger)capacity
 {
 	if( (self=[super init])) {
 
@@ -111,8 +115,8 @@ const NSUInteger defaultCapacity = 29;
 		[self updateBlendFunc];
 
 		// no lazy alloc in this node
-		_children = [[CCArray alloc] initWithCapacity:capacity];
-		_descendants = [[CCArray alloc] initWithCapacity:capacity];
+		_children = [[NSMutableArray alloc] initWithCapacity:capacity];
+		_descendants = [[NSMutableArray alloc] initWithCapacity:capacity];
 
 		self.shaderProgram = [[CCShaderCache sharedShaderCache] programForKey:kCCShader_PositionTextureColor];
 	}
@@ -123,16 +127,9 @@ const NSUInteger defaultCapacity = 29;
 
 - (NSString*) description
 {
-	return [NSString stringWithFormat:@"<%@ = %p | Tag = %ld>", [self class], self, (long)_tag ];
+	return [NSString stringWithFormat:@"<%@ = %p | Tag = %@>", [self class], self, _name ];
 }
 
--(void)dealloc
-{
-	[_textureAtlas release];
-	[_descendants release];
-
-	[super dealloc];
-}
 
 #pragma mark CCSpriteBatchNode - composition
 
@@ -143,7 +140,7 @@ const NSUInteger defaultCapacity = 29;
 	CC_PROFILER_START_CATEGORY(kCCProfilerCategoryBatchSprite, @"CCSpriteBatchNode - visit");
 
 	NSAssert(_parent != nil, @"CCSpriteBatchNode should NOT be root node");
-
+    
 	// CAREFUL:
 	// This visit is almost identical to CCNode#visit
 	// with the exception that it doesn't call visit on its children
@@ -156,17 +153,9 @@ const NSUInteger defaultCapacity = 29;
 
 	kmGLPushMatrix();
 
-	if ( _grid && _grid.active) {
-		[_grid beforeDraw];
-		[self transformAncestors];
-	}
-
 	[self sortAllChildren];
 	[self transform];
 	[self draw];
-
-	if ( _grid && _grid.active)
-		[_grid afterDraw:self];
 
 	kmGLPopMatrix();
 
@@ -176,13 +165,16 @@ const NSUInteger defaultCapacity = 29;
 }
 
 // override addChild:
--(void) addChild:(CCSprite*)child z:(NSInteger)z tag:(NSInteger) aTag
+-(void) addChild:(CCSprite*)child z:(NSInteger)z name:(NSString*) name
 {
 	NSAssert( child != nil, @"Argument must be non-nil");
 	NSAssert( [child isKindOfClass:[CCSprite class]], @"CCSpriteBatchNode only supports CCSprites as children");
-	NSAssert( child.texture.name == _textureAtlas.texture.name, @"CCSprite is not using the same texture id");
+    
+    if(child.texture) {
+        NSAssert( (child.texture.name == _textureAtlas.texture.name), @"CCSprite is not using the same texture id");
+    }
 
-	[super addChild:child z:z tag:aTag];
+	[super addChild:child z:z name:name];
 
 	[self appendChild:child];
 }
@@ -237,6 +229,9 @@ const NSUInteger defaultCapacity = 29;
 {
 	if (_isReorderChildDirty)
 	{
+        [_children sortUsingSelector:@selector(compareZOrderToNode:)];
+        
+        /*
 		NSInteger i,j,length = _children->data->num;
 		CCNode ** x = _children->data->arr;
 		CCNode *tempItem;
@@ -256,7 +251,7 @@ const NSUInteger defaultCapacity = 29;
 			}
 
 			x[j+1] = tempItem;
-		}
+		}*/
 
 		//sorted now check all children
 		if ([_children count] > 0)
@@ -268,7 +263,7 @@ const NSUInteger defaultCapacity = 29;
 
 			//fast dispatch, give every child a new atlasIndex based on their relative zOrder (keep parent -> child relations intact)
 			// and at the same time reorder descedants and the quads to the right index
-			CCARRAY_FOREACH(_children, child)
+            for (CCSprite* child in _children)
 				[self updateAtlasIndex:child currentIndex:&index];
 		}
 
@@ -278,7 +273,7 @@ const NSUInteger defaultCapacity = 29;
 
 -(void) updateAtlasIndex:(CCSprite*) sprite currentIndex:(NSInteger*) curIndex
 {
-	CCArray *array = [sprite children];
+	NSMutableArray *array = (NSMutableArray*)[sprite children];
 	NSUInteger count = [array count];
 	NSInteger oldIndex;
 
@@ -295,7 +290,7 @@ const NSUInteger defaultCapacity = 29;
 	{
 		BOOL needNewIndex=YES;
 
-		if (((CCSprite*) (array->data->arr[0])).zOrder >= 0)
+		if (((CCSprite*) [array objectAtIndex:0]).zOrder >= 0)
 		{
 			//all children are in front of the parent
 			oldIndex = sprite.atlasIndex;
@@ -308,8 +303,7 @@ const NSUInteger defaultCapacity = 29;
 			needNewIndex = NO;
 		}
 
-		CCSprite* child;
-		CCARRAY_FOREACH(array,child)
+        for (CCSprite* child in array)
 		{
 			if (needNewIndex && child.zOrder >= 0)
 			{
@@ -340,19 +334,13 @@ const NSUInteger defaultCapacity = 29;
 
 - (void) swap:(NSInteger) oldIndex withNewIndex:(NSInteger) newIndex
 {
-	id* x = _descendants->data->arr;
-	ccV3F_C4B_T2F_Quad* quads = _textureAtlas.quads;
-
-	id tempItem = x[oldIndex];
-	ccV3F_C4B_T2F_Quad tempItemQuad=quads[oldIndex];
-
-	//update the index of other swapped item
-	((CCSprite*) x[newIndex]).atlasIndex=oldIndex;
-
-	x[oldIndex]=x[newIndex];
-	quads[oldIndex]=quads[newIndex];
-	x[newIndex]=tempItem;
-	quads[newIndex]=tempItemQuad;
+    //update the index of other swapped item
+	( ( CCSprite* )[ _descendants objectAtIndex:newIndex ] ).atlasIndex = oldIndex;
+    [_descendants exchangeObjectAtIndex:oldIndex withObjectAtIndex:newIndex];
+    
+    // update the quads for the swapped sprites in the textureAtlas (issue #598)
+    _textureAtlas.quads[newIndex] = [(CCSprite *)[_descendants objectAtIndex:newIndex] quad];
+    _textureAtlas.quads[oldIndex] = [(CCSprite *)[_descendants objectAtIndex:oldIndex] quad];
 }
 
 - (void) reorderBatch:(BOOL) reorder
@@ -405,8 +393,7 @@ const NSUInteger defaultCapacity = 29;
 
 -(NSUInteger) rebuildIndexInOrder:(CCSprite*)node atlasIndex:(NSUInteger)index
 {
-	CCSprite *sprite;
-	CCARRAY_FOREACH(node.children, sprite){
+    for (CCSprite* sprite in node.children) {
 		if( sprite.zOrder < 0 )
 			index = [self rebuildIndexInOrder:sprite atlasIndex:index];
 	}
@@ -417,7 +404,7 @@ const NSUInteger defaultCapacity = 29;
 		index++;
 	}
 
-	CCARRAY_FOREACH(node.children, sprite){
+	for (CCSprite* sprite in node.children) {
 		if( sprite.zOrder >= 0 )
 			index = [self rebuildIndexInOrder:sprite atlasIndex:index];
 	}
@@ -427,17 +414,15 @@ const NSUInteger defaultCapacity = 29;
 
 -(NSUInteger) highestAtlasIndexInChild:(CCSprite*)sprite
 {
-	CCArray *array = [sprite children];
-	NSUInteger count = [array count];
-	if( count == 0 )
+	if( sprite.children.count == 0 )
 		return sprite.atlasIndex;
 	else
-		return [self highestAtlasIndexInChild:[array lastObject]];
+		return [self highestAtlasIndexInChild:[sprite.children lastObject]];
 }
 
 -(NSUInteger) lowestAtlasIndexInChild:(CCSprite*)sprite
 {
-	CCArray *array = [sprite children];
+	NSArray *array = [sprite children];
 	NSUInteger count = [array count];
 	if( count == 0 )
 		return sprite.atlasIndex;
@@ -448,7 +433,7 @@ const NSUInteger defaultCapacity = 29;
 
 -(NSUInteger)atlasIndexForChild:(CCSprite*)sprite atZ:(NSInteger)z
 {
-	CCArray *brothers = [[sprite parent] children];
+	NSArray *brothers = [[sprite parent] children];
 	NSUInteger childIndex = [brothers indexOfObject:sprite];
 
 	// ignore parent Z if parent is batchnode
@@ -506,20 +491,18 @@ const NSUInteger defaultCapacity = 29;
 	ccV3F_C4B_T2F_Quad quad = [sprite quad];
 	[_textureAtlas insertQuad:&quad atIndex:index];
 
-	ccArray *descendantsData = _descendants->data;
-
-	ccArrayInsertObjectAtIndex(descendantsData, sprite, index);
+    [_descendants insertObject:sprite atIndex:index];
 
 	// update indices
 	NSUInteger i = index+1;
 	CCSprite *child;
-	for(; i<descendantsData->num; i++){
-		child = descendantsData->arr[i];
+	for(; i<_descendants.count; i++){
+		child = [_descendants objectAtIndex:i];
 		child.atlasIndex = child.atlasIndex + 1;
 	}
 
 	// add children recursively
-	CCARRAY_FOREACH(sprite.children, child){
+    for (child in sprite.children){
 		NSUInteger idx = [self atlasIndexForChild:child atZ: child.zOrder];
 		[self insertChild:child inAtlasAtIndex:idx];
 	}
@@ -528,28 +511,25 @@ const NSUInteger defaultCapacity = 29;
 // addChild helper, faster than insertChild
 -(void) appendChild:(CCSprite*)sprite
 {
-	_isReorderChildDirty=YES;
-	[sprite setBatchNode:self];
-	[sprite setDirty: YES];
+    _isReorderChildDirty=YES;
+    [sprite setBatchNode:self];
+    [sprite setDirty: YES];
+    
+    if(_textureAtlas.totalQuads == _textureAtlas.capacity)
+        [self increaseAtlasCapacity];
+    
+    [_descendants addObject:sprite];
+    
+    NSUInteger index=_descendants.count-1;
+    
+    sprite.atlasIndex=index;
+    
+    ccV3F_C4B_T2F_Quad quad = [sprite quad];
+    [_textureAtlas insertQuad:&quad atIndex:index];
+    
+    for(CCSprite* child in sprite.children)
+        [self appendChild:child];
 
-	if(_textureAtlas.totalQuads == _textureAtlas.capacity)
-		[self increaseAtlasCapacity];
-
-	ccArray *descendantsData = _descendants->data;
-
-	ccArrayAppendObjectWithResize(descendantsData, sprite);
-
-	NSUInteger index=descendantsData->num-1;
-
-	sprite.atlasIndex=index;
-
-	ccV3F_C4B_T2F_Quad quad = [sprite quad];
-	[_textureAtlas insertQuad:&quad atIndex:index];
-
-	// add children recursively
-	CCSprite* child;
-	CCARRAY_FOREACH(sprite.children, child)
-		[self appendChild:child];
 }
 
 
@@ -562,24 +542,22 @@ const NSUInteger defaultCapacity = 29;
 	// Cleanup sprite. It might be reused (issue #569)
 	[sprite setBatchNode:nil];
 
-	ccArray *descendantsData = _descendants->data;
-	NSUInteger index = ccArrayGetIndexOfObject(descendantsData, sprite);
+	NSUInteger index = [_descendants indexOfObject:sprite];
 	if( index != NSNotFound ) {
-		ccArrayRemoveObjectAtIndex(descendantsData, index);
+        [_descendants removeObjectAtIndex:index];
 
 		// update all sprites beyond this one
-		NSUInteger count = descendantsData->num;
+		NSUInteger count = _descendants.count;
 
 		for(; index < count; index++)
 		{
-			CCSprite *s = descendantsData->arr[index];
+			CCSprite *s = [_descendants objectAtIndex:index];
 			s.atlasIndex = s.atlasIndex - 1;
 		}
 	}
 
 	// remove children recursively
-	CCSprite *child;
-	CCARRAY_FOREACH(sprite.children, child)
+    for (CCSprite* child in sprite.children)
 		[self removeSpriteFromAtlas:child];
 }
 
@@ -593,13 +571,13 @@ const NSUInteger defaultCapacity = 29;
 	}
 }
 
--(void) setTexture:(CCTexture2D*)texture
+-(void) setTexture:(CCTexture*)texture
 {
 	_textureAtlas.texture = texture;
 	[self updateBlendFunc];
 }
 
--(CCTexture2D*) texture
+-(CCTexture*) texture
 {
 	return _textureAtlas.texture;
 }
@@ -657,7 +635,7 @@ const NSUInteger defaultCapacity = 29;
 }
 
 
--(id) addSpriteWithoutQuad:(CCSprite*)child z:(NSUInteger)z tag:(NSInteger)aTag
+-(id) addSpriteWithoutQuad:(CCSprite*)child z:(NSUInteger)z name:(NSString*)name
 {
 	NSAssert( child != nil, @"Argument must be non-nil");
 	NSAssert( [child isKindOfClass:[CCSprite class]], @"CCSpriteBatchNode only supports CCSprites as children");
@@ -676,7 +654,7 @@ const NSUInteger defaultCapacity = 29;
 	
 	
 	// IMPORTANT: Call super, and not self. Avoid adding it to the texture atlas array
-	[super addChild:child z:z tag:aTag];
+	[super addChild:child z:z name:name];
 	
 	//#issue 1262 don't use lazy sorting, tiles are added as quads not as sprites, so sprites need to be added in order
 	[self reorderBatch:NO];

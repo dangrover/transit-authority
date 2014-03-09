@@ -2,6 +2,7 @@
  * cocos2d for iPhone: http://www.cocos2d-iphone.org
  *
  * Copyright (c) 2009 Jason Booth
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +33,10 @@
 #import "Support/ccUtils.h"
 #import "Support/CCFileUtils.h"
 #import "Support/CGPointExtension.h"
-#import "CCGrid.h"
+
+#import "CCTexture_Private.h"
+#import "CCDirector_Private.h"
+#import "CCNode_Private.h"
 
 #if __CC_PLATFORM_MAC
 #import <ApplicationServices/ApplicationServices.h>
@@ -45,42 +49,41 @@
 
 @synthesize sprite=_sprite;
 @synthesize autoDraw=_autoDraw;
-@synthesize clearColor=_clearColor;
 @synthesize clearDepth=_clearDepth;
 @synthesize clearStencil=_clearStencil;
 @synthesize clearFlags=_clearFlags;
 
-+(id)renderTextureWithWidth:(int)w height:(int)h pixelFormat:(CCTexture2DPixelFormat) format depthStencilFormat:(GLuint)depthStencilFormat
++(id)renderTextureWithWidth:(int)w height:(int)h pixelFormat:(CCTexturePixelFormat) format depthStencilFormat:(GLuint)depthStencilFormat
 {
-  return [[[self alloc] initWithWidth:w height:h pixelFormat:format depthStencilFormat:depthStencilFormat] autorelease];
+  return [[self alloc] initWithWidth:w height:h pixelFormat:format depthStencilFormat:depthStencilFormat];
 }
 
 // issue #994
-+(id)renderTextureWithWidth:(int)w height:(int)h pixelFormat:(CCTexture2DPixelFormat) format
++(id)renderTextureWithWidth:(int)w height:(int)h pixelFormat:(CCTexturePixelFormat) format
 {
-	return [[[self alloc] initWithWidth:w height:h pixelFormat:format] autorelease];
+	return [[self alloc] initWithWidth:w height:h pixelFormat:format];
 }
 
 +(id)renderTextureWithWidth:(int)w height:(int)h
 {
-	return [[[self alloc] initWithWidth:w height:h pixelFormat:kCCTexture2DPixelFormat_RGBA8888 depthStencilFormat:0] autorelease];
+	return [[self alloc] initWithWidth:w height:h pixelFormat:CCTexturePixelFormat_RGBA8888 depthStencilFormat:0];
 }
 
 -(id)initWithWidth:(int)w height:(int)h
 {
-	return [self initWithWidth:w height:h pixelFormat:kCCTexture2DPixelFormat_RGBA8888];
+	return [self initWithWidth:w height:h pixelFormat:CCTexturePixelFormat_RGBA8888];
 }
 
-- (id)initWithWidth:(int)w height:(int)h pixelFormat:(CCTexture2DPixelFormat)format
+- (id)initWithWidth:(int)w height:(int)h pixelFormat:(CCTexturePixelFormat)format
 {
   return [self initWithWidth:w height:h pixelFormat:format depthStencilFormat:0];
 }
 
--(id)initWithWidth:(int)w height:(int)h pixelFormat:(CCTexture2DPixelFormat) format depthStencilFormat:(GLuint)depthStencilFormat
+-(id)initWithWidth:(int)w height:(int)h pixelFormat:(CCTexturePixelFormat) format depthStencilFormat:(GLuint)depthStencilFormat
 {
 	if ((self = [super init]))
 	{
-		NSAssert(format != kCCTexture2DPixelFormat_A8,@"only RGB and RGBA formats are valid for a render texture");
+		NSAssert(format != CCTexturePixelFormat_A8,@"only RGB and RGBA formats are valid for a render texture");
 
 		CCDirector *director = [CCDirector sharedDirector];
 
@@ -88,9 +91,9 @@
 		if( [director runningThread] != [NSThread currentThread] )
 			CCLOGWARN(@"cocos2d: WARNING. CCRenderTexture is running on its own thread. Make sure that an OpenGL context is being used on this thread!");
 
-		
-		w *= CC_CONTENT_SCALE_FACTOR();
-		h *= CC_CONTENT_SCALE_FACTOR();
+		CGFloat scale = [CCDirector sharedDirector].contentScaleFactor;
+		w *= scale;
+		h *= scale;
 
 		glGetIntegerv(GL_FRAMEBUFFER_BINDING, &_oldFBO);
 
@@ -102,15 +105,15 @@
 			powW = w;
 			powH = h;
 		} else {
-			powW = ccNextPOT(w);
-			powH = ccNextPOT(h);
+			powW = CCNextPOT(w);
+			powH = CCNextPOT(h);
 		}
 
 		void *data = malloc((int)(powW * powH * 4));
 		memset(data, 0, (int)(powW * powH * 4));
 		_pixelFormat=format;
 
-		_texture = [[CCTexture2D alloc] initWithData:data pixelFormat:_pixelFormat pixelsWide:powW pixelsHigh:powH contentSize:CGSizeMake(w, h)];
+		_texture = [[CCTexture alloc] initWithData:data pixelFormat:_pixelFormat pixelsWide:powW pixelsHigh:powH contentSizeInPixels:CGSizeMake(w, h) contentScale:[CCDirector sharedDirector].contentScaleFactor];
 		free( data );
 
 		GLint oldRBO;
@@ -143,7 +146,6 @@
 		// retained
 		self.sprite = [CCSprite spriteWithTexture:_texture];
 
-		[_texture release];
 		[_sprite setScaleY:-1];
 
 		// issue #937
@@ -169,8 +171,6 @@
 	if (_depthRenderBufffer)
 		glDeleteRenderbuffers(1, &_depthRenderBufffer);
 
-	[_sprite release];
-	[super dealloc];
 }
 
 -(void)begin
@@ -187,7 +187,7 @@
 
 
 	// Calculate the adjustment ratios based on the old and new projections
-	CGSize size = [director winSizeInPixels];
+	CGSize size = [director viewSizeInPixels];
 	float widthRatio = size.width / texSize.width;
 	float heightRatio = size.height / texSize.height;
 
@@ -313,18 +313,10 @@
 		return;
 	
 	kmGLPushMatrix();
-	
-	if (_grid && _grid.active) {
-		[_grid beforeDraw];
-		[self transformAncestors];
-	}
 
 	[self transform];
 	[_sprite visit];
 	[self draw];
-	
-	if (_grid && _grid.active)
-		[_grid afterDraw:self];
 	
 	kmGLPopMatrix();
 	
@@ -374,8 +366,7 @@
 		//! make sure all children are drawn
 		[self sortAllChildren];
 		
-		CCNode *child;
-		CCARRAY_FOREACH(_children, child) {
+        for (CCNode *child in _children) {
 			if( child != _sprite)
 				[child visit];
 		}
@@ -390,7 +381,7 @@
 
 -(CGImageRef) newCGImage
 {
-    NSAssert(_pixelFormat == kCCTexture2DPixelFormat_RGBA8888,@"only RGBA8888 can be saved as image");
+    NSAssert(_pixelFormat == CCTexturePixelFormat_RGBA8888,@"only RGBA8888 can be saved as image");
 	
 	
 	CGSize s = [_texture contentSizeInPixels];
@@ -458,10 +449,10 @@
 
 -(BOOL) saveToFile:(NSString*)name
 {
-	return [self saveToFile:name format:kCCImageFormatJPEG];
+	return [self saveToFile:name format:CCRenderTextureImageFormatJPEG];
 }
 
--(BOOL)saveToFile:(NSString*)fileName format:(tCCImageFormat)format
+-(BOOL)saveToFile:(NSString*)fileName format:(CCRenderTextureImageFormat)format
 {
 	BOOL success;
 	
@@ -475,34 +466,33 @@
 	}
 	
 #if __CC_PLATFORM_IOS
-	
-	UIImage* image	= [[UIImage alloc] initWithCGImage:imageRef scale:CC_CONTENT_SCALE_FACTOR() orientation:UIImageOrientationUp];
+	CGFloat scale = [CCDirector sharedDirector].contentScaleFactor;
+	UIImage* image	= [[UIImage alloc] initWithCGImage:imageRef scale:scale orientation:UIImageOrientationUp];
 	NSData *imageData = nil;
-
-	if( format == kCCImageFormatPNG )
+    
+	if( format == CCRenderTextureImageFormatPNG )
 		imageData = UIImagePNGRepresentation( image );
-
-	else if( format == kCCImageFormatJPEG )
+    
+	else if( format == CCRenderTextureImageFormatJPEG )
 		imageData = UIImageJPEGRepresentation(image, 0.9f);
-
+    
 	else
 		NSAssert(NO, @"Unsupported format");
 	
-	[image release];
-
+    
 	success = [imageData writeToFile:fullPath atomically:YES];
 
 	
 #elif __CC_PLATFORM_MAC
 	
-	CFURLRef url = (CFURLRef)[NSURL fileURLWithPath:fullPath];
+	CFURLRef url = (__bridge CFURLRef)[NSURL fileURLWithPath:fullPath];
 	
 	CGImageDestinationRef dest;
 
-	if( format == kCCImageFormatPNG )
+	if( format == CCRenderTextureImageFormatPNG )
 		dest = 	CGImageDestinationCreateWithURL(url, kUTTypePNG, 1, NULL);
 
-	else if( format == kCCImageFormatJPEG )
+	else if( format == CCRenderTextureImageFormatJPEG )
 		dest = 	CGImageDestinationCreateWithURL(url, kUTTypeJPEG, 1, NULL);
 
 	else
@@ -530,13 +520,24 @@
 {
 	CGImageRef imageRef = [self newCGImage];
 	
-	UIImage* image	= [[UIImage alloc] initWithCGImage:imageRef scale:CC_CONTENT_SCALE_FACTOR() orientation:UIImageOrientationUp];
-
+	CGFloat scale = [CCDirector sharedDirector].contentScaleFactor;
+	UIImage* image	= [[UIImage alloc] initWithCGImage:imageRef scale:scale orientation:UIImageOrientationUp];
+    
 	CGImageRelease( imageRef );
-
-	return [image autorelease];
+    
+	return image;
 }
 #endif // __CC_PLATFORM_IOS
+
+- (CCColor*) clearColor
+{
+    return [CCColor colorWithCcColor4f:_clearColor];
+}
+
+- (void) setClearColor:(CCColor *)clearColor
+{
+    _clearColor = clearColor.ccColor4f;
+}
 
 #pragma RenderTexture - Override
 

@@ -78,15 +78,6 @@ Copyright (C) 2008 Apple Inc. All Rights Reserved.
 
 @class CCGLView;
 
-//PROTOCOLS:
-
-@protocol CCTouchDelegate <NSObject>
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event;
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event;
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event;
-- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event;
-@end
-
 //CLASS INTERFACE:
 
 /** CCGLView Class.
@@ -112,15 +103,14 @@ Copyright (C) 2008 Apple Inc. All Rights Reserved.
 @interface CCGLView : UIView
 {
     id<CCESRenderer>		_renderer;
-	EAGLContext				*_context; // weak ref
+	EAGLContext				*__unsafe_unretained _context; // weak ref
 
-	NSString				*_pixelformat;
+	NSString				*__unsafe_unretained _pixelformat;
 	GLuint					_depthFormat;
 	BOOL					_preserveBackbuffer;
 
 	CGSize					_size;
 	BOOL					_discardFramebufferSupported;
-	id<CCTouchDelegate>		_touchDelegate;
 
 	//fsaa addition
 	BOOL					_multisampling;
@@ -144,7 +134,7 @@ Copyright (C) 2008 Apple Inc. All Rights Reserved.
 - (id) initWithFrame:(CGRect)frame pixelFormat:(NSString*)format depthFormat:(GLuint)depth preserveBackbuffer:(BOOL)retained sharegroup:(EAGLSharegroup*)sharegroup multiSampling:(BOOL)sampling numberOfSamples:(unsigned int)nSamples;
 
 /** pixel format: it could be RGBA8 (32-bit) or RGB565 (16-bit) */
-@property(nonatomic,readonly) NSString* pixelFormat;
+@property(unsafe_unretained, nonatomic,readonly) NSString* pixelFormat;
 /** depth format of the render buffer: 0, 16 or 24 bits*/
 @property(nonatomic,readonly) GLuint depthFormat;
 
@@ -152,12 +142,9 @@ Copyright (C) 2008 Apple Inc. All Rights Reserved.
 @property(nonatomic,readonly) CGSize surfaceSize;
 
 /** OpenGL context */
-@property(nonatomic,readonly) EAGLContext *context;
+@property(unsafe_unretained, nonatomic,readonly) EAGLContext *context;
 
 @property(nonatomic,readwrite) BOOL multiSampling;
-
-/** touch delegate */
-@property(nonatomic,readwrite,assign) id<CCTouchDelegate> touchDelegate;
 
 /** CCGLView uses double-buffer. This method swaps the buffers */
 -(void) swapBuffers;

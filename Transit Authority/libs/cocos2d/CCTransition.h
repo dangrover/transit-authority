@@ -3,6 +3,7 @@
  *
  * Copyright (c) 2008-2010 Ricardo Quesada
  * Copyright (c) 2011 Zynga Inc.
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,318 +25,154 @@
  *
  */
 
-
+#import <Foundation/Foundation.h>
+#import "cocos2d.h"
 #import "CCScene.h"
-@class CCActionInterval;
-@class CCNode;
-
-/** CCTransitionEaseScene can ease the actions of the scene protocol.
- @since v0.8.2
- */
-@protocol CCTransitionEaseScene <NSObject>
-/** returns the Ease action that will be performed on a linear action.
- @since v0.8.2
- */
--(CCActionInterval*) easeActionWithAction:(CCActionInterval*)action;
-@end
-
-/** Orientation Type used by some transitions
- */
-typedef enum {
-	/// An horizontal orientation where the Left is nearer
-	kCCTransitionOrientationLeftOver = 0,
-	/// An horizontal orientation where the Right is nearer
-	kCCTransitionOrientationRightOver = 1,
-	/// A vertical orientation where the Up is nearer
-	kCCTransitionOrientationUpOver = 0,
-	/// A vertical orientation where the Bottom is nearer
-	kCCTransitionOrientationDownOver = 1,
-
-	// Deprecated
-//	kOrientationLeftOver = kCCTransitionOrientationLeftOver,
-//	kOrientationRightOver = kCCTransitionOrientationRightOver,
-//	kOrientationUpOver = kCCTransitionOrientationUpOver,
-//	kOrientationDownOver = kCCTransitionOrientationDownOver,
-} tOrientation;
-
-/** Base class for CCTransition scenes
- */
-@interface CCTransitionScene : CCScene
-{
-	CCScene	*_inScene;
-	CCScene	*_outScene;
-	ccTime	_duration;
-	BOOL	_inSceneOnTop;
-	BOOL	_sendCleanupToScene;
-}
-/** creates a base transition with duration and incoming scene */
-+(id) transitionWithDuration:(ccTime) t scene:(CCScene*)s;
-/** initializes a transition with duration and incoming scene */
--(id) initWithDuration:(ccTime) t scene:(CCScene*)s;
-/** called after the transition finishes */
--(void) finish;
-/** used by some transitions to hide the outer scene */
--(void) hideOutShowIn;
-@end
-
-/** A CCTransition that supports orientation like.
- * Possible orientation: LeftOver, RightOver, UpOver, DownOver
- */
-@interface CCTransitionSceneOriented : CCTransitionScene
-{
-	tOrientation orientation;
-}
-/** creates a base transition with duration and incoming scene */
-+(id) transitionWithDuration:(ccTime) t scene:(CCScene*)s orientation:(tOrientation)o;
-/** initializes a transition with duration and incoming scene */
--(id) initWithDuration:(ccTime) t scene:(CCScene*)s orientation:(tOrientation)o;
-@end
-
-
-/** CCTransitionRotoZoom:
- Rotate and zoom out the outgoing scene, and then rotate and zoom in the incoming
- */
-@interface CCTransitionRotoZoom : CCTransitionScene
-{}
-// needed for BrdigeSupport
--(id) init;
-@end
-
-/** CCTransitionJumpZoom:
- Zoom out and jump the outgoing scene, and then jump and zoom in the incoming
-*/
-@interface CCTransitionJumpZoom : CCTransitionScene
-{}
-// needed for BrdigeSupport
--(id) init;
-@end
-
-/** CCTransitionMoveInL:
- Move in from to the left the incoming scene.
-*/
-@interface CCTransitionMoveInL : CCTransitionScene <CCTransitionEaseScene>
-{}
-/** initializes the scenes */
--(void) initScenes;
-/** returns the action that will be performed */
--(CCActionInterval*) action;
-@end
-
-/** CCTransitionMoveInR:
- Move in from to the right the incoming scene.
- */
-@interface CCTransitionMoveInR : CCTransitionMoveInL
-{}
-// Needed for BridgeSupport
--(void) initScenes;
-@end
-
-/** CCTransitionMoveInT:
- Move in from to the top the incoming scene.
- */
-@interface CCTransitionMoveInT : CCTransitionMoveInL
-{}
-// Needed for BridgeSupport
--(void) initScenes;
-@end
-
-/** CCTransitionMoveInB:
- Move in from to the bottom the incoming scene.
- */
-@interface CCTransitionMoveInB : CCTransitionMoveInL
-{}
-// Needed for BridgeSupport
--(void) initScenes;
-@end
-
-/** CCTransitionSlideInL:
- Slide in the incoming scene from the left border.
- */
-@interface CCTransitionSlideInL : CCTransitionScene <CCTransitionEaseScene>
-{}
-/** initializes the scenes */
--(void) initScenes;
-/** returns the action that will be performed by the incoming and outgoing scene */
--(CCActionInterval*) action;
-@end
-
-/** CCTransitionSlideInR:
- Slide in the incoming scene from the right border.
- */
-@interface CCTransitionSlideInR : CCTransitionSlideInL
-{}
-// Needed for BridgeSupport
--(void) initScenes;
-@end
-
-/** CCTransitionSlideInB:
- Slide in the incoming scene from the bottom border.
- */
-@interface CCTransitionSlideInB : CCTransitionSlideInL
-{}
-// Needed for BridgeSupport
--(void) initScenes;
-@end
-
-/** CCTransitionSlideInT:
- Slide in the incoming scene from the top border.
- */
-@interface CCTransitionSlideInT : CCTransitionSlideInL
-{}
-// Needed for BridgeSupport
--(void) initScenes;
-@end
 
 /**
- Shrink the outgoing scene while grow the incoming scene
+ *  Defines the direction that the transition will move in.
+ *
+ *  If the direction is upwards, an exiting scene will ex. slide out the top, and an entering scene will slide in the bottom.
  */
-@interface CCTransitionShrinkGrow : CCTransitionScene <CCTransitionEaseScene>
-{}
-// needed for BrdigeSupport
--(id) init;
-@end
-
-/** CCTransitionFlipX:
- Flips the screen horizontally.
- The front face is the outgoing scene and the back face is the incoming scene.
- */
-@interface CCTransitionFlipX : CCTransitionSceneOriented
-{}
-// needed for BrdigeSupport
--(id) init;
-@end
-
-/** CCTransitionFlipY:
- Flips the screen vertically.
- The front face is the outgoing scene and the back face is the incoming scene.
- */
-@interface CCTransitionFlipY : CCTransitionSceneOriented
-{}
-// needed for BrdigeSupport
--(id) init;
-@end
-
-/** CCTransitionFlipAngular:
- Flips the screen half horizontally and half vertically.
- The front face is the outgoing scene and the back face is the incoming scene.
- */
-@interface CCTransitionFlipAngular : CCTransitionSceneOriented
-{}
-// needed for BrdigeSupport
--(id) init;
-@end
-
-/** CCTransitionZoomFlipX:
- Flips the screen horizontally doing a zoom out/in
- The front face is the outgoing scene and the back face is the incoming scene.
- */
-@interface CCTransitionZoomFlipX : CCTransitionSceneOriented
-{}
-// needed for BrdigeSupport
--(id) init;
-@end
-
-/** CCTransitionZoomFlipY:
- Flips the screen vertically doing a little zooming out/in
- The front face is the outgoing scene and the back face is the incoming scene.
- */
-@interface CCTransitionZoomFlipY : CCTransitionSceneOriented
-{}
-// needed for BrdigeSupport
--(id) init;
-@end
-
-/** CCTransitionZoomFlipAngular:
- Flips the screen half horizontally and half vertically doing a little zooming out/in.
- The front face is the outgoing scene and the back face is the incoming scene.
- */
-@interface CCTransitionZoomFlipAngular : CCTransitionSceneOriented
-{}
-// needed for BrdigeSupport
--(id) init;
-@end
-
-/** CCTransitionFade:
- Fade out the outgoing scene and then fade in the incoming scene.'''
- */
-@interface CCTransitionFade : CCTransitionScene
+typedef NS_ENUM(NSInteger, CCTransitionDirection)
 {
-	ccColor4B	color;
-}
-/** creates the transition with a duration and with an RGB color
- * Example: [FadeTransition transitionWithDuration:2 scene:s withColor:ccc3(255,0,0)]; // red color
+    /** Transition moves upwards. */
+    CCTransitionDirectionUp,
+    
+    /** Transition moves downwards. */
+    CCTransitionDirectionDown,
+    
+    /** Transition moves rightwards. */
+    CCTransitionDirectionRight,
+    
+    /** Transition moves leftwards. */
+    CCTransitionDirectionLeft,
+    
+    /** Invalid transition direction. */
+    CCTransitionDirectionInvalid = -1,
+};
+
+/**
+ *  Creates a transition.
+ *  The transition will replace the outgoing scene, with the incoming scene.
+ *  Both scenes can be animated during the transition ( default disabled ).
+ *
+ *  Complex animated scenes on retina devices might run slow during transitions. 
+ *  In that case, try disabling retina transitions, and check if the render quality is adequate.
  */
-+(id) transitionWithDuration:(ccTime)duration scene:(CCScene*)scene withColor:(ccColor3B)color;
-/** initializes the transition with a duration and with an RGB color */
--(id) initWithDuration:(ccTime)duration scene:(CCScene*)scene withColor:(ccColor3B)color;
-@end
+@interface CCTransition : CCScene
+
+/// -----------------------------------------------------------------------
+/// @name Accessing the Transition Attributes
+/// -----------------------------------------------------------------------
 
 
 /**
- CCTransitionCrossFade:
- Cross fades two scenes using the CCRenderTexture object.
+ *  Will downscale outgoing scene.
+ *  Can be used as an effect, or to decrease render time on complex scenes.
+ *  Default 1.0.
  */
-@class CCRenderTexture;
-@interface CCTransitionCrossFade : CCTransitionScene
-{}
-// needed for BrdigeSupport
--(id) init;
-@end
+@property (nonatomic, assign) float outgoingDownScale;
 
-/** CCTransitionTurnOffTiles:
- Turn off the tiles of the outgoing scene in random order
+/**
+ *  Will downscale incoming scene.
+ *  Can be used as an effect, or to decrease render time on complex scenes.
+ *  Default 1.0.
  */
-@interface CCTransitionTurnOffTiles : CCTransitionScene <CCTransitionEaseScene>
-{}
-// needed for BrdigeSupport
--(id) init;
-@end
+@property (nonatomic, assign) float incomingDownScale;
 
-/** CCTransitionSplitCols:
- The odd columns goes upwards while the even columns goes downwards.
+/**
+ *  Transition will be performed in retina resolution.
+ *  Will force outgoingDownScale and incomingDownScale to 1.0 on non retina devices, and 2.0 on retina devices if not set.
+ *  Default YES.
  */
-@interface CCTransitionSplitCols : CCTransitionScene <CCTransitionEaseScene>
-{}
--(CCActionInterval*) action;
-@end
+@property (nonatomic, getter = isRetinaTransition) BOOL retinaTransition;
 
-/** CCTransitionSplitRows:
- The odd rows goes to the left while the even rows goes to the right.
+/**
+ *  Pixel format used for transition.
+ *  Default CCTexturePixelFormat_RGBA8888.
  */
-@interface CCTransitionSplitRows : CCTransitionSplitCols
-{}
-// Needed for BridgeSupport
--(CCActionInterval*) action;
-@end
+@property (nonatomic, assign) CCTexturePixelFormat transitionPixelFormat;
 
-/** CCTransitionFadeTR:
- Fade the tiles of the outgoing scene from the left-bottom corner the to top-right corner.
+/**
+ *  Defines whether outgoing scene will be animated during transition.
+ *  Default NO.
  */
-@interface CCTransitionFadeTR : CCTransitionScene <CCTransitionEaseScene>
-{}
--(CCActionInterval*) actionWithSize:(CGSize) vector;
-@end
+@property (nonatomic, getter = isOutgoingSceneAnimated) BOOL outgoingSceneAnimated;
 
-/** CCTransitionFadeBL:
- Fade the tiles of the outgoing scene from the top-right corner to the bottom-left corner.
+/**
+ *  Defines whether incoming scene will be animated during transition.
+ *  Default NO.
  */
-@interface CCTransitionFadeBL : CCTransitionFadeTR
-{}
--(CCActionInterval*) actionWithSize:(CGSize) vector;
-@end
+@property (nonatomic, getter = isIncomingSceneAnimated) BOOL incomingSceneAnimated;
 
-/** CCTransitionFadeUp:
- * Fade the tiles of the outgoing scene from the bottom to the top.
- */
-@interface CCTransitionFadeUp : CCTransitionFadeTR
-{}
--(CCActionInterval*) actionWithSize: (CGSize) v;
-@end
+/** The actual transition runtime in seconds. */
+@property (nonatomic, readonly) NSTimeInterval runTime;
 
-/** CCTransitionFadeDown:
- * Fade the tiles of the outgoing scene from the top to the bottom.
+/** Normalized transition progress. */
+@property (nonatomic, readonly) float progress;
+
+
+/// -----------------------------------------------------------------------
+/// @name Creating a CCTransition Object
+/// -----------------------------------------------------------------------
+
+/**
+ *  Creates a cross fade transition directly from outgoing to incoming scene.
+ *
+ *  @param duration The duration of the transition in seconds.
+ *
+ *  @return The CCTransition Object.
  */
-@interface CCTransitionFadeDown : CCTransitionFadeTR
-{}
--(CCActionInterval*) actionWithSize: (CGSize) v;
++ (CCTransition *)transitionCrossFadeWithDuration:(NSTimeInterval)duration;
+
+/**
+ *  Creates a fade transition from outgoing to incoming scene, through color.
+ *
+ *  @param color    The color to fade through
+ *  @param duration The duration of the transition in seconds.
+ *
+ *  @return The CCTransition Object.
+ */
++ (CCTransition *)transitionFadeWithColor:(CCColor*)color duration:(NSTimeInterval)duration;
+
+/**
+ *  Creates a fade transition from outgoing to incoming scene, through black.
+ *
+ *  @param duration The duration of the transition in seconds.
+ *
+ *  @return The CCTransition Object.
+ */
++ (CCTransition *)transitionFadeWithDuration:(NSTimeInterval)duration;
+
+/**
+ *  Creates a transition where the incoming scene is moved in over the outgoing scene.
+ *
+ *  @param direction Direction to move the incoming scene.
+ *  @param duration  The duration of the transition in seconds.
+ *
+ *  @return The CCTransition Object.
+ */
++ (CCTransition *)transitionMoveInWithDirection:(CCTransitionDirection)direction duration:(NSTimeInterval)duration;
+
+/**
+ *  Creates a transition where the incoming scene pushed the outgoing scene out.
+ *
+ *  @param direction Direction to move incoming and outgoing scenes.
+ *  @param duration  The duration of the transition in seconds.
+ *
+ *  @return The CCTransition Object.
+ */
++ (CCTransition *)transitionPushWithDirection:(CCTransitionDirection)direction duration:(NSTimeInterval)duration;
+
+/**
+ *  Creates a transition where the incoming scene is revealed by sliding the outgoing scene out.
+ *
+ *  @param direction Direction to slide outcoing scene.
+ *  @param duration  The duration of the transition in seconds.
+ *
+ *  @return The CCTransition Object.
+ */
++ (CCTransition *)transitionRevealWithDirection:(CCTransitionDirection)direction duration:(NSTimeInterval)duration;
+
 @end

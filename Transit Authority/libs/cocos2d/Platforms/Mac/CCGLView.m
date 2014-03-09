@@ -3,6 +3,7 @@
  *
  * Copyright (c) 2010 Ricardo Quesada
  * Copyright (c) 2011 Zynga Inc.
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,14 +36,12 @@
 #import "../../Platforms/CCGL.h"
 #import "CCGLView.h"
 #import "CCDirectorMac.h"
-#import "CCEventDispatcher.h"
 #import "../../ccConfig.h"
 #import "../../ccMacros.h"
 
+#import "CCDirector_Private.h"
 
 @implementation CCGLView
-
-@synthesize eventDelegate = _eventDelegate;
 
 +(void) load_
 {
@@ -78,13 +77,11 @@
 	if (!pixelFormat)
 		CCLOG(@"No OpenGL pixel format");
 
-	if( (self = [super initWithFrame:frameRect pixelFormat:[pixelFormat autorelease]]) ) {
+	if( (self = [super initWithFrame:frameRect pixelFormat:pixelFormat]) ) {
 
 		if( context )
 			[self setOpenGLContext:context];
 
-		// event delegate
-		_eventDelegate = nil;
 	}
 
 	return self;
@@ -127,7 +124,7 @@
 
 	[self lockOpenGLContext];
 
-	NSRect rect = [self bounds];
+	NSRect rect = [self convertRectToBacking:self.bounds];
 
 	CCDirector *director = [CCDirector sharedDirector];
 	[director reshapeProjection: NSSizeToCGSize(rect.size) ];
@@ -164,160 +161,86 @@
 {
 	CCLOGINFO(@"cocos2d: deallocing %@", self);
 
-	[super dealloc];
 }
 
-#define DISPATCH_EVENT(__event__, __selector__)												\
-	id obj = _eventDelegate;																\
-	CCEventObject *event = [[CCEventObject alloc] init];									\
-	event->event = [__event__ retain];														\
-	event->selector = __selector__;															\
-	[obj performSelector:@selector(dispatchEvent:)											\
-			onThread:[[CCDirector sharedDirector] runningThread]							\
-		  withObject:event																	\
-	   waitUntilDone:NO];																	\
-	[event release];
-
-#pragma mark CCGLView - Mouse events
+#pragma mark CCGLView - Mouse Delegate
 
 - (void)mouseDown:(NSEvent *)theEvent
 {
-	DISPATCH_EVENT(theEvent, _cmd);
-}
-
-- (void)mouseMoved:(NSEvent *)theEvent
-{
-	DISPATCH_EVENT(theEvent, _cmd);
+    // dispatch mouse to responder manager
+    [[CCDirector sharedDirector].responderManager mouseDown:theEvent];
 }
 
 - (void)mouseDragged:(NSEvent *)theEvent
 {
-	DISPATCH_EVENT(theEvent, _cmd);
+    // dispatch mouse to responder manager
+    [[CCDirector sharedDirector].responderManager mouseDragged:theEvent];
 }
 
 - (void)mouseUp:(NSEvent *)theEvent
 {
-	DISPATCH_EVENT(theEvent, _cmd);
+    // dispatch mouse to responder manager
+    [[CCDirector sharedDirector].responderManager mouseUp:theEvent];
 }
 
-- (void)rightMouseDown:(NSEvent *)theEvent {
-	DISPATCH_EVENT(theEvent, _cmd);
-}
-
-- (void)rightMouseDragged:(NSEvent *)theEvent {
-	DISPATCH_EVENT(theEvent, _cmd);
-}
-
-- (void)rightMouseUp:(NSEvent *)theEvent {
-	DISPATCH_EVENT(theEvent, _cmd);
-}
-
-- (void)otherMouseDown:(NSEvent *)theEvent {
-	DISPATCH_EVENT(theEvent, _cmd);
-}
-
-- (void)otherMouseDragged:(NSEvent *)theEvent {
-	DISPATCH_EVENT(theEvent, _cmd);
-}
-
-- (void)otherMouseUp:(NSEvent *)theEvent {
-	DISPATCH_EVENT(theEvent, _cmd);
-}
-
-- (void)mouseEntered:(NSEvent *)theEvent {
-	DISPATCH_EVENT(theEvent, _cmd);
-}
-
-- (void)mouseExited:(NSEvent *)theEvent {
-	DISPATCH_EVENT(theEvent, _cmd);
-}
-
--(void) scrollWheel:(NSEvent *)theEvent {
-	DISPATCH_EVENT(theEvent, _cmd);
-}
-
-#pragma mark CCGLView - Key events
-
--(BOOL) becomeFirstResponder
+- (void)mouseMoved:(NSEvent *)theEvent
 {
-	return YES;
+    // dispatch mouse to responder manager
+    [[CCDirector sharedDirector].responderManager mouseMoved:theEvent];
 }
 
--(BOOL) acceptsFirstResponder
+- (void)mouseEntered:(NSEvent *)theEvent
 {
-	return YES;
+    // dispatch mouse to responder manager
+    [[CCDirector sharedDirector].responderManager mouseEntered:theEvent];
 }
 
--(BOOL) resignFirstResponder
+- (void)mouseExited:(NSEvent *)theEvent
 {
-	return YES;
+    // dispatch mouse to responder manager
+    [[CCDirector sharedDirector].responderManager mouseExited:theEvent];
 }
 
-- (void)keyDown:(NSEvent *)theEvent
+- (void)rightMouseDown:(NSEvent *)theEvent
 {
-	DISPATCH_EVENT(theEvent, _cmd);
+    // dispatch mouse to responder manager
+    [[CCDirector sharedDirector].responderManager rightMouseDown:theEvent];
 }
 
-- (void)keyUp:(NSEvent *)theEvent
+- (void)rightMouseDragged:(NSEvent *)theEvent
 {
-	DISPATCH_EVENT(theEvent, _cmd);
+    // dispatch mouse to responder manager
+    [[CCDirector sharedDirector].responderManager rightMouseDragged:theEvent];
 }
 
-- (void)flagsChanged:(NSEvent *)theEvent
+- (void)rightMouseUp:(NSEvent *)theEvent
 {
-	DISPATCH_EVENT(theEvent, _cmd);
+    // dispatch mouse to responder manager
+    [[CCDirector sharedDirector].responderManager rightMouseUp:theEvent];
 }
 
-#pragma mark CCGLView - Touch events
-- (void)touchesBeganWithEvent:(NSEvent *)theEvent
+- (void)otherMouseDown:(NSEvent *)theEvent
 {
-	DISPATCH_EVENT(theEvent, _cmd);
+    // dispatch mouse to responder manager
+    [[CCDirector sharedDirector].responderManager otherMouseDown:theEvent];
 }
 
-- (void)touchesMovedWithEvent:(NSEvent *)theEvent
+- (void)otherMouseDragged:(NSEvent *)theEvent
 {
-	DISPATCH_EVENT(theEvent, _cmd);
+    // dispatch mouse to responder manager
+    [[CCDirector sharedDirector].responderManager otherMouseDragged:theEvent];
 }
 
-- (void)touchesEndedWithEvent:(NSEvent *)theEvent
+- (void)otherMouseUp:(NSEvent *)theEvent
 {
-	DISPATCH_EVENT(theEvent, _cmd);
+    // dispatch mouse to responder manager
+    [[CCDirector sharedDirector].responderManager otherMouseUp:theEvent];
 }
 
-- (void)touchesCancelledWithEvent:(NSEvent *)theEvent
+- (void)scrollWheel:(NSEvent *)theEvent
 {
-	DISPATCH_EVENT(theEvent, _cmd);
-}
-
-#pragma mark CCGLView - Gesture events
-- (void)beginGestureWithEvent:(NSEvent *)theEvent
-{
-	DISPATCH_EVENT(theEvent, _cmd);
-}
-
-- (void)magnifyWithEvent:(NSEvent *)theEvent
-{
-	DISPATCH_EVENT(theEvent, _cmd);
-}
-
-- (void)smartMagnifyWithEvent:(NSEvent *)theEvent
-{
-	DISPATCH_EVENT(theEvent, _cmd);
-}
-
-- (void)rotateWithEvent:(NSEvent *)theEvent
-{
-	DISPATCH_EVENT(theEvent, _cmd);
-}
-
-- (void)swipeWithEvent:(NSEvent *)theEvent
-{
-	DISPATCH_EVENT(theEvent, _cmd);
-}
-
-- (void)endGestureWithEvent:(NSEvent *)theEvent
-{
-	DISPATCH_EVENT(theEvent, _cmd);
+    // dispatch mouse to responder manager
+    [[CCDirector sharedDirector].responderManager scrollWheel:theEvent];
 }
 
 @end

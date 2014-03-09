@@ -3,6 +3,7 @@
  *
  * Copyright (c) 2008-2010 Ricardo Quesada
  * Copyright (c) 2011 Zynga Inc.
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +34,6 @@
 
 /** CCShaderCache
  Singleton that stores manages GL shaders
- @since v2.0
  */
 @interface CCShaderCache : NSObject {
 
@@ -50,10 +50,10 @@
 /** loads the default shaders */
 -(void) loadDefaultShaders;
 
-/** returns a GL program for a given key */
+/* returns a GL program for a given key */
 -(CCGLProgram *) programForKey:(NSString*)key;
 
-/** adds a CCGLProgram to the cache for a given name */
+/* adds a CCGLProgram to the cache for a given name */
 - (void) addProgram:(CCGLProgram*)program forKey:(NSString*)key;
 
 @end

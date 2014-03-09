@@ -3,6 +3,7 @@
  *
  * Copyright (c) 2009-2010 Ricardo Quesada
  * Copyright (c) 2011 Zynga Inc.
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,25 +26,42 @@
  */
 
 #import "CCNode.h"
-#import "Support/ccCArray.h"
 
-/** CCParallaxNode: A node that simulates a parallax scroller
+/** 
+ CCParallaxNode is a node that simulates a classic parallax scroller.
 
- The children will be moved faster / slower than the parent according the the parallax ratio.
-
+ Child nodes will be moved faster / slower than the parent node according to the parallax ratio specified.
  */
-@interface CCParallaxNode : CCNode
-{
-	ccArray				*_parallaxArray;
+
+@interface CCParallaxNode : CCNode {
+    
+    // Parallax child ratios.
+    NSMutableArray      *_parallaxArray;
+    
+    // Last position.
 	CGPoint				_lastPosition;
 }
 
-/** array that holds the offset / ratio of the children */
-@property (nonatomic,readwrite) ccArray * parallaxArray;
 
-/** Adds a child to the container with a z-order, a parallax ratio and a position offset
- It returns self, so you can chain several addChilds.
- @since v0.8
+/// -----------------------------------------------------------------------
+/// @name Accessing the Parallax Node Attributes
+/// -----------------------------------------------------------------------
+
+/** Array that holds the offset / ratio of the child nodes. */
+@property (nonatomic,readonly) NSArray * parallaxArray;
+
+
+/// -----------------------------------------------------------------------
+/// @name CCParallaxNode Child Management
+/// -----------------------------------------------------------------------
+
+/**
+ *  Adds the specified child node with z-order, ratio and offset values to the container.
+ *
+ *  @param node           Node to use.
+ *  @param z              Z Order to use.
+ *  @param c              Parallax ratio to use.
+ *  @param positionOffset Parallax offset to use.
  */
 -(void) addChild: (CCNode*)node z:(NSInteger)z parallaxRatio:(CGPoint)c positionOffset:(CGPoint)positionOffset;
 
