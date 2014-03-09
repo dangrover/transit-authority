@@ -335,7 +335,7 @@ int compareInts (const void * a, const void * b);
 	
 	// All tile sprites in the layer should have the same anchorpoint.
 	// The default anchor point is defined in the TMX file (within the tileset node) and stored in the
-	// CCTMXTilesetInfo* property of the CCTMXLayer.
+	// CCTiledMapTilesetInfo* property of the CCTMXLayer.
 	sprite.anchorPoint = _tileset.tileAnchorPoint;
 	
 	// Rotation in tiled is achieved using 3 flipped states, flipping across the horizontal, vertical, and diagonal axes of the tiles.

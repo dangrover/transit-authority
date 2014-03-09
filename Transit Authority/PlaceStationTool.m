@@ -10,11 +10,11 @@
 #import "MainGameScene.h"
 #import "cocos2d.h"
 #import "CCTMXTiledMap+Extras.h"
-#import "CCLayerPanZoom.h"
 #import "GameLedger.h"
 #import "Utilities.h"
 #import "StationCoverageOverlay.h"
 #import "PointOfInterest.h"
+#import "CCTMXTiledMap+Extras.h"
 
 @implementation PlaceStationTool{
     CCSprite *stationPlacement;
@@ -50,7 +50,7 @@
     _heatmapWasOriginallyVisible = self.parent.showPopulationHeatmap;
     
 
-    stationPlacement = [[CCSprite alloc] initWithFile:@"station.png"];
+    stationPlacement = [[CCSprite alloc] initWithImageNamed:@"station.png"];
     stationPlacement.anchorPoint = CGPointMake(0.5, 0.5);
     stationPlacement.scale = [self.parent scaleConsideringZoom:STATION_SPRITE_SCALE_UNSELECTED];
     [self.parent->tiledMap addChild:stationPlacement z:20];
@@ -90,15 +90,14 @@
 - (void)ccTouchMoved:(UITouch *)touch withEvent:(UIEvent *)event{
     [super ccTouchMoved:touch withEvent:event];
     
-    CGPoint pos = [self.parent->tiledMap convertTouchToNodeSpace:touch];
+    CGPoint pos = [touch locationInNode:self.parent->tiledMap];
     CGPoint tileCoordinate = [self.parent->tiledMap tileCoordinateFromNodeCoordinate:pos];
     
     
     BOOL stationAlreadyExistsHere = ([self.parent stationAtNodeCoords:pos] != nil);
     
     if(stationAlreadyExistsHere || ![self.parent.gameState.map tileIsLand:tileCoordinate] || (self.parent.gameState.currentCash < GAME_STATION_COST)){
-        stationPlacement.texture = [[CCTexture2D alloc] initWithCGImage:[[UIImage imageNamed:@"invalid-station.png"] CGImage]
-                                                         resolutionType:kCCResolutioniPhone];
+        stationPlacement.texture = [CCTexture textureWithFile:@"invalid-station.png"];
         self.validMove = NO;
     }else{
         
@@ -113,8 +112,7 @@
             }
         }
         
-        stationPlacement.texture = [[CCTexture2D alloc] initWithCGImage:[[UIImage imageNamed:@"station.png"] CGImage]
-                                                         resolutionType:kCCResolutioniPhone];
+        stationPlacement.texture = [CCTexture textureWithFile:@"station.png"];
         self.validMove = YES;
     }
     
@@ -135,7 +133,7 @@
     [self _fixHeatMap];
     
     // place the actual station
-    CGPoint tileCoordinate = [self.parent->tiledMap tileCoordinateFromNodeCoordinate:[self.parent->tiledMap convertTouchToNodeSpace:touch]];
+    CGPoint tileCoordinate = [self.parent->tiledMap tileCoordinateFromNodeCoordinate:[self.parent->tiledMap convertToNodeSpace:[touch locationInNode:self.parent->tiledMap]]];
     
     if(self.validMove && (gameState.currentCash >= GAME_STATION_COST)){
         if(_poiToBeAssociatedWithStation){
@@ -146,7 +144,7 @@
             [gameState buildNewStationAt:tileCoordinate];
         }
     }else{
-        [self.parent->audioEngine playEffect:SoundEffect_Error];
+    //    [self.parent->audioEngine playEffect:SoundEffect_Error];
     }
 }
 
@@ -197,11 +195,14 @@
     
     */
     
-    CCTexture2D *tex = [[CCTexture2D alloc] initWithData:[mainRenderSpace bytes]
-                                             pixelFormat:kCCTexture2DPixelFormat_A8
-                                              pixelsWide:imgBufferSize.width
-                                              pixelsHigh:imgBufferSize.height
-                                             contentSize:imgBufferSize];
+     CCTexture *tex = [[CCTexture alloc] initWithData:[mainRenderSpace bytes]
+                        pixelFormat:CCTexturePixelFormat_A8
+                         pixelsWide:imgBufferSize.width
+                         pixelsHigh:imgBufferSize.height
+                contentSizeInPixels:CGSizeMake(imgBufferSize.width, imgBufferSize.height)
+                       contentScale:1.0];
+    
+    
     
     CGContextRelease(ctx);
     

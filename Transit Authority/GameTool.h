@@ -12,7 +12,7 @@
 @class MainGameScene;
 
 
-@interface GameTool : NSObject<CCTouchOneByOneDelegate>{
+@interface GameTool : NSObject{
 @protected
     CCLabelTTF *costLabel;
 }

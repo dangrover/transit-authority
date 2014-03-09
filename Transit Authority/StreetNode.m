@@ -112,7 +112,7 @@ static int _streetShaderColorLocation;
 		CGPoint pp2 = [_points getControlPointAtIndex:p+1];
 		CGPoint pp3 = [_points getControlPointAtIndex:p+2];
 		
-		CGPoint newPos = ccCardinalSplineAt( pp0, pp1, pp2, pp3, 0.5, lt);
+		CGPoint newPos = CCCardinalSplineAt( pp0, pp1, pp2, pp3, 0.5, lt);
 		vertices[i].x = newPos.x;
 		vertices[i].y = newPos.y;
 	}

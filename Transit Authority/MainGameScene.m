@@ -8,7 +8,7 @@
 
 #import "cocos2d.h"
 #import "MainGameScene.h"
-#import "CCTMXTiledMap.h"
+#import "CCTiledMap.h"
 #import "UIColor+Cocos.h"
 #import "CCTMXTiledMap+Extras.h"
 #import "Utilities.h"
@@ -23,7 +23,6 @@
 #import "TracksInspector.h"
 #import "StationInspector.h"
 #import "StationNode.h"
-#import "CCLayerPanZoom.h"
 #import "TrainNode.h"
 #import "StreetNode.h"
 #import "GoalsViewController.h"

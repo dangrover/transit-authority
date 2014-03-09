@@ -11,7 +11,7 @@
 
 @protocol TracksNodeDelegate;
 
-@interface TracksNode : CCNode<CCTouchOneByOneDelegate>
+@interface TracksNode : CCNode
 @property(assign) CGPoint start;
 @property(assign) CGPoint end;
 @property(assign) TrackSegment *segment;

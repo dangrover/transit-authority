@@ -93,7 +93,7 @@
 - (void)setTileOffset:(CGPoint)tileOffset
 {
 	_tileOffset = tileOffset;
-	NSAssert((self.tileSize.width > 0 && self.tileSize.height > 0), @"Error in [CCTMXTilesetInfo setTileOffset:], tileSize is Zero");
+	NSAssert((self.tileSize.width > 0 && self.tileSize.height > 0), @"Error in [CCTiledMapTilesetInfo setTileOffset:], tileSize is Zero");
 	float normalizedOffsetX = tileOffset.x / _tileSize.width;
 	float normalizedOffsetY = tileOffset.y / _tileSize.height;
 	_tileAnchorPoint = CGPointMake(normalizedOffsetX, normalizedOffsetY);
@@ -123,7 +123,7 @@
 @end
 
 #pragma mark -
-#pragma mark CCTMXMapInfo
+#pragma mark CCTiledMapInfo
 
 @interface CCTiledMapInfo (Private)
 /* initalises parsing of an XML file, either a tmx (Map) file or tsx (Tileset) file */

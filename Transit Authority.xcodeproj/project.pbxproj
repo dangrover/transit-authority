@@ -72,7 +72,6 @@
 		4D2C7B6F179671F600AF64E4 /* InstructionsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D2C7B6D179671F600AF64E4 /* InstructionsViewController.m */; };
 		4D2C7B70179671F600AF64E4 /* InstructionsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4D2C7B6E179671F600AF64E4 /* InstructionsViewController.xib */; };
 		4D2C7B721796733800AF64E4 /* instructions.html in Resources */ = {isa = PBXBuildFile; fileRef = 4D2C7B711796733800AF64E4 /* instructions.html */; };
-		4D2DF7551794B714008B7A29 /* CCLayerPanZoom.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D2DF7531794B714008B7A29 /* CCLayerPanZoom.m */; };
 		4D3929121791F29300373AAD /* TracksInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D3929101791F29300373AAD /* TracksInspector.m */; };
 		4D3929131791F29300373AAD /* TracksInspector.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4D3929111791F29300373AAD /* TracksInspector.xib */; };
 		4D3929181792082A00373AAD /* StationNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D3929171792082A00373AAD /* StationNode.m */; };
@@ -340,8 +339,6 @@
 		4DAFC3F31781E525001731CF /* GameControlsPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4DAFC3F21781E524001731CF /* GameControlsPhone.xib */; };
 		4DB6D7CC178DEBEF0073F0EE /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DB6D7CB178DEBEF0073F0EE /* CoreText.framework */; };
 		4DBC422817BE98E0005F343E /* Passenger.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DBC422717BE98E0005F343E /* Passenger.m */; };
-		4DC00EF9178D483100993DE8 /* HKTMXTiledMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DC00EF3178D47B200993DE8 /* HKTMXTiledMap.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		4DC00EFA178D483400993DE8 /* HKTMXLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DC00EF1178D47B200993DE8 /* HKTMXLayer.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		4DC43C7C17A9875F00BF0F8C /* TrainNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DC43C7B17A9875F00BF0F8C /* TrainNode.m */; };
 		4DCBB8CE17E7C7CD005C3A5C /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DCBB8CD17E7C7CD005C3A5C /* AdSupport.framework */; };
 		4DCD3F03179768C30096587C /* FinanceRowCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4DCD3F02179768C30096587C /* FinanceRowCell.xib */; };
@@ -441,9 +438,6 @@
 		4D2C7B6D179671F600AF64E4 /* InstructionsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InstructionsViewController.m; sourceTree = "<group>"; };
 		4D2C7B6E179671F600AF64E4 /* InstructionsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InstructionsViewController.xib; sourceTree = "<group>"; };
 		4D2C7B711796733800AF64E4 /* instructions.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = instructions.html; path = Resources/instructions.html; sourceTree = "<group>"; };
-		4D2DF7521794B714008B7A29 /* CCLayerPanZoom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCLayerPanZoom.h; sourceTree = "<group>"; };
-		4D2DF7531794B714008B7A29 /* CCLayerPanZoom.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCLayerPanZoom.m; sourceTree = "<group>"; };
-		4D2DF7541794B714008B7A29 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 		4D39290F1791F29300373AAD /* TracksInspector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TracksInspector.h; sourceTree = "<group>"; };
 		4D3929101791F29300373AAD /* TracksInspector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TracksInspector.m; sourceTree = "<group>"; };
 		4D3929111791F29300373AAD /* TracksInspector.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TracksInspector.xib; sourceTree = "<group>"; };
@@ -970,13 +964,6 @@
 		4DB6D7CB178DEBEF0073F0EE /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		4DBC422617BE98E0005F343E /* Passenger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Passenger.h; sourceTree = "<group>"; };
 		4DBC422717BE98E0005F343E /* Passenger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Passenger.m; sourceTree = "<group>"; };
-		4DC00EEE178D47B200993DE8 /* HKTMXLayer+Experimental.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "HKTMXLayer+Experimental.h"; sourceTree = "<group>"; };
-		4DC00EEF178D47B200993DE8 /* HKTMXLayer+Experimental.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "HKTMXLayer+Experimental.m"; sourceTree = "<group>"; };
-		4DC00EF0178D47B200993DE8 /* HKTMXLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HKTMXLayer.h; sourceTree = "<group>"; };
-		4DC00EF1178D47B200993DE8 /* HKTMXLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HKTMXLayer.m; sourceTree = "<group>"; };
-		4DC00EF2178D47B200993DE8 /* HKTMXTiledMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HKTMXTiledMap.h; sourceTree = "<group>"; };
-		4DC00EF3178D47B200993DE8 /* HKTMXTiledMap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HKTMXTiledMap.m; sourceTree = "<group>"; };
-		4DC00EF4178D47B200993DE8 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 		4DC43C7A17A9875F00BF0F8C /* TrainNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrainNode.h; sourceTree = "<group>"; };
 		4DC43C7B17A9875F00BF0F8C /* TrainNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TrainNode.m; sourceTree = "<group>"; };
 		4DCBB8CD17E7C7CD005C3A5C /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
@@ -1126,17 +1113,6 @@
 			);
 			name = PopoverView;
 			path = libs/PopoverView;
-			sourceTree = "<group>";
-		};
-		4D2DF7511794B713008B7A29 /* CCLayerPanZoom */ = {
-			isa = PBXGroup;
-			children = (
-				4D2DF7521794B714008B7A29 /* CCLayerPanZoom.h */,
-				4D2DF7531794B714008B7A29 /* CCLayerPanZoom.m */,
-				4D2DF7541794B714008B7A29 /* README.md */,
-			);
-			name = CCLayerPanZoom;
-			path = libs/CCLayerPanZoom;
 			sourceTree = "<group>";
 		};
 		4D3929141792080000373AAD /* Tracks Inspector */ = {
@@ -1352,9 +1328,7 @@
 				4DAB17D218CD1A7F008CF267 /* cocos2d-ui */,
 				4DAB17E318CD1A7F008CF267 /* kazmath */,
 				4DAB180518CD1A7F008CF267 /* ObjectAL */,
-				4D2DF7511794B713008B7A29 /* CCLayerPanZoom */,
 				4D298D3A178C65B8005964E3 /* PopoverView */,
-				4DC00EED178D47B100993DE8 /* HKTMXTiledMap */,
 			);
 			name = libs;
 			sourceTree = "<group>";
@@ -2074,21 +2048,6 @@
 			name = "Main Menu";
 			sourceTree = "<group>";
 		};
-		4DC00EED178D47B100993DE8 /* HKTMXTiledMap */ = {
-			isa = PBXGroup;
-			children = (
-				4DC00EEE178D47B200993DE8 /* HKTMXLayer+Experimental.h */,
-				4DC00EEF178D47B200993DE8 /* HKTMXLayer+Experimental.m */,
-				4DC00EF0178D47B200993DE8 /* HKTMXLayer.h */,
-				4DC00EF1178D47B200993DE8 /* HKTMXLayer.m */,
-				4DC00EF2178D47B200993DE8 /* HKTMXTiledMap.h */,
-				4DC00EF3178D47B200993DE8 /* HKTMXTiledMap.m */,
-				4DC00EF4178D47B200993DE8 /* README.md */,
-			);
-			name = HKTMXTiledMap;
-			path = libs/HKTMXTiledMap;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -2462,9 +2421,7 @@
 				4DAB18B718CD1A80008CF267 /* CCFileUtils.m in Sources */,
 				4DAB189518CD1A80008CF267 /* CCProgressNode.m in Sources */,
 				4DAB18D018CD1A80008CF267 /* quaternion.c in Sources */,
-				4DC00EF9178D483100993DE8 /* HKTMXTiledMap.m in Sources */,
 				4DBC422817BE98E0005F343E /* Passenger.m in Sources */,
-				4DC00EFA178D483400993DE8 /* HKTMXLayer.m in Sources */,
 				4DAB18D318CD1A80008CF267 /* vec2.c in Sources */,
 				4D7B1E1217BACFC8001EB23D /* ScenarioIntroViewController.m in Sources */,
 				4DAB188C18CD1A80008CF267 /* CCParallaxNode.m in Sources */,
@@ -2527,7 +2484,6 @@
 				4DAB18A718CD1A80008CF267 /* CCTiledMapLayer.m in Sources */,
 				4DAB18A918CD1A80008CF267 /* CCTMXXMLParser.m in Sources */,
 				4DAB187D18CD1A80008CF267 /* CCDirector.m in Sources */,
-				4D2DF7551794B714008B7A29 /* CCLayerPanZoom.m in Sources */,
 				4DE702FE1794CD3B00AC228B /* StreetNode.m in Sources */,
 				4DAB18B018CD1A80008CF267 /* UITouch+CC.m in Sources */,
 				4DAB186418CD1A80008CF267 /* cpSpaceDebug.c in Sources */,

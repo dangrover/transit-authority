@@ -7,7 +7,7 @@
 //
 
 #import "HeatMapNode.h"
-#import "HKTMXTiledMap.h"
+#import "CCTiledMap.h"
 #import "CCTMXTiledMap+Extras.h"
 #import "Utilities.h"
 #import "UIColor+Cocos.h"
@@ -105,6 +105,8 @@
 }
 
 - (void) refresh{
+    
+  
     // NSLog(@"refreshing. pos=%@, view size=%@",NSStringFromCGPoint(self.currentPosition), NSStringFromCGSize(self.viewportSize));
     
     CGPoint topLeftBuffer = [self _bufferForTileCoord:CGPointMake(self.currentPosition.x - ceil(self.viewportSize.width/2),
@@ -152,7 +154,7 @@
                         [_opQueue addOperationWithBlock:^{
                             // In order to do opengl stuff on a background thread, we need to set the context.
                             EAGLContext * auxGLcontext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2
-                                                                               sharegroup:[CCDirector sharedDirector].openGLView.context.sharegroup];
+                                                                               sharegroup:[CCDirector sharedDirector].view.context.sharegroup];
                             [EAGLContext setCurrentContext:auxGLcontext];
                             
                             
@@ -188,6 +190,7 @@
     }
     
     return;
+
     
 }
 
@@ -222,7 +225,9 @@
     }
 }
 
-- (CCTexture2D *) _heatMapWithBoundingBox:(CGRect)boundingBoxInTiles{
+- (CCTexture *) _heatMapWithBoundingBox:(CGRect)boundingBoxInTiles{
+    return nil;
+    /*
     //NSLog(@"Started a render");
     float tileSize = self.map.map.tileSize.width * CC_CONTENT_SCALE_FACTOR() * _textureScale;
     CGSize imgSize = CGSizeMake((boundingBoxInTiles.size.width + (_bufferPaddingInTiles.width * 2)) * tileSize,
@@ -299,7 +304,7 @@
     }
     
     // Now generate a texture from the buffer
-    CCTexture2D *tex = [[CCTexture2D alloc] initWithData:_disableBlur ? [mainRenderSpace bytes] : [blurRenderSpace bytes]
+    CCTexture2D *tex = [[CCTexture alloc] initWithData:_disableBlur ? [mainRenderSpace bytes] : [blurRenderSpace bytes]
                                              pixelFormat:kCCTexture2DPixelFormat_RGBA8888
                                               pixelsWide:imgSize.width
                                               pixelsHigh:imgSize.height
@@ -314,7 +319,8 @@
     if(!_disableBlur) [self _recycleRenderBuffer:blurRenderSpace];
     [self _recycleRenderBuffer:mainRenderSpace];
     
-    return tex;
+    return tex;*/
+    
 }
 
 @end

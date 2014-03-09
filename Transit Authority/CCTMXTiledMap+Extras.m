@@ -18,6 +18,7 @@
 
 @end
 
+/*
 @implementation CCTiledMap (Extras)
 - (CGPoint) tileCoordinateFromNodeCoordinate:(CGPoint)nodeCoordinate{
     return CGPointMake(floor(nodeCoordinate.x / (self.tileSize.width)),
@@ -26,3 +27,4 @@
 
 
 @end
+*/

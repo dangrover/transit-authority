@@ -10,8 +10,7 @@
 #import "MainGameScene.h"
 #import "TracksNode.h"
 #import "Utilities.h"
-#import "CCLayerPanZoom.h"
-#import "HKTMXTiledMap.h"
+//#import "CCTiledMap.h"
 
 @implementation PlaceTracksTool{
     TracksNode *trackPlacement;
@@ -31,7 +30,7 @@
     
     startStation = endStation = nil;
     
-    CGPoint nodeCoord = [self.parent->tiledMap convertTouchToNodeSpace:touch];
+    CGPoint nodeCoord = [touch locationInNode:self.parent->tiledMap];
     Station *station = [self.parent stationAtNodeCoords:nodeCoord];
     
     if(station){
@@ -55,7 +54,7 @@
 - (void)ccTouchMoved:(UITouch *)touch withEvent:(UIEvent *)event{
     
     if(trackPlacement){
-        CGPoint nodeCoord = [self.parent->tiledMap convertTouchToNodeSpace:touch];
+        CGPoint nodeCoord = [touch locationInNode:self.parent->tiledMap];
         CGFloat distanceInTiles = PointDistance(trackPlacement.start, trackPlacement.end) / self.parent->tiledMap.tileSize.width;
         CGFloat cost = distanceInTiles * GAME_TRACK_COST_PER_TILE;
         
@@ -78,7 +77,7 @@
         }
         
         costLabel.string = FormatCurrency(@(cost));
-        costLabel.position = CGPointOffset( [self.parent convertTouchToNodeSpace:touch], 75, 0);
+        costLabel.position = CGPointOffset( [touch locationInNode:self.parent], 75, 0);
     }
 }
 
@@ -92,7 +91,7 @@
     if(endStation && (endStation != startStation) && (cost < self.parent.gameState.currentCash)){
         TrackSegment *segment = [self.parent.gameState buildTrackSegmentBetween:startStation second:endStation];
         
-        [self.parent->audioEngine playEffect:SoundEffect_BuildTunnel];
+       // [self.parent->audioEngine playEffect:SoundEffect_BuildTunnel];
         
         // If there's only one line in the game, apply it here.
         if((self.parent.gameState.lines.count == 1) && ([self.parent.gameState line:self.parent.gameState.lines.allValues[0] canAddSegment:segment])){
@@ -109,7 +108,7 @@
         }
     }else{
         // invalid placement
-        [self.parent->audioEngine playEffect:SoundEffect_Error];
+     //   [self.parent->audioEngine playEffect:SoundEffect_Error];
     }
     [self.parent.gameState didChangeValueForKey:@"tracks"];
     

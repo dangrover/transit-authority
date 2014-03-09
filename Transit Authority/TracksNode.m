@@ -100,7 +100,7 @@
 }
 
 - (BOOL) _touchIsOnLine:(UITouch *)touch{
-    CGPoint touchLoc = [self convertTouchToNodeSpace:touch];
+    CGPoint touchLoc = [touch locationInNode:self];
     if(!CGRectContainsPoint([self lineRect], touchLoc)){
         return NO;
     }else{

@@ -7,7 +7,7 @@
 //
 
 #import "GameMap.h"
-#import "HKTMXTiledMap.h"
+#import "CCTiledMap.h"
 #import "CCTMXXMLParser.h"
 
 #define TILE_GID_LAND 10

@@ -30,7 +30,7 @@
 /// The main scene showing the map, the lines, the stations, and the trains running between them.
 @interface MainGameScene : CCScene{
     @public
-    HKTMXTiledMap *tiledMap;
+    CCTiledMap *tiledMap;
     CCLayerPanZoom *_panZoomLayer;
 
     IBOutlet UIView *gameControlsLeft;
@@ -66,7 +66,7 @@
     IBOutlet UISlider *ySlider;
     IBOutlet UISlider *zSlider;
     
-    SimpleAudioEngine *audioEngine;
+  //  SimpleAudioEngine *audioEngine;
 }
 
 - (id) initWithGameState:(GameState *)theState;

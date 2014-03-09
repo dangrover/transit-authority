@@ -15,7 +15,6 @@
 
 
 @implementation AppController
-@synthesize window=window_, navController=navController_, director=director_;
 
 
 //
@@ -125,7 +124,7 @@
         [v removeFromSuperview];
     }
     
-    [director_ popScene];
+    [self.director popScene];
     
     MainMenuViewController *mm = [[MainMenuViewController alloc] initWithNibName:nil bundle:nil];
     [navController_ pushViewController:mm animated:NO];
