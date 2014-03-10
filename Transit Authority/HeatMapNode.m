@@ -153,10 +153,10 @@
                         
                         [_opQueue addOperationWithBlock:^{
                             // In order to do opengl stuff on a background thread, we need to set the context.
-                            EAGLContext * auxGLcontext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2
+                       /*     EAGLContext * auxGLcontext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2
                                                                                sharegroup:[CCDirector sharedDirector].view.context.sharegroup];
                             [EAGLContext setCurrentContext:auxGLcontext];
-                            
+                            */
                             
                             CCSprite *heatSprite = [[CCSprite alloc] initWithTexture:[self _heatMapWithBoundingBox:bufferTileRect]];
                             

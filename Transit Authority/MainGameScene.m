@@ -30,6 +30,8 @@
 #import "TAModal.h"
 #import "POIPlaceholderNode.h"
 #import "PointOfInterest.h"
+#import "CCLayerPanZoom.h"
+
 
 #define TRAIN_UPDATE_INTERVAL 0.5
 #define EVENT_LOOP_INTERVAL (1.0/60.0)
@@ -122,7 +124,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     
     AVQueuePlayer *_musicPlayer;
     
-    CCLayerColor *_dayNightOverlay;
+    CCNodeColor *_dayNightOverlay;
     
     TAModal *_myModalViewController;
 }
@@ -148,8 +150,8 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
         // load the map
         tiledMap = theState.map.map;
         
-        audioEngine = [[SimpleAudioEngine alloc] init];
-        [audioEngine preloadEffect:SoundEffect_BuildStation];
+       // audioEngine = [[SimpleAudioEngine alloc] init];
+       // [audioEngine preloadEffect:SoundEffect_BuildStation];
     }
 
     return self;
@@ -185,7 +187,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     //_panZoomLayer.position = CGPointMake(self.boundingBox.size.width/2, self.boundingBox.size.height/2);
     [self addChild:_panZoomLayer];
     _panZoomLayer.scale = _panZoomLayer.maxScale;
-    
+   // _panZoomLayer.contentsScale
    
     [self _makeStreetSprites];
     [self _makeNeighborhoodNameSprites];
@@ -267,7 +269,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     // because we're rendering it in the heatmap.
     self.gameState.map.residentialPopulationLayer.visible = self.gameState.map.commericalPopulationLayer.visible = NO;
     
-    _dayNightOverlay = [CCLayerColor layerWithColor:(ccColor4B){0,0,0,0}];
+    _dayNightOverlay = [CCNodeColor nodeWithColor:[CCColor clearColor]];
     _dayNightOverlay.opacity = 0;
     [self addChild:_dayNightOverlay];
     
@@ -284,7 +286,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 }
 
 - (void) onEnterTransitionDidFinish{
-    [self schedule:@selector(clockTick)];
+  //  [_scheduler schedule:@selector(clockTick)];
     [super onEnterTransitionDidFinish];
 }
 
@@ -319,7 +321,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
         n.scale = [self scaleConsideringZoom:1 useContentScale:NO];
     }
     
-    [self.gameState.map.landLayer updateScale:_panZoomLayer.scale];
+    //[self.gameState.map.landLayer updateScale:_panZoomLayer.scale];
 }
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context{
     if([keyPath isEqual:@"currentCash"]){
@@ -341,7 +343,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
             secondColor.b*progressThroughHour + firstColor.b*(1.0f-progressThroughHour),
             secondColor.a*progressThroughHour + firstColor.a*(1.0f-progressThroughHour)};
         
-        _dayNightOverlay.color = (ccColor3B){mix.r, mix.g, mix.b};
+        _dayNightOverlay.color = [CCColor colorWithRed:mix.r green:mix.g blue:mix.b];
         _dayNightOverlay.opacity = mix.a;
         //NSLog(@"setting color for hour %d", hour);
         
@@ -474,7 +476,8 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 - (void) _setCurrentTool:(GameTool *)newTool fromButton:(UIButton *)theButton{
     currentTool = newTool;
     newTool.parent = self;
-    [[[CCDirector sharedDirector] touchDispatcher] addTargetedDelegate:currentTool priority:3 swallowsTouches:YES];
+    //[[[CCDirector sharedDirector] touchDispatcher] addTargetedDelegate:currentTool priority:3 swallowsTouches:YES];
+    
     theButton.selected = YES;
     
     [currentTool started];
@@ -523,7 +526,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     if(currentTool){
         [currentTool.viewController.view removeFromSuperview];
         [currentTool finished];
-        [[[CCDirector sharedDirector] touchDispatcher] removeDelegate:currentTool];
+       // [[[CCDirector sharedDirector] touchDispatcher] removeDelegate:currentTool];
         
         currentTool = nil;
     }
@@ -680,7 +683,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
             stationSprite.stationUUID = s.UUID;
             
             [tiledMap addChild:stationSprite z:100];
-            [[CCDirector sharedDirector].touchDispatcher addTargetedDelegate:stationSprite priority:4 swallowsTouches:YES];
+//            [[CCDirector sharedDirector].touchDispatcher addTargetedDelegate:stationSprite priority:4 swallowsTouches:YES];
             
             _stationSprites[s.UUID] = stationSprite;
             [s addObserver:self forKeyPath:@"totalPassengersWaiting" options:NSKeyValueObservingOptionInitial context:nil];
@@ -711,7 +714,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
             node.valid = YES;
             node.delegate = self;
             _trackSprites[segment.UUID] = node;
-            [[CCDirector sharedDirector].touchDispatcher addTargetedDelegate:node priority:5 swallowsTouches:YES];
+        //    [[CCDirector sharedDirector].touchDispatcher addTargetedDelegate:node priority:5 swallowsTouches:YES];
             [tiledMap addChild:node z:99];
         }
     }
@@ -748,9 +751,9 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
         
         CCLabelTTF *neighborhood = [[CCLabelTTF alloc] initWithString:name fontName:@"Helvetica-Bold" fontSize:18];
         if([obj[@"type"] isEqual:@"region"]){
-            neighborhood.color = [[UIColor colorWithRed:0 green:0 blue:0 alpha:0] c3b];
+            neighborhood.color = [CCColor colorWithUIColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0]];
         }else if([obj[@"type"] isEqual:@"water"]){
-            neighborhood.color = [[UIColor colorWithRed:1 green:1 blue:1 alpha:1] c3b];
+            neighborhood.color = [CCColor colorWithUIColor:[UIColor colorWithRed:1 green:1 blue:1 alpha:1]];
             neighborhood.fontName = @"Helvetica-Oblique";
         }
         neighborhood.position = centered;
@@ -924,7 +927,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 - (void) goalCompleted:(NSNotification *)notification{
     ScenarioGoal *goal = notification.userInfo[@"goal"];
     
-    [audioEngine playEffect:SoundEffect_CompleteGoal];
+   // [audioEngine playEffect:SoundEffect_CompleteGoal];
     
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Goal Completed"
                                                     message:[NSString stringWithFormat:@"You completed the goal '%@!'",goal.caption]
@@ -936,21 +939,21 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 }
 
 - (void) bondIssued{
-    [audioEngine playEffect:SoundEffect_CashRegister];
+  //  [audioEngine playEffect:SoundEffect_CashRegister];
 }
 
 - (void) hourChime{
     unsigned hour = self.gameState.currentDateComponents.tm_hour;
     
     if(hour == (GAME_START_NIGHT_HOUR+1)){
-        [audioEngine playEffect:SoundEffect_Owl];
+  //      [audioEngine playEffect:SoundEffect_Owl];
     }else if(hour == GAME_END_NIGHT_HOUR){
-        [audioEngine playEffect:SoundEffect_Rooster];
+    //    [audioEngine playEffect:SoundEffect_Rooster];
     }
 }
 
 - (void) stationBuilt{
-    [audioEngine playEffect:SoundEffect_BuildStation];
+    //[audioEngine playEffect:SoundEffect_BuildStation];
     [self.gameState forceGoalEvaluate];
 }
 

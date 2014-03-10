@@ -76,11 +76,12 @@
     if(_needsRedraw){
         [self clear];
         if(_carTiles){
-            [self drawDot:CGPointMake(0, 0) radius:16*_carTiles color:ccc4f(0, 0, 0, 0.05 + (self.makeCarPartDarker ? PARKING_DARKNESS : 0))];
+            [self drawDot:CGPointMake(0, 0) radius:16*_carTiles color:[CCColor colorWithCcColor4f:ccc4f(0, 0, 0, 0.05 + (self.makeCarPartDarker ? PARKING_DARKNESS : 0))]];
+            
         }
         
         if(_walkTiles){
-            [self drawDot:CGPointMake(0, 0) radius:16*_walkTiles color:ccc4f(0, 0, 0, 0.25 - (self.makeCarPartDarker ? PARKING_DARKNESS : 0))];
+            [self drawDot:CGPointMake(0, 0) radius:16*_walkTiles color:[CCColor colorWithCcColor4f:ccc4f(0, 0, 0, 0.25 - (self.makeCarPartDarker ? PARKING_DARKNESS : 0))]];
         }
         
         _needsRedraw = NO;

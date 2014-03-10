@@ -9,6 +9,7 @@
 #import "GameMap.h"
 #import "CCTiledMap.h"
 #import "CCTMXXMLParser.h"
+#import "CCTiledMapLayer.h"
 
 #define TILE_GID_LAND 10
 #define TILE_GID_AIRPORT 75
@@ -18,9 +19,9 @@
 @property(strong, readwrite) MAP_CLASS *map;
 @property(assign, readwrite) CGPoint startPosition;
 
-@property(strong, readwrite) HKTMXLayer *landLayer;
-@property(strong, readwrite) HKTMXLayer *residentialPopulationLayer;
-@property(strong, readwrite) HKTMXLayer *commericalPopulationLayer;
+@property(strong, readwrite) CCTiledMapLayer *landLayer;
+@property(strong, readwrite) CCTiledMapLayer *residentialPopulationLayer;
+@property(strong, readwrite) CCTiledMapLayer *commericalPopulationLayer;
 @end
 
 @implementation GameMap{
@@ -29,7 +30,7 @@
 
 - (id) initWithMapAtPath:(NSString *)thePath{
     if(self = [super init]){
-        self.map = [[MAP_CLASS alloc] initWithTMXFile:thePath];
+        self.map = [[MAP_CLASS alloc] initWithFile:thePath];
         self.originalPath = thePath;
         
         // find start location
@@ -66,11 +67,11 @@
     return self.map.mapSize;
 }
 
-- (CCTMXObjectGroup *) neighborhoodNames{
+- (CCTiledMapObjectGroup *) neighborhoodNames{
     return [self.map objectGroupNamed:@"Neighborhoods"];
 }
 
-- (CCTMXObjectGroup *) streets{
+- (CCTiledMapObjectGroup *) streets{
     return [self.map objectGroupNamed:@"Streets"];
 }
 
