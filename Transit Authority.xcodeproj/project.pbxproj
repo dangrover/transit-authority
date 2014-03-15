@@ -143,7 +143,6 @@
 		4D7B91A317965D2800549C23 /* MainMenuViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4D7B91A117965D2800549C23 /* MainMenuViewController.xib */; };
 		4D7B91A617965DB400549C23 /* bad-logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D7B91A417965DB400549C23 /* bad-logo@2x.png */; };
 		4D7B91A717965DB400549C23 /* bad-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D7B91A517965DB400549C23 /* bad-logo.png */; };
-		4D7B91A917965DC100549C23 /* menu-music.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 4D7B91A817965DC100549C23 /* menu-music.mp3 */; };
 		4D9955D817BEA5C700DDE87F /* Routes.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D9955D717BEA5C700DDE87F /* Routes.m */; };
 		4D9955DD17BEA9DC00DDE87F /* Infastructure.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D9955DC17BEA9DC00DDE87F /* Infastructure.m */; };
 		4D9955E017BEAA5900DDE87F /* GameObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D9955DF17BEAA5900DDE87F /* GameObject.m */; };
@@ -345,6 +344,7 @@
 		4DCA2CB218D4D4F30016F5F6 /* ccbResources in Resources */ = {isa = PBXBuildFile; fileRef = 4DCA2CB018D4D4F30016F5F6 /* ccbResources */; };
 		4DCA2CB618D4D8B90016F5F6 /* MainMenuController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DCA2CB518D4D8B90016F5F6 /* MainMenuController.m */; };
 		4DCA2CBC18D4DCB10016F5F6 /* NewsCycle.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4DCA2CBB18D4DCA10016F5F6 /* NewsCycle.ttf */; };
+		4DCA2CBE18D502C90016F5F6 /* Music in Resources */ = {isa = PBXBuildFile; fileRef = 4DCA2CBD18D502C90016F5F6 /* Music */; };
 		4DCBB8CE17E7C7CD005C3A5C /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DCBB8CD17E7C7CD005C3A5C /* AdSupport.framework */; };
 		4DCD3F03179768C30096587C /* FinanceRowCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4DCD3F02179768C30096587C /* FinanceRowCell.xib */; };
 		4DCD3F061797690B0096587C /* FinanceRowCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DCD3F051797690B0096587C /* FinanceRowCell.m */; };
@@ -536,7 +536,6 @@
 		4D7B91A117965D2800549C23 /* MainMenuViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainMenuViewController.xib; sourceTree = "<group>"; };
 		4D7B91A417965DB400549C23 /* bad-logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bad-logo@2x.png"; path = "Resources/bad-logo@2x.png"; sourceTree = "<group>"; };
 		4D7B91A517965DB400549C23 /* bad-logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bad-logo.png"; path = "Resources/bad-logo.png"; sourceTree = "<group>"; };
-		4D7B91A817965DC100549C23 /* menu-music.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = "menu-music.mp3"; path = "Resources/menu-music.mp3"; sourceTree = "<group>"; };
 		4D9955D617BEA5C700DDE87F /* Routes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Routes.h; sourceTree = "<group>"; };
 		4D9955D717BEA5C700DDE87F /* Routes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Routes.m; sourceTree = "<group>"; };
 		4D9955DB17BEA9DC00DDE87F /* Infastructure.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Infastructure.h; sourceTree = "<group>"; };
@@ -978,6 +977,7 @@
 		4DCA2CB418D4D8B90016F5F6 /* MainMenuController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainMenuController.h; sourceTree = "<group>"; };
 		4DCA2CB518D4D8B90016F5F6 /* MainMenuController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainMenuController.m; sourceTree = "<group>"; };
 		4DCA2CBB18D4DCA10016F5F6 /* NewsCycle.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = NewsCycle.ttf; path = "TransitAuthority.spritebuilder/SpriteBuilder Resources/NewsCycle.ttf"; sourceTree = SOURCE_ROOT; };
+		4DCA2CBD18D502C90016F5F6 /* Music */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Music; path = "TransitAuthority.spritebuilder/Source/Resources/Published-iOS/Music"; sourceTree = SOURCE_ROOT; };
 		4DCBB8CD17E7C7CD005C3A5C /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		4DCD3F02179768C30096587C /* FinanceRowCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FinanceRowCell.xib; sourceTree = "<group>"; };
 		4DCD3F041797690B0096587C /* FinanceRowCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FinanceRowCell.h; sourceTree = "<group>"; };
@@ -1233,6 +1233,7 @@
 		4D5E913C176129300041A073 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				4DCA2CBD18D502C90016F5F6 /* Music */,
 				4DCA2CBB18D4DCA10016F5F6 /* NewsCycle.ttf */,
 				4DCA2CB018D4D4F30016F5F6 /* ccbResources */,
 				4D6EDB5F17E3EEC80071065B /* closebox.png */,
@@ -1261,7 +1262,6 @@
 				4DA76FBA17B5858E0092F74E /* upgrade-parking.png */,
 				4DA76FBB17B5858E0092F74E /* upgrade-long-platform.png */,
 				4DA76FBC17B5858E0092F74E /* upgrade-accessible.png */,
-				4D7B91A817965DC100549C23 /* menu-music.mp3 */,
 				4D298D31178BD151005964E3 /* blue-back.png */,
 				4D298D32178BD151005964E3 /* blue-back@2x.png */,
 				4D298D2D178B8069005964E3 /* disclosure-arrow.png */,
@@ -2185,6 +2185,7 @@
 				4D1B8D0D178B4B800033DD70 /* play-selected@2x.png in Resources */,
 				4D1B8D0E178B4B800033DD70 /* pause-selected.png in Resources */,
 				4D1B8D0F178B4B800033DD70 /* pause-selected@2x.png in Resources */,
+				4DCA2CBE18D502C90016F5F6 /* Music in Resources */,
 				4D1B8D1A178B4F800033DD70 /* tool-tracks@2x.png in Resources */,
 				4D1B8D1B178B4F800033DD70 /* tool-tracks.png in Resources */,
 				4DA76FBE17B5858E0092F74E /* upgrade-long-platform.png in Resources */,
@@ -2246,7 +2247,6 @@
 				4D5A963017E10097008175B8 /* rooster.aiff in Resources */,
 				4D7B91A617965DB400549C23 /* bad-logo@2x.png in Resources */,
 				4D7B91A717965DB400549C23 /* bad-logo.png in Resources */,
-				4D7B91A917965DC100549C23 /* menu-music.mp3 in Resources */,
 				4D5A962417E0E34F008175B8 /* big-boy-blues.mp3 in Resources */,
 				4D2C7B70179671F600AF64E4 /* InstructionsViewController.xib in Resources */,
 				4D2C7B721796733800AF64E4 /* instructions.html in Resources */,
