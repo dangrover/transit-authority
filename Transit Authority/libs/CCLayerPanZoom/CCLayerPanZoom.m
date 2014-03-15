@@ -29,7 +29,7 @@
 
 
 #import "CCLayerPanZoom.h"
-
+#import "CCDrawingPrimitives.h"
 
 #ifdef DEBUG
 

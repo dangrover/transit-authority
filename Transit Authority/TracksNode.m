@@ -10,13 +10,16 @@
 #import "Utilities.h"
 #import "UIColor+Cocos.h"
 
+#import "CCDrawingPrimitives.h"
+
 #define LINE_CLICK_THRESHOLD 30
 
 @implementation TracksNode
 
 - (void)draw {
     
-    ccDrawInit();
+ //   ccDrawInit();
+    
     
     CGFloat pixelDistance = PointDistance(self.start, self.end);
   
@@ -33,7 +36,7 @@
         
         glLineWidth(lineWidth * CC_CONTENT_SCALE_FACTOR());
         ccDrawLine(self.start, self.end);
-    
+        
     }else{
         // multi lines
         int w = MIN(20,ceil(50.0f/self.segment.lines.count));
@@ -69,7 +72,7 @@
         }
     }
     
-    ccDrawFree();
+   // ccDrawLine();
 }
 
 
