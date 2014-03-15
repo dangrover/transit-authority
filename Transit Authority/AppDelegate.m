@@ -12,9 +12,14 @@
 #import "GameState.h"
 #import "MainGameScene.h"
 #import "MainMenuViewController.h"
+#import "cocos2d.h"
+#import "CCBReader.h"
+#import "MainMenuController.h"
 
-
-@implementation AppController
+@implementation AppController{
+    
+    MainMenuController *mmControler;
+}
 
 
 //
@@ -49,6 +54,16 @@
 	
 	return YES;
 }
+
+
+
+- (CCScene*) startScene{
+    mmControler = [[MainMenuController alloc] init];
+    return [CCBReader load:@"MainMenu.ccbi" owner:mmControler];
+}
+
+//load:@"MainMenu.ccbi" owner:[[MainMenuScene alloc] init]];
+
 
 
 /*
