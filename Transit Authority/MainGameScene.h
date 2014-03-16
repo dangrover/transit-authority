@@ -42,8 +42,8 @@
     IBOutlet UIView *toolsBackground;
     IBOutlet UIView *gameControlsRight;
     
-    IBOutlet UILabel *cityNameLabel;
-    IBOutlet UILabel *dateLabel;
+   // IBOutlet UILabel *cityNameLabel;
+   // IBOutlet UILabel *dateLabel;
     
     IBOutlet UIButton *cashButton;
     

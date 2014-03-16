@@ -31,7 +31,8 @@
 #import "POIPlaceholderNode.h"
 #import "PointOfInterest.h"
 #import "CCLayerPanZoom.h"
-
+#import "CCScrollView.h"
+#import "CCBReader.h"
 
 #define TRAIN_UPDATE_INTERVAL 0.5
 #define EVENT_LOOP_INTERVAL (1.0/60.0)
@@ -52,6 +53,8 @@ typedef enum{
 
 @property(strong, nonatomic, readwrite) GameState *gameState;
 @property(strong, nonatomic, readwrite) HeatMapNode *heatMap;
+
+@property(strong) CCScrollView *scrollView;
 @end
 
 ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
@@ -127,10 +130,19 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     CCNodeColor *_dayNightOverlay;
     
     TAModal *_myModalViewController;
+    
+    CCLabelTTF *cityNameLabel;
+    CCLabelTTF *dateLabel;
+    CCScrollView *scrollView;
+    
 }
 
 - (id) initWithGameState:(GameState *)theState{
     if(self = [super init]){
+        
+        CCNode *topNode = [CCBReader load:@"GameScene" owner:self];
+        [self addChild:topNode];
+        
         self.gameState = theState;
         currentSpeed = 0;
         
@@ -163,30 +175,33 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 
 -(void) onEnter{
    
-    _panZoomLayer = [[CCLayerPanZoom alloc] init];
+//    _panZoomLayer = [[CCLayerPanZoom alloc] init];
    
     
-    _panZoomLayer.mode = kCCLayerPanZoomModeSheet;
-    _panZoomLayer.minScale = 1.0f/2.0f;
-    _panZoomLayer.maxScale = 1;
+//    _panZoomLayer.mode = kCCLayerPanZoomModeSheet;
+//    _panZoomLayer.minScale = 1.0f/2.0f;
+//    _panZoomLayer.maxScale = 1;
    // _panZoomLayer.panBoundsRect = CGRectMake(0,0,mapSize.width, mapSize.height);
     
-    _panZoomLayer.delegate = self;
-    _panZoomLayer.rubberEffectRatio = 0;
+  //  _panZoomLayer.delegate = self;
+  //  _panZoomLayer.rubberEffectRatio = 0;
     
     CGPoint startPos = [self.gameState.map.landLayer positionAt:self.gameState.map.startPosition];
-    
-    tiledMap.position = CGPointMake(-1*(startPos.x - (self.boundingBox.size.width/2)),
-                                    -1*(startPos.y - (self.boundingBox.size.height/2)));
+  //
+ //   tiledMap.position = CGPointMake(-1*(startPos.x - (self.boundingBox.size.width/2)),
+ //                                   -1*(startPos.y - (self.boundingBox.size.height/2)));
     
    
+    scrollView = [[CCScrollView alloc] initWithContentNode:self.gameState.map.map];
+    scrollView.bounces = NO;
+    tiledMap.scale = 0.5;
     
-    
-    [_panZoomLayer addChild:tiledMap];
-    //NSLog(@"self bonding = %@",NSStringFromCGRect(self.boundingBox));
+    [self addChild:scrollView z:-100];
+   // [_panZoomLayer addChild:tiledMap];
+   // //NSLog(@"self bonding = %@",NSStringFromCGRect(self.boundingBox));
     //_panZoomLayer.position = CGPointMake(self.boundingBox.size.width/2, self.boundingBox.size.height/2);
-    [self addChild:_panZoomLayer];
-    _panZoomLayer.scale = _panZoomLayer.maxScale;
+ //   [self addChild:_panZoomLayer];
+ //   _panZoomLayer.scale = _panZoomLayer.maxScale;
    // _panZoomLayer.contentsScale
    
     [self _makeStreetSprites];
@@ -253,14 +268,14 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     
     CGSize screenSize = [[UIScreen mainScreen] bounds].size;
     
-    self.heatMap = [[HeatMapNode alloc] initWithMap:self.gameState.map
-                                   viewportSize:CGSizeMake(2*ceil(screenSize.height/tiledMap.tileSize.width),
-                                                           2*ceil(screenSize.width/tiledMap.tileSize.width))
-                                     bufferSize:CGSizeMake(26, 26)];
-    [tiledMap addChild:self.heatMap z:90];
+  //  self.heatMap = [[HeatMapNode alloc] initWithMap:self.gameState.map
+  //                                 viewportSize:CGSizeMake(2*ceil(screenSize.height/tiledMap.tileSize.width),
+  //                                                         2*ceil(screenSize.width/tiledMap.tileSize.width))
+  //                                   bufferSize:CGSizeMake(26, 26)];
+  //  [tiledMap addChild:self.heatMap z:90];
     
-    self.heatMap.currentPosition = self.gameState.map.startPosition;
-    [self.heatMap refresh];
+  //  self.heatMap.currentPosition = self.gameState.map.startPosition;
+  //  [self.heatMap refresh];
     
     [self setNamesVisible:YES];
     //[self setPopulationVisible:NO];
@@ -331,7 +346,8 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     }
     else if([keyPath isEqual:@"currentDate"]){
         // update displayed date
-        dateLabel.text = [_dateFormatter stringFromDate:[NSDate dateWithTimeIntervalSince1970:self.gameState.currentDate]];
+        dateLabel.string = [_dateFormatter stringFromDate:[NSDate dateWithTimeIntervalSince1970:self.gameState.currentDate]];
+        
         
         struct tm info = self.gameState.currentDateComponents;
         
@@ -349,7 +365,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
         //NSLog(@"setting color for hour %d", hour);
         
     }else if([keyPath isEqual:@"cityName"]){
-        cityNameLabel.text = self.gameState.originalScenario.cityName;
+        cityNameLabel.string = self.gameState.originalScenario.cityName;
     }else if([keyPath isEqual:@"assignedTrains"]){
         [self _createAndRemoveTrainSprites];
         [self _updateTrainSpritePositions];
@@ -769,7 +785,8 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     for(NSDictionary *obj in self.gameState.map.streets.objects){
         if(![obj[@"type"] isEqual:@"street"]) continue;
         
-        CGPoint pos = CGPointMake([obj[@"x"] intValue], [obj[@"y"] intValue]);
+        CGPoint pos = CGPointMake([obj[@"x"] intValue] * tiledMap.scale,
+                                  [obj[@"y"] intValue] * tiledMap.scale);
         
         StreetType type;
         NSString *subtype = obj[@"street-type"];

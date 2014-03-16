@@ -571,6 +571,8 @@ static BOOL _PVRHaveAlphaPremultiplied = YES;
 			_premultipliedAlpha = (pvr.forcePremultipliedAlpha) ? pvr.hasPremultipliedAlpha : _PVRHaveAlphaPremultiplied;
 			_format = pvr.format;
 
+            
+            
 			_hasMipmaps = ( pvr.numberOfMipmaps > 1  );
 
 		} else {

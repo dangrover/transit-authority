@@ -339,13 +339,17 @@
 		4DBC422817BE98E0005F343E /* Passenger.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DBC422717BE98E0005F343E /* Passenger.m */; };
 		4DC43C7C17A9875F00BF0F8C /* TrainNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DC43C7B17A9875F00BF0F8C /* TrainNode.m */; };
 		4DCA2CAB18D4D4350016F5F6 /* MainMenu.ccbi in Resources */ = {isa = PBXBuildFile; fileRef = 4DCA2CAA18D4D4350016F5F6 /* MainMenu.ccbi */; };
-		4DCA2CB218D4D4F30016F5F6 /* ccbResources in Resources */ = {isa = PBXBuildFile; fileRef = 4DCA2CB018D4D4F30016F5F6 /* ccbResources */; };
 		4DCA2CB618D4D8B90016F5F6 /* MainMenuController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DCA2CB518D4D8B90016F5F6 /* MainMenuController.m */; };
 		4DCA2CBC18D4DCB10016F5F6 /* NewsCycle.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4DCA2CBB18D4DCA10016F5F6 /* NewsCycle.ttf */; };
 		4DCA2CBE18D502C90016F5F6 /* Music in Resources */ = {isa = PBXBuildFile; fileRef = 4DCA2CBD18D502C90016F5F6 /* Music */; };
+		4DCA2CC418D649060016F5F6 /* GameScene.ccbi in Resources */ = {isa = PBXBuildFile; fileRef = 4DCA2CC318D649060016F5F6 /* GameScene.ccbi */; };
 		4DCBB8CE17E7C7CD005C3A5C /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DCBB8CD17E7C7CD005C3A5C /* AdSupport.framework */; };
 		4DCD3F03179768C30096587C /* FinanceRowCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4DCD3F02179768C30096587C /* FinanceRowCell.xib */; };
 		4DCD3F061797690B0096587C /* FinanceRowCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DCD3F051797690B0096587C /* FinanceRowCell.m */; };
+		4DD590BA18D6634D00EECA46 /* HKTMXLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DD590B518D6634D00EECA46 /* HKTMXLayer.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		4DD590BB18D6634D00EECA46 /* HKTMXTiledMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DD590B718D6634D00EECA46 /* HKTMXTiledMap.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		4DD590BC18D6634D00EECA46 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 4DD590B818D6634D00EECA46 /* README.md */; };
+		4DE3CC5418D652EE00B87C7D /* ccbResources in Resources */ = {isa = PBXBuildFile; fileRef = 4DE3CC5318D652EE00B87C7D /* ccbResources */; };
 		4DE702FE1794CD3B00AC228B /* StreetNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DE702FD1794CD3B00AC228B /* StreetNode.m */; };
 		4DF0E8521771024100D46A07 /* Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0E8511771024100D46A07 /* Utilities.m */; };
 		4DF0E86517714C2500D46A07 /* ToolButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0E86417714C2400D46A07 /* ToolButton.m */; };
@@ -968,15 +972,21 @@
 		4DC43C7A17A9875F00BF0F8C /* TrainNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrainNode.h; sourceTree = "<group>"; };
 		4DC43C7B17A9875F00BF0F8C /* TrainNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TrainNode.m; sourceTree = "<group>"; };
 		4DCA2CAA18D4D4350016F5F6 /* MainMenu.ccbi */ = {isa = PBXFileReference; lastKnownFileType = file; name = MainMenu.ccbi; path = "TransitAuthority.spritebuilder/Source/Resources/Published-iOS/MainMenu.ccbi"; sourceTree = SOURCE_ROOT; };
-		4DCA2CB018D4D4F30016F5F6 /* ccbResources */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ccbResources; path = "TransitAuthority.spritebuilder/Source/Resources/Published-iOS/ccbResources"; sourceTree = SOURCE_ROOT; };
 		4DCA2CB418D4D8B90016F5F6 /* MainMenuController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainMenuController.h; sourceTree = "<group>"; };
 		4DCA2CB518D4D8B90016F5F6 /* MainMenuController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainMenuController.m; sourceTree = "<group>"; };
 		4DCA2CBB18D4DCA10016F5F6 /* NewsCycle.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = NewsCycle.ttf; path = "TransitAuthority.spritebuilder/SpriteBuilder Resources/NewsCycle.ttf"; sourceTree = SOURCE_ROOT; };
 		4DCA2CBD18D502C90016F5F6 /* Music */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Music; path = "TransitAuthority.spritebuilder/Source/Resources/Published-iOS/Music"; sourceTree = SOURCE_ROOT; };
+		4DCA2CC318D649060016F5F6 /* GameScene.ccbi */ = {isa = PBXFileReference; lastKnownFileType = file; name = GameScene.ccbi; path = "TransitAuthority.spritebuilder/Source/Resources/Published-iOS/GameScene.ccbi"; sourceTree = SOURCE_ROOT; };
 		4DCBB8CD17E7C7CD005C3A5C /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		4DCD3F02179768C30096587C /* FinanceRowCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FinanceRowCell.xib; sourceTree = "<group>"; };
 		4DCD3F041797690B0096587C /* FinanceRowCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FinanceRowCell.h; sourceTree = "<group>"; };
 		4DCD3F051797690B0096587C /* FinanceRowCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FinanceRowCell.m; sourceTree = "<group>"; };
+		4DD590B418D6634D00EECA46 /* HKTMXLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HKTMXLayer.h; sourceTree = "<group>"; };
+		4DD590B518D6634D00EECA46 /* HKTMXLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HKTMXLayer.m; sourceTree = "<group>"; };
+		4DD590B618D6634D00EECA46 /* HKTMXTiledMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HKTMXTiledMap.h; sourceTree = "<group>"; };
+		4DD590B718D6634D00EECA46 /* HKTMXTiledMap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HKTMXTiledMap.m; sourceTree = "<group>"; };
+		4DD590B818D6634D00EECA46 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
+		4DE3CC5318D652EE00B87C7D /* ccbResources */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ccbResources; path = "TransitAuthority.spritebuilder/Source/Resources/Published-iOS/ccbResources/ccbResources"; sourceTree = SOURCE_ROOT; };
 		4DE702FC1794CD3A00AC228B /* StreetNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StreetNode.h; sourceTree = "<group>"; };
 		4DE702FD1794CD3B00AC228B /* StreetNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StreetNode.m; sourceTree = "<group>"; };
 		4DF0E8501771024100D46A07 /* Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utilities.h; sourceTree = "<group>"; };
@@ -1027,9 +1037,7 @@
 			isa = PBXGroup;
 			children = (
 				4DAB5C03179AD44600CD35E2 /* Main Menu */,
-				4DAFC3F21781E524001731CF /* GameControlsPhone.xib */,
-				4D5E92C7176146BE0041A073 /* MainGameScene.h */,
-				4D5E92C8176146BF0041A073 /* MainGameScene.m */,
+				4DCA2CC218D648EF0016F5F6 /* Main UI */,
 				4D6EDB6317E3FFC50071065B /* TAModal.h */,
 				4D6EDB6417E402F10071065B /* TAModal.m */,
 				4D7B1E0E17BABB37001EB23D /* Goals */,
@@ -1230,9 +1238,9 @@
 			children = (
 				4DCA2CBD18D502C90016F5F6 /* Music */,
 				4DCA2CBB18D4DCA10016F5F6 /* NewsCycle.ttf */,
-				4DCA2CB018D4D4F30016F5F6 /* ccbResources */,
 				4D6EDB5F17E3EEC80071065B /* closebox.png */,
 				4D6EDB6017E3EEC80071065B /* closebox@2x.png */,
+				4DE3CC5318D652EE00B87C7D /* ccbResources */,
 				4D5A963617E17689008175B8 /* error.aiff */,
 				4D5A963117E16610008175B8 /* peachy-keen.mp3 */,
 				4D5A962D17E10097008175B8 /* owl.aiff */,
@@ -1331,6 +1339,7 @@
 		4D5E9156176129300041A073 /* libs */ = {
 			isa = PBXGroup;
 			children = (
+				4DD590B118D6634D00EECA46 /* HKTMXTiledMap */,
 				4DAB18F018CE1B55008CF267 /* CCLayerPanZoom.h */,
 				4DAB18F118CE1B55008CF267 /* CCLayerPanZoom.m */,
 				4DAB16AB18CD1A7E008CF267 /* CCBReader */,
@@ -2059,6 +2068,30 @@
 			name = "Main Menu";
 			sourceTree = "<group>";
 		};
+		4DCA2CC218D648EF0016F5F6 /* Main UI */ = {
+			isa = PBXGroup;
+			children = (
+				4DCA2CC318D649060016F5F6 /* GameScene.ccbi */,
+				4DAFC3F21781E524001731CF /* GameControlsPhone.xib */,
+				4D5E92C7176146BE0041A073 /* MainGameScene.h */,
+				4D5E92C8176146BF0041A073 /* MainGameScene.m */,
+			);
+			name = "Main UI";
+			sourceTree = "<group>";
+		};
+		4DD590B118D6634D00EECA46 /* HKTMXTiledMap */ = {
+			isa = PBXGroup;
+			children = (
+				4DD590B418D6634D00EECA46 /* HKTMXLayer.h */,
+				4DD590B518D6634D00EECA46 /* HKTMXLayer.m */,
+				4DD590B618D6634D00EECA46 /* HKTMXTiledMap.h */,
+				4DD590B718D6634D00EECA46 /* HKTMXTiledMap.m */,
+				4DD590B818D6634D00EECA46 /* README.md */,
+			);
+			name = HKTMXTiledMap;
+			path = libs/HKTMXTiledMap;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -2144,7 +2177,6 @@
 				4D5E9142176129300041A073 /* fps_images.png in Resources */,
 				4D5E9144176129300041A073 /* fps_images-hd.png in Resources */,
 				4DCA2CAB18D4D4350016F5F6 /* MainMenu.ccbi in Resources */,
-				4DCA2CB218D4D4F30016F5F6 /* ccbResources in Resources */,
 				4D5E9146176129300041A073 /* fps_images-ipadhd.png in Resources */,
 				4D5A962C17E0EB04008175B8 /* cash-register.wav in Resources */,
 				4D7B1E0C17BAB2CA001EB23D /* checkbox-checked@2x.png in Resources */,
@@ -2184,6 +2216,7 @@
 				4D1B8D1C178B4F800033DD70 /* tool-station@2x.png in Resources */,
 				4D1B8D1D178B4F800033DD70 /* tool-station.png in Resources */,
 				4D7B1E0517BAB083001EB23D /* star.png in Resources */,
+				4DD590BC18D6634D00EECA46 /* README.md in Resources */,
 				4D1B8D1E178B4F800033DD70 /* tool-more@2x.png in Resources */,
 				4D1B8D1F178B4F800033DD70 /* tool-more.png in Resources */,
 				4D2642D117DEAC7C006D9652 /* goals.png in Resources */,
@@ -2193,6 +2226,7 @@
 				4D6BF7AB17EA720F007E2FD6 /* connection-airport.png in Resources */,
 				4DA76FBD17B5858E0092F74E /* upgrade-parking.png in Resources */,
 				4D1B8D22178B4F800033DD70 /* tool-layers@2x.png in Resources */,
+				4DCA2CC418D649060016F5F6 /* GameScene.ccbi in Resources */,
 				4D1B8D23178B4F800033DD70 /* tool-layers.png in Resources */,
 				4D5A962A17E0EB04008175B8 /* build-tunnel.aiff in Resources */,
 				4D1B8D2E178B525D0033DD70 /* tool-station-selected.png in Resources */,
@@ -2215,6 +2249,7 @@
 				4D1B8D35178B525D0033DD70 /* tool-layers-selected@2x.png in Resources */,
 				4D1B8D36178B525D0033DD70 /* tool-more-selected.png in Resources */,
 				4D2642CD17DEA3E7006D9652 /* tool-stats-selected.png in Resources */,
+				4DE3CC5418D652EE00B87C7D /* ccbResources in Resources */,
 				4D1B8D37178B525D0033DD70 /* tool-more-selected@2x.png in Resources */,
 				4D298D29178B7FF7005964E3 /* stats.png in Resources */,
 				4D298D2A178B7FF7005964E3 /* stats@2x.png in Resources */,
@@ -2505,6 +2540,8 @@
 				4DAB185C18CD1A80008CF267 /* cpPolyShape.c in Sources */,
 				4D2C7B6F179671F600AF64E4 /* InstructionsViewController.m in Sources */,
 				4DAB18A118CD1A80008CF267 /* CCSpriteFrameCache.m in Sources */,
+				4DD590BB18D6634D00EECA46 /* HKTMXTiledMap.m in Sources */,
+				4DD590BA18D6634D00EECA46 /* HKTMXLayer.m in Sources */,
 				4DCD3F061797690B0096587C /* FinanceRowCell.m in Sources */,
 				4DAB18CB18CD1A80008CF267 /* matrix.c in Sources */,
 				4DAB187518CD1A80008CF267 /* CCActionProgressTimer.m in Sources */,

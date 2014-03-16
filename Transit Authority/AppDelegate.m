@@ -32,7 +32,7 @@
 	// If you want more flexibility, you can configure Cocos2D yourself instead of calling setupCocos2dWithOptions:.
 	[self setupCocos2dWithOptions:@{
                                     // Show the FPS and draw call label.
-                                    CCSetupShowDebugStats: @(YES),
+                                    CCSetupShowDebugStats: @(NO),
                                     
                                     // More examples of options you might want to fiddle with:
                                     // (See CCAppDelegate.h for more information)
@@ -60,13 +60,10 @@
 
 
 
-- (CCScene*) startScene{
+- (CCScene *) startScene{
     mmControler = [[MainMenuController alloc] init];
     return [CCBReader loadAsScene:@"MainMenu.ccbi" owner:mmControler];
 }
-
-//load:@"MainMenu.ccbi" owner:[[MainMenuScene alloc] init]];
-
 
 
 /*

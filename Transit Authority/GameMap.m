@@ -19,9 +19,9 @@
 @property(strong, readwrite) MAP_CLASS *map;
 @property(assign, readwrite) CGPoint startPosition;
 
-@property(strong, readwrite) CCTiledMapLayer *landLayer;
-@property(strong, readwrite) CCTiledMapLayer *residentialPopulationLayer;
-@property(strong, readwrite) CCTiledMapLayer *commericalPopulationLayer;
+@property(strong, readwrite) MAP_LAYER_CLASS *landLayer;
+@property(strong, readwrite) MAP_LAYER_CLASS *residentialPopulationLayer;
+@property(strong, readwrite) MAP_LAYER_CLASS *commericalPopulationLayer;
 @end
 
 @implementation GameMap{
@@ -30,7 +30,12 @@
 
 - (id) initWithMapAtPath:(NSString *)thePath{
     if(self = [super init]){
-        self.map = [[MAP_CLASS alloc] initWithFile:thePath];
+        #ifdef UNIT_TESTS
+            self.map = [[MAP_CLASS alloc] initWithFile:thePath];
+        #else
+            self.map = [[MAP_CLASS alloc] initWithTMXFile:thePath];
+        #endif
+        
         self.originalPath = thePath;
         
         // find start location
