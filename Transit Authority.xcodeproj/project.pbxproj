@@ -139,8 +139,6 @@
 		4D7B1E0D17BAB2CA001EB23D /* checkbox-checked.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D7B1E0917BAB2CA001EB23D /* checkbox-checked.png */; };
 		4D7B1E1217BACFC8001EB23D /* ScenarioIntroViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D7B1E1017BACFC8001EB23D /* ScenarioIntroViewController.m */; };
 		4D7B1E1317BACFC8001EB23D /* ScenarioIntroViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4D7B1E1117BACFC8001EB23D /* ScenarioIntroViewController.xib */; };
-		4D7B91A217965D2800549C23 /* MainMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D7B91A017965D2800549C23 /* MainMenuViewController.m */; };
-		4D7B91A317965D2800549C23 /* MainMenuViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4D7B91A117965D2800549C23 /* MainMenuViewController.xib */; };
 		4D7B91A617965DB400549C23 /* bad-logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D7B91A417965DB400549C23 /* bad-logo@2x.png */; };
 		4D7B91A717965DB400549C23 /* bad-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D7B91A517965DB400549C23 /* bad-logo.png */; };
 		4D9955D817BEA5C700DDE87F /* Routes.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D9955D717BEA5C700DDE87F /* Routes.m */; };
@@ -531,9 +529,6 @@
 		4D7B1E0F17BACFC8001EB23D /* ScenarioIntroViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScenarioIntroViewController.h; sourceTree = "<group>"; };
 		4D7B1E1017BACFC8001EB23D /* ScenarioIntroViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScenarioIntroViewController.m; sourceTree = "<group>"; };
 		4D7B1E1117BACFC8001EB23D /* ScenarioIntroViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ScenarioIntroViewController.xib; sourceTree = "<group>"; };
-		4D7B919F17965D2800549C23 /* MainMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainMenuViewController.h; sourceTree = "<group>"; };
-		4D7B91A017965D2800549C23 /* MainMenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainMenuViewController.m; sourceTree = "<group>"; };
-		4D7B91A117965D2800549C23 /* MainMenuViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainMenuViewController.xib; sourceTree = "<group>"; };
 		4D7B91A417965DB400549C23 /* bad-logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bad-logo@2x.png"; path = "Resources/bad-logo@2x.png"; sourceTree = "<group>"; };
 		4D7B91A517965DB400549C23 /* bad-logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bad-logo.png"; path = "Resources/bad-logo.png"; sourceTree = "<group>"; };
 		4D9955D617BEA5C700DDE87F /* Routes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Routes.h; sourceTree = "<group>"; };
@@ -2054,9 +2049,6 @@
 				4DCA2CAA18D4D4350016F5F6 /* MainMenu.ccbi */,
 				4DCA2CB418D4D8B90016F5F6 /* MainMenuController.h */,
 				4DCA2CB518D4D8B90016F5F6 /* MainMenuController.m */,
-				4D7B919F17965D2800549C23 /* MainMenuViewController.h */,
-				4D7B91A017965D2800549C23 /* MainMenuViewController.m */,
-				4D7B91A117965D2800549C23 /* MainMenuViewController.xib */,
 				4D2C7B6C179671F600AF64E4 /* InstructionsViewController.h */,
 				4D2C7B6D179671F600AF64E4 /* InstructionsViewController.m */,
 				4D2C7B6E179671F600AF64E4 /* InstructionsViewController.xib */,
@@ -2242,7 +2234,6 @@
 				4D7B1E0417BAB083001EB23D /* star@2x.png in Resources */,
 				4D5A962017E0E18B008175B8 /* swing.mp3 in Resources */,
 				4D2642CC17DEA3E7006D9652 /* tool-stats-selected@2x.png in Resources */,
-				4D7B91A317965D2800549C23 /* MainMenuViewController.xib in Resources */,
 				4D7B1DFF17BAAF9D001EB23D /* GoalsViewController.xib in Resources */,
 				4D5A963017E10097008175B8 /* rooster.aiff in Resources */,
 				4D7B91A617965DB400549C23 /* bad-logo@2x.png in Resources */,
@@ -2512,7 +2503,6 @@
 				4DAB18B018CD1A80008CF267 /* UITouch+CC.m in Sources */,
 				4DAB186418CD1A80008CF267 /* cpSpaceDebug.c in Sources */,
 				4DAB185C18CD1A80008CF267 /* cpPolyShape.c in Sources */,
-				4D7B91A217965D2800549C23 /* MainMenuViewController.m in Sources */,
 				4D2C7B6F179671F600AF64E4 /* InstructionsViewController.m in Sources */,
 				4DAB18A118CD1A80008CF267 /* CCSpriteFrameCache.m in Sources */,
 				4DCD3F061797690B0096587C /* FinanceRowCell.m in Sources */,

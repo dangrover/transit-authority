@@ -11,7 +11,6 @@
 #import "GameScenario.h"
 #import "GameState.h"
 #import "MainGameScene.h"
-#import "MainMenuViewController.h"
 #import "cocos2d.h"
 #import "CCBReader.h"
 #import "MainMenuController.h"
@@ -52,6 +51,10 @@
                                     //		CCSetupTabletScale2X: @(YES),
                                     }];
 	
+    
+    [TestFlight setDeviceIdentifier:[[[UIDevice currentDevice] identifierForVendor] UUIDString]];
+    [TestFlight takeOff:@"36d93e59-b263-4c26-a1e8-1fe37b7e934e"];
+    
 	return YES;
 }
 
@@ -59,7 +62,7 @@
 
 - (CCScene*) startScene{
     mmControler = [[MainMenuController alloc] init];
-    return [CCBReader load:@"MainMenu.ccbi" owner:mmControler];
+    return [CCBReader loadAsScene:@"MainMenu.ccbi" owner:mmControler];
 }
 
 //load:@"MainMenu.ccbi" owner:[[MainMenuScene alloc] init]];
@@ -135,15 +138,7 @@
 
 - (void) exitToMainMenu{
    
-    for(UIView *v in [CCDirector sharedDirector].view.subviews){
-        [v removeFromSuperview];
-    }
-    
-    [self.director popScene];
-    
-    MainMenuViewController *mm = [[MainMenuViewController alloc] initWithNibName:nil bundle:nil];
-    [navController_ pushViewController:mm animated:NO];
-    
+  
 }
 @end
 

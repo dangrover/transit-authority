@@ -105,6 +105,7 @@
 }
 
 - (void) refresh{
+    return;
     
   
     // NSLog(@"refreshing. pos=%@, view size=%@",NSStringFromCGPoint(self.currentPosition), NSStringFromCGSize(self.viewportSize));
@@ -183,7 +184,7 @@
                 }
             }else{
                 // We don't need this buffer anymore! Kill it
-                [self removeChild:_bufferSprites[xBufferCoord][yBufferCoord]];
+            //    [self removeChild:_bufferSprites[xBufferCoord][yBufferCoord]];
                 _bufferSprites[xBufferCoord][yBufferCoord] = [NSNull null];
             }
         }

@@ -193,9 +193,9 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     [self _makeNeighborhoodNameSprites];
     
     
-    UIView *glView = [[CCDirector sharedDirector] view];
-    [[UINib nibWithNibName:@"GameControlsPhone" bundle:nil] instantiateWithOwner:self options:nil];
-    
+ //   UIView *glView = [[CCDirector sharedDirector] view];
+  //  [[UINib nibWithNibName:@"GameControlsPhone" bundle:nil] instantiateWithOwner:self options:nil];
+    /*
     gameControlsLeft.frame = CGRectMake(-1 * UI_CORNER_RADIUS,
                                         glView.frame.size.height - gameControlsLeft.frame.size.height + UI_CORNER_RADIUS,
                                         gameControlsLeft.frame.size.width,
@@ -220,6 +220,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     [glView addSubview:gameControlsLeft];
     [glView addSubview:gameControlsCenter];
     [glView addSubview:gameControlsRight];
+    */
     
    // [glView addSubview:cameraSliders];
     //cameraSliders.frame = CGRectMake(0, 0, 200, 200);
