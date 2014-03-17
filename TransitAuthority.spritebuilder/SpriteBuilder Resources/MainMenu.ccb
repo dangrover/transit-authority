@@ -44,7 +44,7 @@
 									<key>name</key>
 									<string>position</string>
 									<key>time</key>
-									<real>2</real>
+									<real>1.4666666984558105</real>
 									<key>type</key>
 									<integer>3</integer>
 									<key>value</key>
@@ -62,7 +62,7 @@
 									<key>name</key>
 									<string>position</string>
 									<key>time</key>
-									<real>3</real>
+									<real>1.9666666984558105</real>
 									<key>type</key>
 									<integer>3</integer>
 									<key>value</key>
@@ -2088,7 +2088,7 @@
 			<key>offset</key>
 			<real>0.0</real>
 			<key>position</key>
-			<real>8.6333332061767578</real>
+			<real>4.5666666030883789</real>
 			<key>resolution</key>
 			<real>30</real>
 			<key>scale</key>

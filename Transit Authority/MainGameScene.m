@@ -135,6 +135,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     CCLabelTTF *dateLabel;
     CCScrollView *scrollView;
     
+    
 }
 
 - (id) initWithGameState:(GameState *)theState{
@@ -175,33 +176,38 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 
 -(void) onEnter{
    
-//    _panZoomLayer = [[CCLayerPanZoom alloc] init];
+    self.userInteractionEnabled = YES;
+    
+    _panZoomLayer = [[CCLayerPanZoom alloc] init];
    
     
-//    _panZoomLayer.mode = kCCLayerPanZoomModeSheet;
-//    _panZoomLayer.minScale = 1.0f/2.0f;
-//    _panZoomLayer.maxScale = 1;
-   // _panZoomLayer.panBoundsRect = CGRectMake(0,0,mapSize.width, mapSize.height);
+    _panZoomLayer.mode = kCCLayerPanZoomModeSheet;
+    _panZoomLayer.minScale = 1.0f/2.0f;
+    _panZoomLayer.maxScale = 1;
+    //_panZoomLayer.panBoundsRect = CGRectMake(0,0,mapSize.width, mapSize.height);
+    _panZoomLayer.scale = 0.5;
+    _panZoomLayer.userInteractionEnabled = YES;
     
-  //  _panZoomLayer.delegate = self;
-  //  _panZoomLayer.rubberEffectRatio = 0;
+    _panZoomLayer.delegate = self;
+    _panZoomLayer.rubberEffectRatio = 0;
     
     CGPoint startPos = [self.gameState.map.landLayer positionAt:self.gameState.map.startPosition];
-  //
- //   tiledMap.position = CGPointMake(-1*(startPos.x - (self.boundingBox.size.width/2)),
- //                                   -1*(startPos.y - (self.boundingBox.size.height/2)));
+  
+    tiledMap.position = CGPointMake(-1*(startPos.x - (self.boundingBox.size.width/2)),
+                                    -1*(startPos.y - (self.boundingBox.size.height/2)));
     
    
-    scrollView = [[CCScrollView alloc] initWithContentNode:self.gameState.map.map];
-    scrollView.bounces = NO;
-    tiledMap.scale = 0.5;
+  //  scrollView = [[CCScrollView alloc] initWithContentNode:self.gameState.map.map];
+  //  scrollView.bounces = NO;
+  //  tiledMap.scale = 0.5;
     
-    [self addChild:scrollView z:-100];
-   // [_panZoomLayer addChild:tiledMap];
+   // [self addChild:scrollView z:-100];
+    [_panZoomLayer addChild:tiledMap];
    // //NSLog(@"self bonding = %@",NSStringFromCGRect(self.boundingBox));
-    //_panZoomLayer.position = CGPointMake(self.boundingBox.size.width/2, self.boundingBox.size.height/2);
- //   [self addChild:_panZoomLayer];
- //   _panZoomLayer.scale = _panZoomLayer.maxScale;
+    _panZoomLayer.position = CGPointMake(self.boundingBox.size.width/2, self.boundingBox.size.height/2);
+    
+    [self addChild:_panZoomLayer z:-100];
+    _panZoomLayer.scale = _panZoomLayer.maxScale;
    // _panZoomLayer.contentsScale
    
     [self _makeStreetSprites];
@@ -299,6 +305,22 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     [nc addObserver:self selector:@selector(_updateGoalDisplay) name:GameStateNotification_CheckedGoals object:self.gameState];
     
     [super onEnter];
+}
+
+- (void)touchBegan:(UITouch *)touch withEvent:(UIEvent *)event{
+    [_panZoomLayer touchBegan:touch withEvent:event];
+}
+
+- (void)touchMoved:(UITouch *)touch withEvent:(UIEvent *)event{
+    [_panZoomLayer touchMoved:touch withEvent:event];
+}
+
+- (void)touchEnded:(UITouch *)touch withEvent:(UIEvent *)event{
+    [_panZoomLayer touchEnded:touch withEvent:event];
+}
+
+- (void)touchCancelled:(UITouch *)touch withEvent:(UIEvent *)event{
+    [_panZoomLayer touchCancelled:touch withEvent:event];
 }
 
 - (void) onEnterTransitionDidFinish{

@@ -44,7 +44,7 @@ typedef enum
 
 @class CCLayerPanZoom;
 @protocol CCLayerPanZoomClickDelegate <NSObject>
-@optional
+
 /** Sent to delegate each time, when click event was obtained. 
  * Only for mode = kCCLayerPanZoomModeSheet. */
 - (void) layerPanZoom: (CCLayerPanZoom *) sender 
@@ -58,8 +58,6 @@ typedef enum
 /** Sent to delegate each time, when users drags finger on the screen.
  * This means that click event is not possible with that touch from now. */
 - (void) layerPanZoom: (CCLayerPanZoom *) sender touchMoveBeganAtPosition: (CGPoint) aPoint;
-
-- (void) layerPanZoom:(CCLayerPanZoom *)sender updatedPosition:(CGPoint)pos scale:(CGFloat)scale;
 
 @end
 
@@ -77,7 +75,7 @@ typedef enum
 	CGRect _panBoundsRect;
 	CGFloat _touchDistance;
 	CGFloat _maxTouchDistanceToClick;
-	//id<CCLayerPanZoomClickDelegate> _delegate;
+	id<CCLayerPanZoomClickDelegate> _delegate;
     
     CCLayerPanZoomMode _mode;
     CGFloat _minSpeed;

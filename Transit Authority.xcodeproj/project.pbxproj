@@ -318,7 +318,6 @@
 		4DAB18ED18CD1A80008CF267 /* NSMutableDictionary+WeakReferences.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DAB184018CD1A80008CF267 /* NSMutableDictionary+WeakReferences.m */; };
 		4DAB18EE18CD1A80008CF267 /* OALAudioFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DAB184218CD1A80008CF267 /* OALAudioFile.m */; };
 		4DAB18EF18CD1A80008CF267 /* OALTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DAB184518CD1A80008CF267 /* OALTools.m */; };
-		4DAB18F218CE1B55008CF267 /* CCLayerPanZoom.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DAB18F118CE1B55008CF267 /* CCLayerPanZoom.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		4DAB5BD51797ACB000CD35E2 /* FinancesBondsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DAB5BD31797ACAF00CD35E2 /* FinancesBondsViewController.m */; };
 		4DAB5BD61797ACB000CD35E2 /* FinancesBondsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4DAB5BD41797ACB000CD35E2 /* FinancesBondsViewController.xib */; };
 		4DAB5BDA1797B09000CD35E2 /* FinancesSubsidiesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DAB5BD81797B08F00CD35E2 /* FinancesSubsidiesViewController.m */; };
@@ -349,6 +348,8 @@
 		4DD590BA18D6634D00EECA46 /* HKTMXLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DD590B518D6634D00EECA46 /* HKTMXLayer.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		4DD590BB18D6634D00EECA46 /* HKTMXTiledMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DD590B718D6634D00EECA46 /* HKTMXTiledMap.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		4DD590BC18D6634D00EECA46 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 4DD590B818D6634D00EECA46 /* README.md */; };
+		4DD590C118D6A27800EECA46 /* CCLayerPanZoom.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DD590BF18D6A27800EECA46 /* CCLayerPanZoom.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		4DD590C218D6A27800EECA46 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 4DD590C018D6A27800EECA46 /* README.md */; };
 		4DE3CC5418D652EE00B87C7D /* ccbResources in Resources */ = {isa = PBXBuildFile; fileRef = 4DE3CC5318D652EE00B87C7D /* ccbResources */; };
 		4DE702FE1794CD3B00AC228B /* StreetNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DE702FD1794CD3B00AC228B /* StreetNode.m */; };
 		4DF0E8521771024100D46A07 /* Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0E8511771024100D46A07 /* Utilities.m */; };
@@ -937,8 +938,6 @@
 		4DAB184518CD1A80008CF267 /* OALTools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OALTools.m; sourceTree = "<group>"; };
 		4DAB184618CD1A80008CF267 /* ObjectALMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectALMacros.h; sourceTree = "<group>"; };
 		4DAB184718CD1A80008CF267 /* SynthesizeSingleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SynthesizeSingleton.h; sourceTree = "<group>"; };
-		4DAB18F018CE1B55008CF267 /* CCLayerPanZoom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CCLayerPanZoom.h; path = libs/CCLayerPanZoom/CCLayerPanZoom.h; sourceTree = "<group>"; };
-		4DAB18F118CE1B55008CF267 /* CCLayerPanZoom.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CCLayerPanZoom.m; path = libs/CCLayerPanZoom/CCLayerPanZoom.m; sourceTree = "<group>"; };
 		4DAB5BD21797ACAF00CD35E2 /* FinancesBondsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FinancesBondsViewController.h; sourceTree = "<group>"; };
 		4DAB5BD31797ACAF00CD35E2 /* FinancesBondsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FinancesBondsViewController.m; sourceTree = "<group>"; };
 		4DAB5BD41797ACB000CD35E2 /* FinancesBondsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FinancesBondsViewController.xib; sourceTree = "<group>"; };
@@ -986,6 +985,9 @@
 		4DD590B618D6634D00EECA46 /* HKTMXTiledMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HKTMXTiledMap.h; sourceTree = "<group>"; };
 		4DD590B718D6634D00EECA46 /* HKTMXTiledMap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HKTMXTiledMap.m; sourceTree = "<group>"; };
 		4DD590B818D6634D00EECA46 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
+		4DD590BE18D6A27800EECA46 /* CCLayerPanZoom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCLayerPanZoom.h; sourceTree = "<group>"; };
+		4DD590BF18D6A27800EECA46 /* CCLayerPanZoom.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCLayerPanZoom.m; sourceTree = "<group>"; };
+		4DD590C018D6A27800EECA46 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 		4DE3CC5318D652EE00B87C7D /* ccbResources */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ccbResources; path = "TransitAuthority.spritebuilder/Source/Resources/Published-iOS/ccbResources/ccbResources"; sourceTree = SOURCE_ROOT; };
 		4DE702FC1794CD3A00AC228B /* StreetNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StreetNode.h; sourceTree = "<group>"; };
 		4DE702FD1794CD3B00AC228B /* StreetNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StreetNode.m; sourceTree = "<group>"; };
@@ -1339,9 +1341,8 @@
 		4D5E9156176129300041A073 /* libs */ = {
 			isa = PBXGroup;
 			children = (
+				4DD590BD18D6A27800EECA46 /* CCLayerPanZoom */,
 				4DD590B118D6634D00EECA46 /* HKTMXTiledMap */,
-				4DAB18F018CE1B55008CF267 /* CCLayerPanZoom.h */,
-				4DAB18F118CE1B55008CF267 /* CCLayerPanZoom.m */,
 				4DAB16AB18CD1A7E008CF267 /* CCBReader */,
 				4DAB16BA18CD1A7F008CF267 /* Chipmunk */,
 				4DAB170518CD1A7F008CF267 /* cocos2d */,
@@ -2092,6 +2093,17 @@
 			path = libs/HKTMXTiledMap;
 			sourceTree = "<group>";
 		};
+		4DD590BD18D6A27800EECA46 /* CCLayerPanZoom */ = {
+			isa = PBXGroup;
+			children = (
+				4DD590BE18D6A27800EECA46 /* CCLayerPanZoom.h */,
+				4DD590BF18D6A27800EECA46 /* CCLayerPanZoom.m */,
+				4DD590C018D6A27800EECA46 /* README.md */,
+			);
+			name = CCLayerPanZoom;
+			path = libs/CCLayerPanZoom;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -2240,6 +2252,7 @@
 				4D1B8D31178B525D0033DD70 /* tool-tracks-selected@2x.png in Resources */,
 				4D7B1E0A17BAB2CA001EB23D /* checkbox-unchecked@2x.png in Resources */,
 				4D1B8D32178B525D0033DD70 /* tool-lines-selected.png in Resources */,
+				4DD590C218D6A27800EECA46 /* README.md in Resources */,
 				4D6BF7A517EA720F007E2FD6 /* connection-stadium-baseball.png in Resources */,
 				4D5A962B17E0EB04008175B8 /* complete-goal.aiff in Resources */,
 				4D6D7FAF17A818D000217607 /* Default-568h@2x.png in Resources */,
@@ -2507,7 +2520,6 @@
 				4DAB18AE18CD1A80008CF267 /* CCES2Renderer.m in Sources */,
 				4D6EDB6817E404DD0071065B /* TouchCanceler.m in Sources */,
 				4DAB18E018CD1A80008CF267 /* ALChannelSource.m in Sources */,
-				4DAB18F218CE1B55008CF267 /* CCLayerPanZoom.m in Sources */,
 				4DAB18D718CD1A80008CF267 /* OALActionManager.m in Sources */,
 				4DAB189B18CD1A80008CF267 /* CCShaderCache.m in Sources */,
 				4DAB185D18CD1A80008CF267 /* cpRatchetJoint.c in Sources */,
@@ -2549,6 +2561,7 @@
 				4DAB18A318CD1A80008CF267 /* CCTextureAtlas.m in Sources */,
 				4DAB5BD51797ACB000CD35E2 /* FinancesBondsViewController.m in Sources */,
 				4DAB189418CD1A80008CF267 /* CCPhysicsShape.m in Sources */,
+				4DD590C118D6A27800EECA46 /* CCLayerPanZoom.m in Sources */,
 				4DAB189D18CD1A80008CF267 /* CCSprite.m in Sources */,
 				4DAB5BDA1797B09000CD35E2 /* FinancesSubsidiesViewController.m in Sources */,
 				4DAB185918CD1A80008CF267 /* cpHashSet.c in Sources */,
