@@ -12,7 +12,8 @@
 
 typedef enum{
     TrainState_MovingOnTrack,
-    TrainState_StoppedInStation
+    TrainState_OffloadingPassengers,
+    TrainState_OnloadingPassengers
 } TrainState;
 
 @interface Train : GameObject

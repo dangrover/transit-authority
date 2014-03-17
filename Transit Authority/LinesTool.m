@@ -245,7 +245,7 @@
         gs.assignedTrains[trainToAdd.UUID] = trainToAdd;
 
         trainToAdd.currentChunkPosition = 0;
-        trainToAdd.state = TrainState_StoppedInStation;
+        trainToAdd.state = TrainState_OnloadingPassengers;
         trainToAdd.line = self.line; // route will be assigned in regenerateAllRoutes
         [self.parent.parent.gameState regenerateAllTrainRoutes];
         if(trainToAdd.currentRoute.routeChunks.count){

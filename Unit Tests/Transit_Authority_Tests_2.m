@@ -370,7 +370,7 @@
     // A->C, C->D, D->E, E->D, D->C, C->A
     // red line train is waiting in the station
     redLineTrain.currentRouteChunk = 0;
-    redLineTrain.state = TrainState_StoppedInStation;
+    redLineTrain.state = TrainState_OnloadingPassengers;
     i = [state passengerRouteForDestinationWithoutTurning:c onRoute:redLineTrain.currentRoute beginningWithChunk:0 maxTransfers:0];
     XCTAssertTrue(i.routeExists, @"passengerRouteInfoForTrainWithoutTurning");
     XCTAssertTrue(i.minTransfersNeeded == 0, @"passengerRouteInfoForTrainWithoutTurning");
