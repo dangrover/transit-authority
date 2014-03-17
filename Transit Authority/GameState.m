@@ -968,22 +968,13 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
     return _tracks;
 }
 
-- (float)trackSegmentCostBetween:(CGPoint)tileA tile:(CGPoint)tileB {
-    // Calculate the amount of track needed in three dimensions, so tracks between different elevations cost more. Unrealistically, this assumes a straight line.
-    // For now we'll say that one unit of elevation (can be 0-3) is the same distance as 5 tiles.
-    int elevationA = [self.map elevationAt:tileA] * 5;
-    int elevationB = [self.map elevationAt:tileB] * 5;
-
-    CGFloat distanceInTiles = PointDistance3D(tileA, tileB, elevationA, elevationB);
-    return distanceInTiles * GAME_TRACK_COST_PER_TILE;
-}
-
 - (TrackSegment *) buildTrackSegmentBetween:(Station *)stationA second:(Station *)stationB{
     NSAssert(stationA != stationB, @"Can't link a station to itself");
     NSAssert(!stationA.links[stationB.UUID], @"Already linked");
     NSAssert(!stationB.links[stationA.UUID], @"Already linked");
     
-    CGFloat cost = [self trackSegmentCostBetween:stationA.tileCoordinate tile:stationB.tileCoordinate];
+    CGFloat distanceInTiles = PointDistance(stationA.tileCoordinate, stationB.tileCoordinate);
+    CGFloat cost = distanceInTiles * GAME_TRACK_COST_PER_TILE;
     
     TrackSegment *seg = [[TrackSegment alloc] init];
     seg.startStation = stationA;
@@ -999,7 +990,7 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
     _tracks[seg.UUID] = seg;
     stationA.links[stationB.UUID] = seg;
     stationB.links[stationA.UUID] = seg;
-        
+    
     return seg;
 }
 
@@ -1083,18 +1074,13 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
     Station *station = [[Station alloc] init];
     station.tileCoordinate = tileCoords;
     station.built = self.currentDate;
-    
-    // One example of use for elevation layer: Make stations more expensive at higher elevations.
-    // NSLog(@"Station at elevation %d costs %f", elevation, cost);
-    int elevation = [self.map elevationAt:tileCoords];
-    float cost = GAME_STATION_COST + elevation * 3000;
-    self.currentCash -= cost;
+    self.currentCash -= GAME_STATION_COST;
     
     [self willChangeValueForKey:@"stations"];
     [_stationsById setObject:station forKey:station.UUID];
     [self didChangeValueForKey:@"stations"];
     
-    [self.ledger recordDatum:@(cost)
+    [self.ledger recordDatum:@(GAME_STATION_COST)
                       forKey:GameLedger_Finance_Expense_Construction
                       atDate:self.currentDate];
     
