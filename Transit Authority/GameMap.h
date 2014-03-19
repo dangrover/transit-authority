@@ -11,6 +11,7 @@
 @class CCTMXTiledMap, CCTMXObjectGroup, CCTMXLayer, HKTMXTiledMap, HKTMXLayer;
 
 #define GAMEMAP_MAX_DENSITY 3 /// the maximum density in a given tile
+#define GAMEMAP_MAX_ELEVATION 3 /// the maximum elevation
 
 /// When running unit tests, switch out HKTMXTiledMap for the standard cocos2d class.
 /// It seems to freak out when we use HKTMXTiledMap, but we're not doing any graphics,
@@ -32,6 +33,7 @@
 @property(strong, nonatomic, readonly) HKTMXLayer *landLayer;
 @property(strong, nonatomic, readonly) HKTMXLayer *residentialPopulationLayer;
 @property(strong, nonatomic, readonly) HKTMXLayer *commericalPopulationLayer;
+@property(strong, nonatomic, readonly) HKTMXLayer *elevationLayer;
 @property(strong, nonatomic, readonly) CCTMXObjectGroup *neighborhoodNames;
 @property(strong, nonatomic, readonly) CCTMXObjectGroup *streets;
 @property(assign, nonatomic, readonly) CGPoint startPosition; // where to put the camera when we start
@@ -48,6 +50,8 @@
 - (unsigned) residentialDensityAt:(CGPoint)p;
 - (unsigned) totalDensityAt:(CGPoint)p;
 
+// Elevation Info
+- (unsigned) elevationAt:(CGPoint)p;
 
 
 @end

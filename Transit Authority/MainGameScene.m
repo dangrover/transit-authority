@@ -268,6 +268,9 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     // because we're rendering it in the heatmap.
     self.gameState.map.residentialPopulationLayer.visible = self.gameState.map.commericalPopulationLayer.visible = NO;
     
+    // Hide elevation layer:
+    self.gameState.map.elevationLayer.visible = NO;
+    
     _dayNightOverlay = [CCLayerColor layerWithColor:(ccColor4B){0,0,0,0}];
     _dayNightOverlay.opacity = 0;
     [self addChild:_dayNightOverlay];
