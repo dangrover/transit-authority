@@ -15,7 +15,7 @@
     </Rule>
 </Style>
 <Style name="water_areas">
- 
+
     <Rule>
       <Filter>[natural] = 'land'</Filter>
       <PolygonSymbolizer fill="#f2efe9"/>
@@ -42,13 +42,13 @@
       <Filter>[tourism] = 'camp_site' or [tourism]='caravan_site' or [tourism] = 'picnic_site'</Filter>
       &maxscale_zoom13;
       <PolygonSymbolizer fill="#00ff00"/>
-    </Rule>        
+    </Rule>
     <Rule>
       <Filter>[tourism] = 'attraction'</Filter>
       &maxscale_zoom10;
       <PolygonSymbolizer fill="#00ff00"/>
     </Rule>
-   
+
     <Rule>
       <Filter>[landuse] = 'vineyard'</Filter>
       <PolygonSymbolizer fill="#00ff00"/>
@@ -63,14 +63,14 @@
       <Filter>[landuse] = 'cemetery' or [landuse] = 'grave_yard' or [amenity]='grave_yard'</Filter>
       <PolygonSymbolizer fill="#00ff00"/>
     </Rule>
-  
- 
+
+
     <Rule>
       <Filter>[landuse]='field' or [natural]='field'</Filter>
       <PolygonSymbolizer fill="#00ff00"/>
     </Rule>
-    
-  
+
+
     <Rule>
       &maxscale_zoom14;
       <Filter>([landuse] = 'cemetery' or [landuse] = 'grave_yard' or [amenity]='grave_yard') and [religion] = 'INT-generic'</Filter>
@@ -82,27 +82,27 @@
     </Rule>
     <Rule>
       <Filter>[leisure] = 'park' or [leisure] = 'recreation_ground'</Filter>
-    
+
       <PolygonSymbolizer fill="#00ff00"/>
     </Rule>
     <Rule>
       <Filter>[tourism] = 'zoo'</Filter>
-   
+
      <PolygonSymbolizer fill="#00ff00"/>
     </Rule>
     <Rule>
       <Filter>[leisure] = 'common'</Filter>
- 
+
       <PolygonSymbolizer fill="#00ff00"/>
     </Rule>
     <Rule>
       <Filter>[leisure] = 'garden'</Filter>
-    
+
       <PolygonSymbolizer fill="#00ff00"/>
     </Rule>
     <Rule>
       <Filter>[leisure] = 'golf_course'</Filter>
-  
+
       <PolygonSymbolizer fill="#00ff00"/>
     </Rule>
 
@@ -110,12 +110,12 @@
       <Filter>[landuse] = 'forest'</Filter>
       <PolygonSymbolizer fill="#00ff00"/>
     </Rule>
-    
+
     <Rule>
       <Filter>[landuse]='farmyard'</Filter>
       <PolygonSymbolizer fill="#00ff00"/>
     </Rule>
-    
+
     <Rule>
       <Filter>[landuse] = 'recreation_ground' or [landuse] = 'conservation'</Filter>
       &maxscale_zoom10;
@@ -126,14 +126,14 @@
       &maxscale_zoom11;
       <PolygonSymbolizer fill="#00ff00"/>
     </Rule>
-  
-  
-    
+
+
+
      <Rule>
       <Filter>[natural] = 'wood' or [landuse] = 'wood'</Filter>
       <PolygonSymbolizer fill="#00ff00"/>
     </Rule>
- 
+
     <Rule>
       <Filter>[natural] = 'grassland'</Filter>
       <PolygonSymbolizer fill="#00ff00"/>
@@ -143,13 +143,13 @@
       <PolygonSymbolizer fill="#00ff00"/>
     </Rule>
 
-   
+
     <Rule>
       <Filter>[aeroway] = 'aerodrome'</Filter>
       &maxscale_zoom12;
       <PolygonSymbolizer fill="#000"/>
     </Rule>
- 
+
     <Rule>
       <Filter>[highway] = 'services' or [highway] = 'rest_area'</Filter>
       &maxscale_zoom14;
@@ -234,7 +234,9 @@
       where "natural" in ('marsh','wetland') and building is null
       order by z_order,way_area desc
       ) as water_areas</Parameter>
+
       &datasource-settings;
+
     </Datasource>
 </Layer>
 
