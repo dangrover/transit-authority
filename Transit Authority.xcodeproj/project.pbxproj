@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0F3FBEBB18D5CA8000784352 /* tileset-elevation.png in Resources */ = {isa = PBXBuildFile; fileRef = 0F3FBEBA18D5CA8000784352 /* tileset-elevation.png */; };
 		4D1B8CF8178B43090033DD70 /* pause.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D1B8CF2178B43090033DD70 /* pause.png */; };
 		4D1B8CF9178B43090033DD70 /* fast-forward.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D1B8CF3178B43090033DD70 /* fast-forward.png */; };
 		4D1B8CFA178B43090033DD70 /* fast-forward@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D1B8CF4178B43090033DD70 /* fast-forward@2x.png */; };
@@ -369,6 +370,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0F3FBEBA18D5CA8000784352 /* tileset-elevation.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "tileset-elevation.png"; path = "Maps/tileset-elevation.png"; sourceTree = SOURCE_ROOT; };
 		4D0715011773D1E5008D10E3 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		4D1B8CF2178B43090033DD70 /* pause.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = pause.png; path = Resources/pause.png; sourceTree = "<group>"; };
 		4D1B8CF3178B43090033DD70 /* fast-forward.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "fast-forward.png"; path = "Resources/fast-forward.png"; sourceTree = "<group>"; };
@@ -1311,6 +1313,7 @@
 				4D5E9151176129300041A073 /* Icon@2x.png */,
 				4D2642B717DE3F2C006D9652 /* tileset-land.png */,
 				4D2642B817DE3F2C006D9652 /* tileset-land-hd.png */,
+				0F3FBEBA18D5CA8000784352 /* tileset-elevation.png */,
 				4D5E9153176129300041A073 /* Info.plist */,
 				4D1B8D10178B4F7F0033DD70 /* tool-tracks@2x.png */,
 				4D1B8D11178B4F7F0033DD70 /* tool-tracks.png */,
@@ -2191,6 +2194,7 @@
 				4DCA2CAB18D4D4350016F5F6 /* MainMenu.ccbi in Resources */,
 				4D5E9146176129300041A073 /* fps_images-ipadhd.png in Resources */,
 				4D5A962C17E0EB04008175B8 /* cash-register.wav in Resources */,
+				0F3FBEBB18D5CA8000784352 /* tileset-elevation.png in Resources */,
 				4D7B1E0C17BAB2CA001EB23D /* checkbox-checked@2x.png in Resources */,
 				4D2642B917DE3F2C006D9652 /* tileset-land.png in Resources */,
 				4D6D7FAD17A818C200217607 /* ledger.sql in Resources */,

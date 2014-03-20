@@ -17,6 +17,9 @@ do
 	./Scripts/WBTMXTool/WBTMXTool -in "$infile" -out $outfile -scale 2.0 -suffixAction add
 done
 
+# create hd directory to avoid errors
+mkdir -p ./Maps/hd/
+
 # change filenames
 grep -rl matchstring ./Maps/hd/ | xargs sed -i 's/.png/-hd.png/g'
 

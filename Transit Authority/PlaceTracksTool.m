@@ -10,7 +10,10 @@
 #import "MainGameScene.h"
 #import "TracksNode.h"
 #import "Utilities.h"
-//#import "CCTiledMap.h"
+#import "CCTiledMap.h"
+#import "CCLayerPanZoom.h"
+#import "HKTMXTiledMap.h"
+#import "CCTMXTiledMap+Extras.h"
 
 @implementation PlaceTracksTool{
     TracksNode *trackPlacement;
@@ -55,8 +58,9 @@
     
     if(trackPlacement){
         CGPoint nodeCoord = [touch locationInNode:self.parent->tiledMap];
-        CGFloat distanceInTiles = PointDistance(trackPlacement.start, trackPlacement.end) / self.parent->tiledMap.tileSize.width;
-        CGFloat cost = distanceInTiles * GAME_TRACK_COST_PER_TILE;
+        CGPoint start = [self.parent->tiledMap tileCoordinateFromNodeCoordinate:trackPlacement.start];
+        CGPoint end = [self.parent->tiledMap tileCoordinateFromNodeCoordinate:trackPlacement.end];
+        CGFloat cost = [self.parent.gameState trackSegmentCostBetween:start tile:end];
         
         Station *station = [self.parent stationAtNodeCoords:nodeCoord];
         

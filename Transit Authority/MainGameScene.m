@@ -292,6 +292,10 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     self.gameState.map.residentialPopulationLayer.visible = self.gameState.map.commericalPopulationLayer.visible = NO;
     
     _dayNightOverlay = [CCNodeColor nodeWithColor:[CCColor clearColor]];
+
+    // Hide elevation layer:
+    self.gameState.map.elevationLayer.visible = NO;
+
     _dayNightOverlay.opacity = 0;
     [self addChild:_dayNightOverlay];
     

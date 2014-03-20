@@ -13,6 +13,7 @@
 #define ARC4RANDOM_MAX      0x100000000
 
 CGFloat PointDistance(CGPoint point1,CGPoint point2);
+CGFloat PointDistance3D(CGPoint point1,CGPoint point2,CGFloat z1,CGFloat z2);
 CGPoint CGPointOffset(CGPoint thePoint, CGFloat x, CGFloat y);
 CGPoint CGPointMidpoint(CGPoint a, CGPoint b);
 

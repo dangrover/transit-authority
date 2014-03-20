@@ -54,6 +54,7 @@ extern NSString *GameStateNotification_HourChanged;
 
 // TRACK SEGMENTS
 @property(strong, nonatomic, readonly) NSDictionary *trackSegments; // track.UUID -> track
+- (float)trackSegmentCostBetween:(CGPoint)tileA tile:(CGPoint)tileB;
 - (TrackSegment *) buildTrackSegmentBetween:(Station *)stationA second:(Station *)stationB;
 - (void) removeTrackSegment:(TrackSegment *)theSegment;
 

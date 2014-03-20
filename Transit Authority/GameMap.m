@@ -18,10 +18,10 @@
 @property(strong, readwrite) NSString *originalPath;
 @property(strong, readwrite) MAP_CLASS *map;
 @property(assign, readwrite) CGPoint startPosition;
-
 @property(strong, readwrite) MAP_LAYER_CLASS *landLayer;
 @property(strong, readwrite) MAP_LAYER_CLASS *residentialPopulationLayer;
 @property(strong, readwrite) MAP_LAYER_CLASS *commericalPopulationLayer;
+@property(strong, readwrite) MAP_LAYER_CLASS *elevationLayer;
 @end
 
 @implementation GameMap{
@@ -47,10 +47,12 @@
         self.residentialPopulationLayer = [self.map layerNamed:@"Residential"];
         self.commericalPopulationLayer = [self.map layerNamed:@"Commercial"];
         self.landLayer = [self.map layerNamed:@"Land"];
+        self.elevationLayer = [self.map layerNamed:@"Elevation"];
         
         NSAssert(self.landLayer, @"couldn't find land layer");
         NSAssert(self.residentialPopulationLayer, @"couldn't find res population layer");
         NSAssert(self.commericalPopulationLayer, @"couldn't find com population layer");
+        NSAssert(self.elevationLayer, @"couldn't find elevation layer");
         
         // tabulate the total population
         _totalPopulation = 0;
@@ -97,6 +99,13 @@
 
 - (unsigned) totalDensityAt:(CGPoint)p{
     return [self commercialDensityAt:p] + [self residentialDensityAt:p];
+}
+
+- (unsigned) elevationAt:(CGPoint)p{
+    if((self.size.width <= p.x) || (self.size.height <= p.y)) return 0;
+    
+    uint32_t resGid = [self.elevationLayer tileGIDAt:p];
+    return resGid ? MAX(0, MIN(GAMEMAP_MAX_ELEVATION, resGid - self.elevationLayer.tileset.firstGid + 1)) : 0;
 }
 
 - (BOOL) tileCoordinateIsInBounds:(CGPoint)tileCoordinate{
