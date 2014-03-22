@@ -16,7 +16,6 @@
 @implementation MainMenuController
 
 - (void) newGame{
-    NSLog(@"New game");
     
     GameScenario *scenario = [[GameScenario alloc] initWithJSON:[[NSBundle mainBundle] pathForResource:@"boston" ofType:@"json"]];
     
