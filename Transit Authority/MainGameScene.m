@@ -182,7 +182,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
    
     
     _panZoomLayer.mode = kCCLayerPanZoomModeSheet;
-    _panZoomLayer.minScale = 1.0f/2.0f;
+    _panZoomLayer.minScale = 1.0f/6.0f;
     _panZoomLayer.maxScale = 1;
     //_panZoomLayer.panBoundsRect = CGRectMake(0,0,mapSize.width, mapSize.height);
     _panZoomLayer.scale = 0.5;

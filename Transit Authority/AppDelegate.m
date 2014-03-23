@@ -20,12 +20,7 @@
     MainMenuController *mmControler;
 }
 
-
-//
--(BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-{
-	// This is the only app delegate method you need to implement when inheriting from CCAppDelegate.
-	// This method is a good place to add one time setup code that only runs when your app is first launched.
+-(BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions{
 	
 	// Setup Cocos2D with reasonable defaults for everything.
 	// There are a number of simple options you can change.
@@ -34,6 +29,8 @@
                                     // Show the FPS and draw call label.
                                     CCSetupShowDebugStats: @(NO),
                                     
+                                    CCSetupDepthFormat: @(GL_DEPTH24_STENCIL8_OES),
+                                    CCSetupPreserveBackbuffer: @(YES)
                                     // More examples of options you might want to fiddle with:
                                     // (See CCAppDelegate.h for more information)
                                     

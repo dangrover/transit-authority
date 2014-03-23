@@ -228,7 +228,7 @@ typedef enum
     [self.touches addObject: touch];
 	
     
-    if ([self.touches count] == 1)
+    if ([event.allTouches count] == 1)
     {
         _touchMoveBegan = NO;
         _singleTouchTimestamp = [NSDate timeIntervalSinceReferenceDate];
@@ -239,12 +239,12 @@ typedef enum
 
 - (void) touchMoved:(UITouch *)touch withEvent:(UIEvent *)event{
 
-	BOOL multitouch = [self.touches count] > 1;
+	BOOL multitouch = [event.allTouches count] > 1;
 	if (multitouch)
 	{
 		// Get the two first touches
-        UITouch *touch1 = [self.touches objectAtIndex: 0];
-		UITouch *touch2 = [self.touches objectAtIndex: 1];
+        UITouch *touch1 = [event.allTouches.allObjects objectAtIndex: 0];
+		UITouch *touch2 = [event.allTouches.allObjects objectAtIndex: 1];
 		// Get current and previous positions of the touches
 		CGPoint curPosTouch1 = [[CCDirector sharedDirector] convertToGL: [touch1 locationInView: [touch1 view]]];
 		CGPoint curPosTouch2 = [[CCDirector sharedDirector] convertToGL: [touch2 locationInView: [touch2 view]]];
@@ -287,7 +287,7 @@ typedef enum
 	else
 	{	        
         // Get the single touch and it's previous & current position.
-        UITouch *touch = [self.touches objectAtIndex: 0];
+        UITouch *touch = [[event.allTouches allObjects] objectAtIndex: 0];
         CGPoint curTouchPosition = [[CCDirector sharedDirector] convertToGL: [touch locationInView: [touch view]]];
         CGPoint prevTouchPosition = [[CCDirector sharedDirector] convertToGL: [touch previousLocationInView: [touch view]]];
         
@@ -315,14 +315,13 @@ typedef enum
     }	
 }
 
-- (void) touchEnded: (UITouch *) touch
-			  withEvent: (UIEvent *) event
+- (void) touchEnded: (UITouch *) touch withEvent: (UIEvent *) event
 {
     _singleTouchTimestamp = INFINITY;
     
     // Process click event in single touch.
     if (  (self.touchDistance < self.maxTouchDistanceToClick) && (self.delegate) 
-        && ([self.touches count] == 1))
+        && ([event.allTouches count] == 1))
     {
         UITouch *touch = [self.touches objectAtIndex: 0];        
         CGPoint curPos = [[CCDirector sharedDirector] convertToGL: [touch locationInView: [touch view]]];
