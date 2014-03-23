@@ -138,8 +138,6 @@
 		4D7B1E0B17BAB2CA001EB23D /* checkbox-unchecked.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D7B1E0717BAB2CA001EB23D /* checkbox-unchecked.png */; };
 		4D7B1E0C17BAB2CA001EB23D /* checkbox-checked@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D7B1E0817BAB2CA001EB23D /* checkbox-checked@2x.png */; };
 		4D7B1E0D17BAB2CA001EB23D /* checkbox-checked.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D7B1E0917BAB2CA001EB23D /* checkbox-checked.png */; };
-		4D7B1E1217BACFC8001EB23D /* ScenarioIntroViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D7B1E1017BACFC8001EB23D /* ScenarioIntroViewController.m */; };
-		4D7B1E1317BACFC8001EB23D /* ScenarioIntroViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4D7B1E1117BACFC8001EB23D /* ScenarioIntroViewController.xib */; };
 		4D7B91A617965DB400549C23 /* bad-logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D7B91A417965DB400549C23 /* bad-logo@2x.png */; };
 		4D7B91A717965DB400549C23 /* bad-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D7B91A517965DB400549C23 /* bad-logo.png */; };
 		4D9955D817BEA5C700DDE87F /* Routes.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D9955D717BEA5C700DDE87F /* Routes.m */; };
@@ -533,9 +531,6 @@
 		4D7B1E0717BAB2CA001EB23D /* checkbox-unchecked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "checkbox-unchecked.png"; path = "Resources/checkbox-unchecked.png"; sourceTree = "<group>"; };
 		4D7B1E0817BAB2CA001EB23D /* checkbox-checked@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "checkbox-checked@2x.png"; path = "Resources/checkbox-checked@2x.png"; sourceTree = "<group>"; };
 		4D7B1E0917BAB2CA001EB23D /* checkbox-checked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "checkbox-checked.png"; path = "Resources/checkbox-checked.png"; sourceTree = "<group>"; };
-		4D7B1E0F17BACFC8001EB23D /* ScenarioIntroViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScenarioIntroViewController.h; sourceTree = "<group>"; };
-		4D7B1E1017BACFC8001EB23D /* ScenarioIntroViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScenarioIntroViewController.m; sourceTree = "<group>"; };
-		4D7B1E1117BACFC8001EB23D /* ScenarioIntroViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ScenarioIntroViewController.xib; sourceTree = "<group>"; };
 		4D7B91A417965DB400549C23 /* bad-logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bad-logo@2x.png"; path = "Resources/bad-logo@2x.png"; sourceTree = "<group>"; };
 		4D7B91A517965DB400549C23 /* bad-logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bad-logo.png"; path = "Resources/bad-logo.png"; sourceTree = "<group>"; };
 		4D9955D617BEA5C700DDE87F /* Routes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Routes.h; sourceTree = "<group>"; };
@@ -2065,9 +2060,6 @@
 				4D2C7B6C179671F600AF64E4 /* InstructionsViewController.h */,
 				4D2C7B6D179671F600AF64E4 /* InstructionsViewController.m */,
 				4D2C7B6E179671F600AF64E4 /* InstructionsViewController.xib */,
-				4D7B1E0F17BACFC8001EB23D /* ScenarioIntroViewController.h */,
-				4D7B1E1017BACFC8001EB23D /* ScenarioIntroViewController.m */,
-				4D7B1E1117BACFC8001EB23D /* ScenarioIntroViewController.xib */,
 			);
 			name = "Main Menu";
 			sourceTree = "<group>";
@@ -2236,7 +2228,6 @@
 				4D1B8D1E178B4F800033DD70 /* tool-more@2x.png in Resources */,
 				4D1B8D1F178B4F800033DD70 /* tool-more.png in Resources */,
 				4D2642D117DEAC7C006D9652 /* goals.png in Resources */,
-				4D7B1E1317BACFC8001EB23D /* ScenarioIntroViewController.xib in Resources */,
 				4D1B8D20178B4F800033DD70 /* tool-lines@2x.png in Resources */,
 				4D1B8D21178B4F800033DD70 /* tool-lines.png in Resources */,
 				4D6BF7AB17EA720F007E2FD6 /* connection-airport.png in Resources */,
@@ -2489,7 +2480,6 @@
 				4DAB18D018CD1A80008CF267 /* quaternion.c in Sources */,
 				4DBC422817BE98E0005F343E /* Passenger.m in Sources */,
 				4DAB18D318CD1A80008CF267 /* vec2.c in Sources */,
-				4D7B1E1217BACFC8001EB23D /* ScenarioIntroViewController.m in Sources */,
 				4DAB188C18CD1A80008CF267 /* CCParallaxNode.m in Sources */,
 				4DAB184C18CD1A80008CF267 /* CCBsequence.m in Sources */,
 				4DAB185A18CD1A80008CF267 /* cpPinJoint.c in Sources */,
