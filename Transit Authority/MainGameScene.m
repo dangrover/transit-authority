@@ -185,7 +185,6 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     _panZoomLayer.minScale = 1.0f/6.0f;
     _panZoomLayer.maxScale = 1;
     _panZoomLayer.userInteractionEnabled = YES;
-    
     _panZoomLayer.delegate = self;
     _panZoomLayer.rubberEffectRatio = 0;
     
@@ -262,9 +261,6 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     #endif
     
     
-    
-    CGSize screenSize = [[UIScreen mainScreen] bounds].size;
-    
   //  self.heatMap = [[HeatMapNode alloc] initWithMap:self.gameState.map
   //                                 viewportSize:CGSizeMake(2*ceil(screenSize.height/tiledMap.tileSize.width),
   //                                                         2*ceil(screenSize.width/tiledMap.tileSize.width))
@@ -328,7 +324,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 }
 
 - (void) layerPanZoom:(CCLayerPanZoom *)sender updatedPosition:(CGPoint)pos scale:(CGFloat)scale{
-    //NSLog(@"POSITION IS NOW %@", NSStringFromCGPoint(pos));
+    NSLog(@"POSITION IS NOW %@", NSStringFromCGPoint(pos));
     
     CGPoint centerOfScreenInWorldSpace = [self convertToWorldSpace:CGPointMake(self.boundingBox.size.width/2,self.boundingBox.size.height/2)];
     
@@ -354,7 +350,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
         n.scale = [self scaleConsideringZoom:1 useContentScale:NO];
     }
     
-    //[self.gameState.map.landLayer updateScale:_panZoomLayer.scale];
+    [self.gameState.map.landLayer updateScale:_panZoomLayer.scale];
 }
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context{
     if([keyPath isEqual:@"currentCash"]){

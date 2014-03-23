@@ -8,14 +8,12 @@
 
 #import "CCTiledMap.h"
 #import "CCTiledMapLayer.h"
-//#import "CCTiledMap.h"
+#import "HKTMXTiledMap.h"
 
 @interface CCTiledMap (Extras)
 - (CGPoint) tileCoordinateFromNodeCoordinate:(CGPoint)nodeCoordinate;
 @end
 
-/*
-@interface CCTiledMap (Extras)
+@interface HKTMXTiledMap (Extras)
 - (CGPoint) tileCoordinateFromNodeCoordinate:(CGPoint)nodeCoordinate;
 @end
-*/

@@ -59,6 +59,7 @@ typedef enum
  * This means that click event is not possible with that touch from now. */
 - (void) layerPanZoom: (CCLayerPanZoom *) sender touchMoveBeganAtPosition: (CGPoint) aPoint;
 
+- (void) layerPanZoom:(CCLayerPanZoom *)sender updatedPosition:(CGPoint)pos scale:(CGFloat)scale;
 @end
 
 

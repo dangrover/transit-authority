@@ -18,8 +18,8 @@
 
 @end
 
-/*
-@implementation CCTiledMap (Extras)
+
+@implementation HKTMXTiledMap (Extras)
 - (CGPoint) tileCoordinateFromNodeCoordinate:(CGPoint)nodeCoordinate{
     return CGPointMake(floor(nodeCoordinate.x / (self.tileSize.width)),
                        self.mapSize.height - floor(nodeCoordinate.y / (self.tileSize.height)) - 1);
@@ -27,4 +27,3 @@
 
 
 @end
-*/

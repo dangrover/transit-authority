@@ -1,3 +1,4 @@
+
 /*
  * HKTMXTiledMap
  *
@@ -40,8 +41,6 @@
 #import "CGPointExtension.h"
 #import "ccMacros.h"
 #import "CCSprite.h"
-#import "CCTexture.h"
-#import "CCTexture_Private.h"
 
 // Added for 2.0 Support
 #import "ccGLStateCache.h"
@@ -62,7 +61,10 @@
 
 @end
 
-@implementation HKTMXLayer
+@implementation HKTMXLayer{
+    CGFloat _displayedScale;
+    
+}
 @synthesize layerSize = layerSize_, layerName = layerName_, tiles=tiles_;
 @synthesize tileset=tileset_;
 @synthesize layerOrientation=layerOrientation_;
@@ -72,14 +74,14 @@
 @synthesize color=color_;
 @synthesize blendFunc = blendFunc_;
 
-#pragma mark CCTMXLayer - init & alloc & dealloc
+#pragma mark CCTiledMapLayer - init & alloc & dealloc
 
-+(id) layerWithTilesetInfo:(CCTiledMapTilesetInfo *)tilesetInfo layerInfo:(CCTiledMapLayerInfo *)layerInfo mapInfo:(CCTiledMapInfo *)mapInfo
++(id) layerWithTilesetInfo:(CCTiledMapTilesetInfo*)tilesetInfo layerInfo:(CCTiledMapLayerInfo*)layerInfo mapInfo:(CCTiledMapInfo*)mapInfo
 {
 	return [[[self alloc] initWithTilesetInfo:tilesetInfo layerInfo:layerInfo mapInfo:mapInfo] autorelease];
 }
 
--(id) initWithTilesetInfo:(CCTiledMapTilesetInfo *)tilesetInfo layerInfo:(CCTiledMapLayerInfo*)layerInfo mapInfo:(CCTiledMapInfo *)mapInfo
+-(id) initWithTilesetInfo:(CCTiledMapTilesetInfo*)tilesetInfo layerInfo:(CCTiledMapLayerInfo*)layerInfo mapInfo:(CCTiledMapInfo*)mapInfo
 {	
     // JEB - A layer must have at least one tile to be able to associated a tileset spritesheet with it.
     //       This tile can be always be cleared with removeTileAt: after initialisation.
@@ -95,15 +97,12 @@
         color_.g = 255;
         color_.b = 255;
         
-        NSLog(@"Using tileset info %@", tilesetInfo);
         
         _shaderProgram = [[CCShaderCache sharedShaderCache] programForKey:kCCShader_PositionTextureColor];
 		id newTexture = [[CCTextureCache sharedTextureCache] addImage:tilesetInfo.sourceImage];
         [newTexture retain];
         texture_ = newTexture;
-        NSLog(@"initted texture as %@", newTexture);
         tilesetInfo.imageSize = [texture_ contentSizeInPixels];
-		
         
 		// layerInfo
 		layerName_ = [layerInfo.name copy];
@@ -116,6 +115,7 @@
         * (tilesetInfo.imageSize.height - tilesetInfo.margin * 2 + tilesetInfo.spacing)
         / (tilesetInfo.tileSize.height + tilesetInfo.spacing)
         - 1;
+        
 		opacity_ = layerInfo.opacity;
 		properties_ = [layerInfo.properties mutableCopy];
 		
@@ -126,6 +126,9 @@
 		mapTileSize_ = mapInfo.tileSize;
 		layerOrientation_ = mapInfo.orientation;
 		
+        
+        _displayedScale = 1;
+        
 		// offset (after layer orientation is set);
 		CGPoint offset = [self calculateLayerOffset:layerInfo.offset];
         
@@ -134,7 +137,7 @@
         [self setContentSize: CGSizeMake( layerSize_.width * mapTileSize_.width, layerSize_.height * mapTileSize_.height )];
 		
 		// adjust and validate tile IDs
-		NSAssert1(minGID_ <= maxGID_ + 1 && maxGID_ - minGID_ < 1000000,
+		NSAssert1((minGID_ <= maxGID_ + 1) && (maxGID_ - minGID_ < 1000000),
                   @"TMX: Bad minGID/maxGID for layer %@", layerName_);
 		int tileCount = layerSize_.height * layerSize_.width;
 		for(int i=0; i < tileCount; i++)
@@ -144,16 +147,24 @@
 #endif
             
             // JEB flip bits masked to compare true GID
-			NSAssert((tiles_[i] & kFlippedMask) == 0 || 
+		/*	NSAssert((tiles_[i] & kFlippedMask) == 0 ||
                      (((tiles_[i] & kFlippedMask) >= minGID_) && ((tiles_[i] & kFlippedMask) <= maxGID_)),
-                     @"TMX: Only one tileset per layer is supported");
+                     @"TMX: Only one tileset per layer is supported");*/
 		}
 		
-		CGSize screenSize = [CCDirector sharedDirector].viewSizeInPixels;
+		CGSize theScreenSize = [CCDirector sharedDirector].viewSizeInPixels;
         // JEB - Added support for tilemap scaling
-		screenGridSize_.width = (ceil(screenSize.width / (mapTileSize_.width * HKTMX_LAYER_SCALE_LIMIT)) + 1);
-		screenGridSize_.height = (ceil(screenSize.height / (mapTileSize_.height * HKTMX_LAYER_SCALE_LIMIT)) + 1);
-        zoomGridSize_ = screenGridSize_;
+		screenGridSize_.width = ceil((theScreenSize.width / (mapTileSize_.width * CC_CONTENT_SCALE_FACTOR())) / HKTMX_LAYER_SCALE_LIMIT) + 1;
+		screenGridSize_.height = ceil((theScreenSize.height / (mapTileSize_.height * CC_CONTENT_SCALE_FACTOR()))/HKTMX_LAYER_SCALE_LIMIT) + 1;
+        
+        
+        
+        NSLog(@"TILE SIZE = %@", NSStringFromCGSize(mapTileSize_));
+        NSLog(@"SCREEN SIZE = %@", NSStringFromCGSize(theScreenSize));
+        NSLog(@"GRID SIZE = %@", NSStringFromCGSize(screenGridSize_));
+        NSLog(@"SCALE FACTOR = %f", CC_CONTENT_SCALE_FACTOR());
+        
+        zoomGridSize_ = CGSizeMake(ceil(screenGridSize_.width/self.scale), ceil(screenGridSize_.height/self.scale));
 		int screenTileCount = screenGridSize_.width * screenGridSize_.height;
 		// create buffer objects
 		glGenBuffers(3, buffers_);
@@ -303,7 +314,7 @@
 	animClock_ += delta;
 }
 
-#pragma mark CCTMXLayer - setup Tiles
+#pragma mark CCTiledMapLayer - setup Tiles
 
 -(void) setupTiles
 {
@@ -312,7 +323,7 @@
 	
 }
 
-#pragma mark CCTMXLayer - Properties
+#pragma mark CCTiledMapLayer - Properties
 
 -(id) propertyNamed:(NSString *)propertyName 
 {
@@ -324,7 +335,7 @@
     
 }
 
-#pragma mark CCTMXLayer - obtaining tiles/gids
+#pragma mark CCTiledMapLayer - obtaining tiles/gids
 
 
 -(uint32_t) tileGIDAt:(CGPoint)pos
@@ -349,7 +360,7 @@
 	return (tiles_[ idx ] & kGIDMask);
 }
 
-#pragma mark CCTMXLayer - adding / remove tiles
+#pragma mark CCTiledMapLayer - adding / remove tiles
 
 
 
@@ -395,7 +406,7 @@
 //       to prevent abuse.
 -(void) addChild: (CCNode*)node z:(NSInteger)z tag:(NSInteger)tag
 {
-	NSAssert(NO, @"addChild: is not supported on CCTMXLayer. Instead use setTileGID:at:/tileGIDAt:");
+	NSAssert(NO, @"addChild: is not supported on CCTiledMapLayer. Instead use setTileGID:at:/tileGIDAt:");
 }
 
 // JEB - Ensured both flip bits and GID are cleared.
@@ -405,7 +416,7 @@
     [self setTileFlipBits:0 at:pos];
 }
 
-#pragma mark CCTMXLayer - obtaining positions, offset
+#pragma mark CCTiledMapLayer - obtaining positions, offset
 
 -(CGPoint) calculateLayerOffset:(CGPoint)pos
 {
@@ -443,17 +454,21 @@
 	return ccp(x,y);
 }
 
-#pragma mark CCTMXLayer - draw
+#pragma mark CCTiledMapLayer - draw
 
 // updates grid based on a certain scale. This way you can optimize how much you want to draw.
 // this is strictly for performance tuning based on your individual needs
 -(void)updateScale:(float)s
 {
+    //NSLog(@"updating scale for %f",s);
     if(s >= HKTMX_LAYER_SCALE_LIMIT)
     {
-        CGSize screenSize = [CCDirector sharedDirector].viewSizeInPixels;
-        zoomGridSize_.width = (ceil(screenSize.width / (mapTileSize_.width * s)) + 1);
-        zoomGridSize_.height = (ceil(screenSize.height / (mapTileSize_.height * s)) + 1);
+        CGSize theScreenSize = [CCDirector sharedDirector].viewSizeInPixels;
+        zoomGridSize_.width = ceil(theScreenSize.width/s) + 1;
+        zoomGridSize_.height = ceil(theScreenSize.height/s) + 1;
+      //  zoomGridSize_ = screenGridSize_;
+        _displayedScale = s;
+        NSLog(@"zoom grid = %@, screen grid = %@",NSStringFromCGSize(zoomGridSize_), NSStringFromCGSize(screenGridSize_));
     }
     else
     {
@@ -463,8 +478,7 @@
 
 -(void) draw
 {
-    
-   // NSLog(@"About to draw with texture %@", texture_);
+  
     
     ccGLEnableVertexAttribs( kCCVertexAttribFlag_Position | kCCVertexAttribFlag_TexCoords );
     
@@ -478,13 +492,10 @@
 		newBlend = YES;
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
-    
     CCTexture *tex = texture_;
-    
-    
-	ccGLBindTexture2D( (GLuint)([tex name]) );
-    
-  //  [texture_.shaderProgram use];
+    //[tex setAliasTexParameters];
+    GLuint texName = [tex name];
+	ccGLBindTexture2D(texName);
     
 	glBindBuffer(GL_ARRAY_BUFFER, buffers_[0]);
     glVertexAttribPointer(kCCVertexAttrib_Position, 2, GL_FLOAT, GL_FALSE, 0, NULL);
@@ -493,8 +504,13 @@
     
     
 	CGAffineTransform trans = [self worldToNodeTransform];
+    
 	CGPoint baseTile = CGPointMake(floor(trans.tx / (mapTileSize_.width)),
 								   floor(trans.ty / (mapTileSize_.height)));
+    
+   // NSLog(@"translate=%f,%f, basetile=%@",trans.tx, trans.ty, NSStringFromCGPoint(baseTile));
+   // NSLog(@"screen size=%@, zoom size = %@",NSStringFromCGSize(screenGridSize_), NSStringFromCGSize(zoomGridSize_));
+  
 	unsigned int vertexCount = 0;
 	if (dirtyAt_ > animClock_ && baseTile.x == lastBaseTile_.x && baseTile.y == lastBaseTile_.y)
 	{
@@ -515,19 +531,22 @@
     
     
     
+    
 	CGSize texSize = tileset_.imageSize;
-	for (int y=0; y < zoomGridSize_.height; y++)
-	{
+	for (int y=0; y < zoomGridSize_.height; y++){
 		if (baseTile.y + y < 0 || baseTile.y + y >= layerSize_.height)
 			continue;
-		for (int x=0; x < zoomGridSize_.width; x++)
-		{
+        
+		for (int x=0; x < zoomGridSize_.width; x++){
 			if (baseTile.x + x < 0 || baseTile.x + x >= layerSize_.width)
 				continue;
+            
 			int tileidx = (layerSize_.height - (baseTile.y + y) - 1) * layerSize_.width
             + baseTile.x + x;
+            
 			unsigned int tile = tiles_[tileidx];
 			if (!tile) continue;
+            
 			unsigned int showtile;
             
             // *** JEB index does not included flip bits *** 
@@ -645,7 +664,8 @@
 	lastVertexCount_ = vertexCount;
 	
 texdone:
-        
+   // NSLog(@"rendering hk. vertexcount=%d, zoom size = %@", vertexCount, NSStringFromCGSize(zoomGridSize_));
+    
     kmGLTranslatef(baseTile.x * mapTileSize_.width, baseTile.y * mapTileSize_.height, 0);
     
     CC_NODE_DRAW_SETUP();

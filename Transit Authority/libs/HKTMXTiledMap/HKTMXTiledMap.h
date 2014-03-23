@@ -129,12 +129,12 @@
 -(HKTMXLayer*) layerNamed:(NSString *)layerName;
 
 /** return the TMXObjectGroup for the secific group */
--(CCTiledMapObjectGroup *) objectGroupNamed:(NSString *)groupName;
+-(CCTiledMapObjectGroup*) objectGroupNamed:(NSString *)groupName;
 
 /** return the TMXObjectGroup for the secific group
  @deprecated Use map#objectGroupNamed instead
  */
--(CCTiledMapObjectGroup *) groupNamed:(NSString *)groupName DEPRECATED_ATTRIBUTE;
+-(CCTiledMapObjectGroup*) groupNamed:(NSString *)groupName DEPRECATED_ATTRIBUTE;
 
 /** return the value for the specific property name */
 -(id) propertyNamed:(NSString *)propertyName;

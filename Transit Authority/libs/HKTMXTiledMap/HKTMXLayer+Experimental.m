@@ -121,6 +121,7 @@
 // JEB - The following is to aid performance if using "sprite" tiles
 -(void) visit
 {
+    [super visit];
     
     // Have any "Sprite" tiles been added to the layer
     if(_children)

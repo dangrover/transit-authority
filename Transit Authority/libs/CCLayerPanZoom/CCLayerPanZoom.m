@@ -281,6 +281,9 @@ typedef enum
             self.position = ccp(self.position.x + curPosLayer.x - prevPosLayer.x,
                                 self.position.y + curPosLayer.y - prevPosLayer.y);
         }
+        
+        [self.delegate layerPanZoom:self updatedPosition:self.position scale:self.scale];
+        
         // Don't click with multitouch
 		self.touchDistance = INFINITY;
 	}

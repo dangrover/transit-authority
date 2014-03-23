@@ -38,7 +38,7 @@
 // E.g A value of 0.5f will allow the map to be zoomed out upto 2x
 // WARNING: Changing this value will impact performance.
 #ifndef HKTMX_LAYER_SCALE_LIMIT
-#define HKTMX_LAYER_SCALE_LIMIT 1.0f
+#define HKTMX_LAYER_SCALE_LIMIT 0.15f
 #endif
 
 
@@ -55,10 +55,7 @@
 #define kTileRotated270       (kFlippedDiagonallyFlag|kFlippedVerticallyFlag)
 
 
-@class CCTiledMapInfo;
-@class CCTiledMapLayerInfo;
-@class CCTiledMapTilesetInfo;
-
+@class CCTiledMapInfo, CCTiledMapLayerInfo, CCTiledMapTilesetInfo;
 
 /**
  Represents a tile animation state.  When animClock == 0.0, each tile is in a state
@@ -87,7 +84,7 @@ struct HKTMXAnimCacheEntry {
 @interface HKTMXLayer : CCNode <CCBlendProtocol>
 {
 	CCTiledMapTilesetInfo	*tileset_;
-	id texture_;
+	CCTexture			*texture_;
 	NSString			*layerName_;
 	CGSize				layerSize_;
 	CGSize				mapTileSize_;
@@ -112,6 +109,8 @@ struct HKTMXAnimCacheEntry {
     GLubyte		opacity_;
 	ccColor3B	color_;
     ccBlendFunc	blendFunc_;
+    
+    CGSize screenSize;
 }
 
 
@@ -132,9 +131,9 @@ struct HKTMXAnimCacheEntry {
 @property (nonatomic,readwrite,retain) NSMutableArray *properties;
 
 /** creates an HKTMXLayer with a tileset info, a layer info and a map info */
-+(id) layerWithTilesetInfo:(CCTiledMapTilesetInfo *)tilesetInfo layerInfo:(CCTiledMapLayerInfo*)layerInfo mapInfo:(CCTiledMapInfo*)mapInfo;
++(id) layerWithTilesetInfo:(CCTiledMapTilesetInfo *)tilesetInfo layerInfo:(CCTiledMapLayerInfo *)layerInfo mapInfo:(CCTiledMapInfo *)mapInfo;
 /** initializes an HKTMXLayer with a tileset info, a layer info and a map info */
--(id) initWithTilesetInfo:(CCTiledMapTilesetInfo*)tilesetInfo layerInfo:(CCTiledMapLayerInfo*)layerInfo mapInfo:(CCTiledMapInfo*)mapInfo;
+-(id) initWithTilesetInfo:(CCTiledMapTilesetInfo *)tilesetInfo layerInfo:(CCTiledMapLayerInfo *)layerInfo mapInfo:(CCTiledMapInfo *)mapInfo;
 
 /** returns the tile gid at a given tile coordinate.
  if it returns 0, it means that the tile is empty.

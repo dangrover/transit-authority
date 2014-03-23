@@ -39,13 +39,15 @@
 #import "CCTextureCache.h"
 #import "CGPointExtension.h"
 #import "ccMacros.h"
+#import "CCTiledMap.h"
+#import "CCTiledMapLayer.h"
 
 #pragma mark -
 #pragma mark CCTMXTiledMap
 
 @interface HKTMXTiledMap (Private)
 -(id) parseLayer:(CCTiledMapLayerInfo *)layer map:(CCTiledMapInfo *)mapInfo;
--(CCTiledMapTilesetInfo *) tilesetForLayer:(CCTiledMapLayerInfo *)layerInfo map:(CCTiledMapInfo *)mapInfo;
+-(CCTiledMapTilesetInfo *) tilesetForLayer:(CCTiledMapLayerInfo*)layerInfo map:(CCTiledMapInfo*)mapInfo;
 @end
 
 @implementation HKTMXTiledMap
@@ -57,7 +59,7 @@
 
 +(id) tiledMapWithTMXFile:(NSString*)tmxFile
 {
-	return [[[self alloc] initWithTMXFile:tmxFile] autorelease];
+	return [[[self alloc] initWithFile:tmxFile] autorelease];
 }
 
 -(id) initWithTMXFile:(NSString*)tmxFile
@@ -82,24 +84,19 @@
 		int idx=0;
 
 		for( CCTiledMapLayerInfo *layerInfo in mapInfo.layers ) {
-			
+            
 			if( layerInfo.visible ) {
 				id child = [self parseLayer:layerInfo map:mapInfo];
-				//[self addChild:child z:idx tag:idx];
-				[self addChild:child z:idx name:[NSString stringWithFormat:@"%d", idx]];
-                
-				// update content size with the max size
-#if __IPHONE_OS_VERSION_MAX_ALLOWED
-                CGSize childSize = [child contentSize];
-#elif __MAC_OS_X_VERSION_MAX_ALLOWED
-                NSSize childSize = [child contentSize];
-#endif 
+                [self addChild:child z:idx name:[NSString stringWithFormat:@"%d", idx]];
 				
-				CGSize currentSize = [self contentSize];
+				// update content size with the max size
+                CGSize childSize = [child contentSizeInPoints];
+                
+				CGSize currentSize = [self contentSizeInPoints];
 				currentSize.width = MAX( currentSize.width, childSize.width );
 				currentSize.height = MAX( currentSize.height, childSize.height );
 				[self setContentSize:currentSize];
-	
+                
 				idx++;
 			}			
 		}		
@@ -117,7 +114,7 @@
 }
 
 // private
--(id) parseLayer:(CCTiledMapLayerInfo*)layerInfo map:(CCTiledMapInfo *)mapInfo
+-(id) parseLayer:(CCTiledMapLayerInfo *)layerInfo map:(CCTiledMapInfo *)mapInfo
 {
 	CCTiledMapTilesetInfo *tileset = [self tilesetForLayer:layerInfo map:mapInfo];
 	HKTMXLayer *layer = [HKTMXLayer layerWithTilesetInfo:tileset layerInfo:layerInfo mapInfo:mapInfo];
@@ -130,7 +127,7 @@
 	return layer;
 }
 
--(CCTiledMapTilesetInfo*) tilesetForLayer:(CCTiledMapLayerInfo*)layerInfo map:(CCTiledMapInfo*)mapInfo
+-(CCTiledMapTilesetInfo *) tilesetForLayer:(CCTiledMapLayerInfo *)layerInfo map:(CCTiledMapInfo *)mapInfo
 {
 	CCTiledMapTilesetInfo *tileset = nil;
 	CFByteOrder o = CFByteOrderGetCurrent();
@@ -187,7 +184,7 @@
 	return nil;
 }
 
--(CCTiledMapObjectGroup *) objectGroupNamed:(NSString *)groupName
+-(CCTiledMapObjectGroup*) objectGroupNamed:(NSString *)groupName
 {
 	for( CCTiledMapObjectGroup *objectGroup in objectGroups_ ) {
 		if( [objectGroup.groupName isEqual:groupName] )
