@@ -463,10 +463,12 @@
     //NSLog(@"updating scale for %f",s);
     if(s >= HKTMX_LAYER_SCALE_LIMIT)
     {
-        CGSize theScreenSize = [CCDirector sharedDirector].viewSizeInPixels;
+      /*  CGSize theScreenSize = [CCDirector sharedDirector].viewSizeInPixels;
         zoomGridSize_.width = ceil(theScreenSize.width/s) + 1;
         zoomGridSize_.height = ceil(theScreenSize.height/s) + 1;
-      //  zoomGridSize_ = screenGridSize_;
+       */
+        // TODO Get this working right
+        zoomGridSize_ = screenGridSize_;
         _displayedScale = s;
         NSLog(@"zoom grid = %@, screen grid = %@",NSStringFromCGSize(zoomGridSize_), NSStringFromCGSize(screenGridSize_));
     }
@@ -494,6 +496,7 @@
 	}
     CCTexture *tex = texture_;
     //[tex setAliasTexParameters];
+    [tex setAntialiased:NO];
     GLuint texName = [tex name];
 	ccGLBindTexture2D(texName);
     
