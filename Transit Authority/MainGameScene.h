@@ -33,7 +33,7 @@
     CCTiledMap *tiledMap;
     CCLayerPanZoom *_panZoomLayer;
 
-    IBOutlet UIView *gameControlsLeft;
+ /*   IBOutlet UIView *gameControlsLeft;
     IBOutlet UIButton *pauseButton;
     IBOutlet UIButton *playButton;
     IBOutlet UIButton *ffButton;
@@ -41,12 +41,13 @@
     IBOutlet UIView *gameControlsCenter;
     IBOutlet UIView *toolsBackground;
     IBOutlet UIView *gameControlsRight;
+    */
     
    // IBOutlet UILabel *cityNameLabel;
    // IBOutlet UILabel *dateLabel;
     
     IBOutlet UIButton *cashButton;
-    
+  /*
     IBOutlet UIButton *linesButton;
     IBOutlet UIButton *tracksButton;
     IBOutlet UIButton *goalsButton;
@@ -54,19 +55,15 @@
     IBOutlet UIButton *dataToolButton;
     IBOutlet UIButton *stationButton;
     IBOutlet UIButton *moreButton;
+    */
     
     IBOutlet UIView *toolHelpOverlay;
     IBOutlet UILabel *toolHelpLabel;
     
     NSMutableDictionary *_stationSprites;
     
-    /// experimental
-    IBOutlet UIView *cameraSliders;
-    IBOutlet UISlider *xSlider;
-    IBOutlet UISlider *ySlider;
-    IBOutlet UISlider *zSlider;
     
-  //  SimpleAudioEngine *audioEngine;
+    OALSimpleAudio *audioEngine;
 }
 
 - (id) initWithGameState:(GameState *)theState;

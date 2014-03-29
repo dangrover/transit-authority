@@ -135,7 +135,6 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     CCLabelTTF *dateLabel;
     CCScrollView *scrollView;
     
-    
 }
 
 - (id) initWithGameState:(GameState *)theState{
@@ -163,8 +162,9 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
         // load the map
         tiledMap = theState.map.map;
         
-       // audioEngine = [[SimpleAudioEngine alloc] init];
-       // [audioEngine preloadEffect:SoundEffect_BuildStation];
+        audioEngine = [OALSimpleAudio sharedInstance];
+        
+        //[audioEngine preloadEffect:SoundEffect_BuildStation];
     }
 
     return self;
@@ -182,7 +182,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
    
     
     _panZoomLayer.mode = kCCLayerPanZoomModeSheet;
-    _panZoomLayer.minScale = 1.0f/6.0f;
+    _panZoomLayer.minScale = 1.0f/4.0f;
     _panZoomLayer.maxScale = 1;
     _panZoomLayer.userInteractionEnabled = YES;
     _panZoomLayer.delegate = self;
@@ -233,8 +233,6 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     [glView addSubview:gameControlsRight];
     */
     
-   // [glView addSubview:cameraSliders];
-    //cameraSliders.frame = CGRectMake(0, 0, 200, 200);
     
     NSArray *gameStatePropsToObserve = @[@"currentCash", @"currentDate", @"cityName", @"assignedTrains", @"stations", @"tracks", @"poisWithoutStations"];
     for(NSString *p in gameStatePropsToObserve){
@@ -314,11 +312,6 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     [_panZoomLayer touchCancelled:touch withEvent:event];
 }
 
-- (void) onEnterTransitionDidFinish{
-  //  [_scheduler schedule:@selector(clockTick)];
-    [super onEnterTransitionDidFinish];
-}
-
 - (void) setAllowPanning:(BOOL)allowPanning{
     _panningAllowed = allowPanning;
 }
@@ -336,6 +329,13 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     [self _changeZooms];
 }
 
+- (void) layerPanZoom: (CCLayerPanZoom *) sender
+       clickedAtPoint: (CGPoint) aPoint
+             tapCount: (NSUInteger) tapCount{
+    // Not used
+    
+}
+
 - (void) _changeZooms{
     for(StationNode *s in _stationSprites.allValues){
         s.scale = [self scaleConsideringZoom:1];
@@ -347,7 +347,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
         n.scale = [self scaleConsideringZoom:1 useContentScale:NO];
     }
     for(POIPlaceholderNode *n in _unbuiltPOISprites.allValues){
-        n.scale = [self scaleConsideringZoom:1 useContentScale:NO];
+        n.scale = [self scaleConsideringZoom:1 useContentScale:NO]/2.0f;
     }
     
     [self.gameState.map.landLayer updateScale:_panZoomLayer.scale];
@@ -476,7 +476,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 }
        
 - (void) setMode:(UIMode)newMode{
-    [self _killCurrentTool];
+    /*[self _killCurrentTool];
     
     if(newMode == UIModeNone){
         [self setAllowPanning:YES];
@@ -498,7 +498,8 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
         [self _setCurrentTool:[[LinesTool alloc] init] fromButton:linesButton];
     }else if(newMode == UIModeMore){
         [self _setCurrentTool:[[MoreTool alloc] init] fromButton:moreButton];
-    }
+    }*/
+    
     
     uiMode = newMode;
 }
@@ -518,17 +519,17 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     if(newTool.showsHelpText){
         toolHelpLabel.text = newTool.helpText;
         
-        toolHelpOverlay.frame = CGRectMake(gameControlsCenter.frame.origin.x + UI_CORNER_RADIUS,
-                                           gameControlsCenter.frame.origin.y - (UI_CORNER_RADIUS*2),
-                                           gameControlsCenter.frame.size.width - (UI_CORNER_RADIUS*2),
-                                           gameControlsCenter.frame.size.height - (UI_CORNER_RADIUS*3) - 3);
+    //    toolHelpOverlay.frame = CGRectMake(gameControlsCenter.frame.origin.x + UI_CORNER_RADIUS,
+      //                                     gameControlsCenter.frame.origin.y - (UI_CORNER_RADIUS*2),
+        //                                   gameControlsCenter.frame.size.width - (UI_CORNER_RADIUS*2),
+          //                                 gameControlsCenter.frame.size.height - (UI_CORNER_RADIUS*3) - 3);
         newView = toolHelpOverlay;
         
     }else if(newTool.viewController){
-        newTool.viewController.view.frame = CGRectMake(gameControlsCenter.frame.origin.x + UI_CORNER_RADIUS,
+   /*     newTool.viewController.view.frame = CGRectMake(gameControlsCenter.frame.origin.x + UI_CORNER_RADIUS,
                                                  gameControlsCenter.frame.origin.y - newTool.viewController.view.frame.size.height + UI_CORNER_RADIUS*2 - 2,
                                                  gameControlsCenter.frame.size.width - (UI_CORNER_RADIUS*2),
-                                                 newTool.viewController.view.frame.size.height);
+                                                 newTool.viewController.view.frame.size.height);*/
         newView = newTool.viewController.view;
     }
     
@@ -561,7 +562,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
         currentTool = nil;
     }
     
-    stationButton.selected = tracksButton.selected =  linesButton.selected = dataToolButton.selected = moreButton.selected = NO;
+   // stationButton.selected = tracksButton.selected =  linesButton.selected = dataToolButton.selected = moreButton.selected = NO;
 }
 
 
@@ -587,20 +588,20 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 
 
 - (IBAction) pause:(id)sender{
-    pauseButton.selected = YES;
-    playButton.selected = ffButton.selected = NO;
-    [self setSpeed:0];
+ //   pauseButton.selected = YES;
+ //   playButton.selected = ffButton.selected = NO;
+ //   [self setSpeed:0];
 }
 
 - (IBAction) regularSpeed:(id)sender{
-    playButton.selected = YES;
-    pauseButton.selected = ffButton.selected = NO;
+  //  playButton.selected = YES;
+   // pauseButton.selected = ffButton.selected = NO;
     [self setSpeed:1];
 }
 
 - (IBAction) fastSpeed:(id)sender{
-    ffButton.selected = YES;
-    pauseButton.selected = playButton.selected = NO;
+  //  ffButton.selected = YES;
+  //  pauseButton.selected = playButton.selected = NO;
     [self setSpeed:6];
 }
 
@@ -672,14 +673,15 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     ScenarioGoal *g = [self.gameState easiestUnmetGoal];
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        [goalsButton setTitle:[g formatResult:g.lastEvaluationResult descriptionLevel:GoalFormat_StatusBar]
+     /*   [goalsButton setTitle:[g formatResult:g.lastEvaluationResult descriptionLevel:GoalFormat_StatusBar]
                      forState:UIControlStateNormal];
         goalsProgressBar.frame = CGRectMake(goalsProgressBar.frame.origin.x,
                                             goalsProgressBar.frame.origin.y,
                                             g.lastEvaluationResult.progress*goalsButton.frame.size.width,
                                             goalsProgressBar.frame.size.height);
         [goalsProgressBar setNeedsDisplay];
-        [goalsProgressBar.superview setNeedsDisplay];
+        [goalsProgressBar.superview setNeedsDisplay];*/
+        
     });
 }
 
@@ -787,7 +789,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
             neighborhood.fontName = @"Helvetica-Oblique";
         }
         neighborhood.position = centered;
-        neighborhood.opacity = 100;
+        neighborhood.opacity = 0.4;
         neighborhood.scale = [self scaleConsideringZoom:1 useContentScale:NO];
         [tiledMap addChild:neighborhood z:100];
         [_nameSprites addObject:neighborhood];
@@ -958,7 +960,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 - (void) goalCompleted:(NSNotification *)notification{
     ScenarioGoal *goal = notification.userInfo[@"goal"];
     
-   // [audioEngine playEffect:SoundEffect_CompleteGoal];
+    [audioEngine playEffect:SoundEffect_CompleteGoal];
     
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Goal Completed"
                                                     message:[NSString stringWithFormat:@"You completed the goal '%@!'",goal.caption]
@@ -970,21 +972,21 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 }
 
 - (void) bondIssued{
-  //  [audioEngine playEffect:SoundEffect_CashRegister];
+    [audioEngine playEffect:SoundEffect_CashRegister];
 }
 
 - (void) hourChime{
     unsigned hour = self.gameState.currentDateComponents.tm_hour;
     
     if(hour == (GAME_START_NIGHT_HOUR+1)){
-  //      [audioEngine playEffect:SoundEffect_Owl];
+        [audioEngine playEffect:SoundEffect_Owl];
     }else if(hour == GAME_END_NIGHT_HOUR){
-    //    [audioEngine playEffect:SoundEffect_Rooster];
+        [audioEngine playEffect:SoundEffect_Rooster];
     }
 }
 
 - (void) stationBuilt{
-    //[audioEngine playEffect:SoundEffect_BuildStation];
+    [audioEngine playEffect:SoundEffect_BuildStation];
     [self.gameState forceGoalEvaluate];
 }
 

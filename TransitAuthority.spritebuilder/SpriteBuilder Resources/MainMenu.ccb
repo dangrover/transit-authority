@@ -1762,7 +1762,7 @@
 						<key>value</key>
 						<array>
 							<real>113</real>
-							<real>250</real>
+							<real>240</real>
 							<integer>0</integer>
 							<integer>0</integer>
 							<integer>0</integer>
@@ -1945,6 +1945,8 @@
 						</array>
 					</dict>
 				</array>
+				<key>selected</key>
+				<true/>
 				<key>seqExpanded</key>
 				<true/>
 			</dict>
