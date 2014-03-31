@@ -428,26 +428,33 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
                 }
                 else{
                     // Okay, we're stopped in the next station (but at the end of our current chunk)
-                    t.currentChunkPosition = 1;
-                    t.state = TrainState_StoppedInStation;
-                    t.lastStateChange = self.currentDate;
-                    
-                    
-                    Station *stationWereStoppedIn = ((RouteChunk *)t.currentRoute.routeChunks[t.currentRouteChunk]).destination;
-                    
                     // Unload passengers who want to get off here.
+                    Station *stationWereStoppedIn = ((RouteChunk *)t.currentRoute.routeChunks[t.currentRouteChunk]).destination;
                     int gettingOff = [self unloadPassengersOnTrain:t atStation:stationWereStoppedIn];
                     NSLog(@"%d passengers getting off here", gettingOff);
                     
-                    // Imediately board everyone who wants to get on here.
-                    // This is slightly unrealistic as it may take several minutes for passengers to unload. In this time more passengers could have arrived. We ignore them.
-                    int boarding = [self boardPassengersOnTrain:t atStation:stationWereStoppedIn];
-                    NSLog(@"%d passengers getting on here", boarding);
+                    t.currentChunkPosition = 1;
+                    t.state = TrainState_StoppedInStation;
+                    t.lastStateChange = self.currentDate;
+                    //t.timeToWait = gettingOff;
                 }
             }
             else if(t.state == TrainState_StoppedInStation){
-                
                 if(self.currentDate >= (t.lastStateChange + GAME_STATION_BOARDING_TIME_IN_GAME_SECONDS)){
+                    // Board everyone who wants to get on here when all passengers are off.
+                    // This is slightly unrealistic as it may take several minutes for passengers to board. In this time more passengers could have arrived. We ignore them.
+                    Station *stationWereStoppedIn = ((RouteChunk *)t.currentRoute.routeChunks[t.currentRouteChunk]).destination;
+                    int boarding = [self boardPassengersOnTrain:t atStation:stationWereStoppedIn];
+                    NSLog(@"%d passengers getting on here", boarding);
+                    
+                    t.state = TrainState_FinishedBoarding;
+                    t.lastStateChange = self.currentDate;
+                    //t.timeToWait = boarding;
+                }
+            }
+            else if(t.state == TrainState_FinishedBoarding){
+                
+                if(self.currentDate >= (t.lastStateChange + 0)){
                     
                     // We've been stopped here long enough to let everyone off and on
                     t.currentRouteChunk = (t.currentRouteChunk + 1) % t.currentRoute.routeChunks.count;
