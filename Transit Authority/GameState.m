@@ -1197,7 +1197,7 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
     return originUnparkTime + actualDrivingTime + destParkTime;
 }
 
-
+// Recalculate the train paths after making significant changes to the map.
 - (void) regenerateAllTrainRoutes{
     if(_regeneratingRoutes) return;
     
@@ -1221,6 +1221,7 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
     _regeneratingRoutes = NO;
 }
 
+// Reset the train locations after making significant changes to the map.
 - (void) _moveAllTrainsToCurrentPreferredRoutes{
     [self willChangeValueForKey:@"assignedTrains"];
     
@@ -1267,6 +1268,7 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
     train.lastStateChange = self.currentDate;
 }
 
+// Construct a train route which visits all of the stations on the line.
 + (TrainRoute *) routeForLine:(Line *)line{
     // Figure out the termini
     //NSOrderedSet *stations = [GameState _stationsServedBySegments:line.segmentsServed];
@@ -1276,6 +1278,7 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
     return [GameState _routeForLine:line betweenTermini:termini];
 }
 
+// Construct a train route which visits all of the stations on the line, given the termini.
 + (TrainRoute *) _routeForLine:(Line *)line betweenTermini:(NSOrderedSet *)termini{
     
     TrainRoute *theRoute = [[TrainRoute alloc] init];
@@ -1364,6 +1367,7 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
     return theRoute;
 }
 
+// Given track segments, return all stations connected to them.
 + (NSOrderedSet *) _stationsServedBySegments:(NSArray *)segments{
     NSMutableOrderedSet *stations = [[NSMutableOrderedSet alloc] initWithCapacity:segments.count];
     for(TrackSegment *seg in segments){
@@ -1373,6 +1377,7 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
     return stations;
 }
 
+// Given track segments, return the the termini, the stations connected only to one other station on the line.
 + (NSOrderedSet *) terminiForSegments:(NSArray *)segments line:(Line *)theLine{
     NSOrderedSet *stations = [GameState _stationsServedBySegments:segments];
     
@@ -1391,6 +1396,7 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
     return terms;
 }
 
+// Given track segments and a train line, plus one additional segment, return the termini of the new line.
 + (NSOrderedSet *) terminiForSegments:(NSArray *)segments line:(Line *)theLine ifSegmentWereAddedToLine:(TrackSegment *)prospect{
     NSArray *allSegs = [segments arrayByAddingObject:prospect];
     NSOrderedSet *stations = [GameState _stationsServedBySegments:allSegs];
@@ -1416,6 +1422,7 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
     return terms;
 }
 
+// Given track segments and a train line, minus one segment to exclude, return the termini of the new line.
 + (NSOrderedSet *) terminiForSegments:(NSArray *)segments line:(Line *)theLine ifSegmentWereRemovedFromLine:(TrackSegment *)prospect{
     NSMutableArray *newSegs = [NSMutableArray arrayWithArray:segments];
     [newSegs removeObject:prospect];
@@ -1434,16 +1441,19 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
     return terms;
 }
 
+// When adding segments to lines, enforce the constraint that lines must have two or zero termini.
 - (BOOL) line:(Line *)line canAddSegment:(TrackSegment *)seg{
     NSOrderedSet *wouldBeTermini = [GameState terminiForSegments:line.segmentsServed line:line ifSegmentWereAddedToLine:seg];
     return ((wouldBeTermini.count == 2) || (wouldBeTermini.count == 0));
 }
 
+// When removing segments from lines, enforce the constraint that lines must have two or zero termini.
 - (BOOL) line:(Line *)line canRemoveSegment:(TrackSegment *)seg{
     NSOrderedSet *wouldBeTermini = [GameState terminiForSegments:line.segmentsServed line:line ifSegmentWereRemovedFromLine:seg];
     return ((wouldBeTermini.count == 2) || (wouldBeTermini.count == 0));
 }
 
+// Construct a route from point A to point B using all the lines available, transferring if necessary.
 - (PassengerRouteInfo) passengerRouteInfoForOrigin:(Station *)origin destination:(Station *)dest maxTransfers:(unsigned)maxTransfers{
     NSAssert(origin != nil, @"origin should not be nil");
     NSAssert(origin != nil, @"destination should not be nil");
@@ -1520,6 +1530,7 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
     return info;
 }
 
+// Construct a route from a chunk on a train route to a destination station.
 - (PassengerRouteInfo) passengerRouteForDestinationWithoutTurning:(Station *)dest onRoute:(TrainRoute *)route beginningWithChunk:(unsigned)startChunkIndex maxTransfers:(unsigned)maxTransfers{
     
     Station *firstStationWeCanConsider = ((RouteChunk *)route.routeChunks[startChunkIndex]).origin;
