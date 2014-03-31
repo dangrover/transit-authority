@@ -356,7 +356,7 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
         // reject it.
         
         if((routeInfoForThisStation.minTransfersNeeded < routeInfoForTakingThisTrain.minTransfersNeeded)){
-            // NSLog(@"REJECTING A TRAIN FOR A MORE DIRECT ROUTE");
+            NSLog(@"REJECTING A TRAIN FOR A MORE DIRECT ROUTE");
             continue;
         }else{
             int capacityLeftOnTrain = t.capacity - t.totalPassengersOnBoard;
@@ -378,6 +378,40 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
         }
     }
     return totalBoarding;
+}
+
+- (void)pruneImpatientPassengersAtStation:(Station *)stationWereStoppedIn
+{
+    // Now let's prune the passengers who didn't get on this train and have been waiting too long
+    [stationWereStoppedIn willChangeValueForKey:@"totalPassengersWaiting"];
+    unsigned totalGiveUpWaitings = 0;
+    for(NSString *destUUID in stationWereStoppedIn.passengersByDestination.allKeys){
+        NSMutableArray *passengers = stationWereStoppedIn.passengersByDestination[destUUID];
+        NSMutableArray *toRemove = [NSMutableArray array];
+        for(Passenger *p in passengers){
+            if((self.currentDate - p.enteredStationTime) > GAME_PASSENGER_MAX_WAIT){
+                [toRemove addObject:p];
+            }
+        }
+        
+        if(toRemove.count){
+            totalGiveUpWaitings += toRemove.count;
+            [passengers removeObjectsInArray:toRemove];
+            //NSLog(@"%d passengers gave up", toRemove.count);
+            RecyclePassengers(toRemove);
+        }
+    }
+    if(totalGiveUpWaitings){
+        [self.ledger recordDatum:@(GAME_PASSENGER_MAX_WAIT)
+                          forKey:GameLedger_TrainWaitTime
+                           count:totalGiveUpWaitings
+                          atDate:self.currentDate];
+        
+        [self.ledger recordEventWithKey:GameLedger_Reject_GiveUp
+                                  count:totalGiveUpWaitings
+                                 atDate:self.currentDate];
+    }
+    [stationWereStoppedIn didChangeValueForKey:@"totalPassengersWaiting"];
 }
 
 - (void) _runTrains:(unsigned)numberOfTicks{
@@ -429,27 +463,33 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
                 else{
                     // Okay, we're stopped in the next station (but at the end of our current chunk)
                     // Unload passengers who want to get off here.
-                    Station *stationWereStoppedIn = ((RouteChunk *)t.currentRoute.routeChunks[t.currentRouteChunk]).destination;
-                    int gettingOff = [self unloadPassengersOnTrain:t atStation:stationWereStoppedIn];
-                    NSLog(@"%d passengers getting off here", gettingOff);
-                    
                     t.currentChunkPosition = 1;
                     t.state = TrainState_StoppedInStation;
                     t.lastStateChange = self.currentDate;
                     //t.timeToWait = gettingOff;
+                    
+                    Station *stationWereStoppedIn = ((RouteChunk *)t.currentRoute.routeChunks[t.currentRouteChunk]).destination;
+                    int gettingOff = [self unloadPassengersOnTrain:t atStation:stationWereStoppedIn];
+                    NSLog(@"%d passengers getting off here", gettingOff);
+                    
                 }
             }
             else if(t.state == TrainState_StoppedInStation){
                 if(self.currentDate >= (t.lastStateChange + GAME_STATION_BOARDING_TIME_IN_GAME_SECONDS)){
-                    // Board everyone who wants to get on here when all passengers are off.
-                    // This is slightly unrealistic as it may take several minutes for passengers to board. In this time more passengers could have arrived. We ignore them.
-                    Station *stationWereStoppedIn = ((RouteChunk *)t.currentRoute.routeChunks[t.currentRouteChunk]).destination;
-                    int boarding = [self boardPassengersOnTrain:t atStation:stationWereStoppedIn];
-                    NSLog(@"%d passengers getting on here", boarding);
                     
+                    Station *stationWereStoppedIn = ((RouteChunk *)t.currentRoute.routeChunks[t.currentRouteChunk]).destination;
+                    t.currentRouteChunk = (t.currentRouteChunk + 1) % t.currentRoute.routeChunks.count;
+                    t.currentChunkPosition = 0;
                     t.state = TrainState_FinishedBoarding;
                     t.lastStateChange = self.currentDate;
                     //t.timeToWait = boarding;
+                    
+                    // Board everyone who wants to get on here when all passengers are off.
+                    // This is slightly unrealistic as it may take several minutes for passengers to board. In this time more passengers could have arrived. We ignore them.
+                    int boarding = [self boardPassengersOnTrain:t atStation:stationWereStoppedIn];
+                    NSLog(@"%d passengers getting on here", boarding);
+                    
+                    [self pruneImpatientPassengersAtStation:stationWereStoppedIn];
                 }
             }
             else if(t.state == TrainState_FinishedBoarding){
@@ -457,42 +497,7 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
                 if(self.currentDate >= (t.lastStateChange + 0)){
                     
                     // We've been stopped here long enough to let everyone off and on
-                    t.currentRouteChunk = (t.currentRouteChunk + 1) % t.currentRoute.routeChunks.count;
-                    t.currentChunkPosition = 0;
                     t.state = TrainState_MovingOnTrack;
-                    
-                    // Now let's prune the passengers who didn't get on this train and have been waiting too long
-                    Station *stationWereStoppedIn = ((RouteChunk *)t.currentRoute.routeChunks[t.currentRouteChunk]).destination;
-                    [stationWereStoppedIn willChangeValueForKey:@"totalPassengersWaiting"];
-                    unsigned totalGiveUpWaitings = 0;
-                    for(NSString *destUUID in stationWereStoppedIn.passengersByDestination.allKeys){
-                        NSMutableArray *passengers = stationWereStoppedIn.passengersByDestination[destUUID];
-                        NSMutableArray *toRemove = [NSMutableArray array];
-                        for(Passenger *p in passengers){
-                            if((self.currentDate - p.enteredStationTime) > GAME_PASSENGER_MAX_WAIT){
-                                [toRemove addObject:p];
-                            }
-                        }
-                        
-                        if(toRemove.count){
-                            totalGiveUpWaitings += toRemove.count;
-                            [passengers removeObjectsInArray:toRemove];
-                            //NSLog(@"%d passengers gave up", toRemove.count);
-                            RecyclePassengers(toRemove);
-                        }
-                    }
-                    if(totalGiveUpWaitings){
-                        [self.ledger recordDatum:@(GAME_PASSENGER_MAX_WAIT)
-                                          forKey:GameLedger_TrainWaitTime
-                                           count:totalGiveUpWaitings
-                                          atDate:self.currentDate];
-                        
-                        [self.ledger recordEventWithKey:GameLedger_Reject_GiveUp
-                                                  count:totalGiveUpWaitings
-                                                 atDate:self.currentDate];
-                    }
-                    [stationWereStoppedIn didChangeValueForKey:@"totalPassengersWaiting"];
-                    
                 }
             }
         }
