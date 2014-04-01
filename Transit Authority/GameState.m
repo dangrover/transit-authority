@@ -294,7 +294,7 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
                     
                     Station *stationWereStoppedIn = ((RouteChunk *)t.currentRoute.routeChunks[t.currentRouteChunk]).destination;
                     int gettingOff = [self unloadPassengersOnTrain:t atStation:stationWereStoppedIn];
-                    NSLog(@"%d passengers getting off here", gettingOff);
+                    //NSLog(@"%d passengers getting off here", gettingOff);
                     t.timeToWait = gettingOff * GAME_PASSENGER_BOARDING_TIME_IN_GAME_SECONDS;
                     
                 }
@@ -313,10 +313,14 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
                     // Board everyone who wants to get on here when all passengers are off.
                     // This is slightly unrealistic as it may take several minutes for passengers to board, and in this time more passengers could have arrived. We ignore them.
                     int boarding = [self boardPassengersOnTrain:t atStation:stationWereStoppedIn];
-                    NSLog(@"%d passengers getting on here", boarding);
-                    t.timeToWait = max(t.timeToWait + boarding * GAME_PASSENGER_BOARDING_TIME_IN_GAME_SECONDS,
-                                       GAME_STATION_BOARDING_TIME_IN_GAME_SECONDS);
-                    NSLog(@"Stopping a total of %f game seconds", t.timeToWait);
+                    //NSLog(@"%d passengers getting on here", boarding);
+                    int onOffloadTime = t.timeToWait + boarding * GAME_PASSENGER_BOARDING_TIME_IN_GAME_SECONDS;
+                    t.timeToWait = max(onOffloadTime, GAME_STATION_BOARDING_TIME_IN_GAME_SECONDS);
+                    
+                    if (t.timeToWait > GAME_STATION_BOARDING_TIME_IN_GAME_SECONDS)
+                    {
+                        NSLog(@"The regular stop time was not enough to off/onload all passengers so I'm stopping a total of %d game seconds.", t.timeToWait);
+                    }
                     
                     [self pruneImpatientPassengersAtStation:stationWereStoppedIn];
                 }
@@ -1652,7 +1656,7 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
         // reject it.
         
         if((routeInfoForThisStation.minTransfersNeeded < routeInfoForTakingThisTrain.minTransfersNeeded)){
-            NSLog(@"REJECTING A TRAIN FOR A MORE DIRECT ROUTE");
+            //NSLog(@"REJECTING A TRAIN FOR A MORE DIRECT ROUTE");
             continue;
         }else{
             int capacityLeftOnTrain = t.capacity - t.totalPassengersOnBoard;
