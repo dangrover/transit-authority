@@ -27,6 +27,7 @@ typedef enum{
 @property(strong) Line *line;
 @property(strong) TrainRoute *currentRoute; // nil for nowhere
 @property(assign) TrainState state;
+@property(assign) double timeToWait;
 
 @property(assign, nonatomic) unsigned currentRouteChunk; // index
 @property(assign, nonatomic) NSTimeInterval lastStateChange; // the time we last changed the state
