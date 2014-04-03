@@ -202,7 +202,7 @@
     //NSLog(@"That means start=%f, end=%f",startDelete, endDelete);
     
     // Take just the entries in the hour before the past hour and sum them up.
-    FMResultSet *results = [_db executeQuery:@"SELECT SUM(value) as valueSum, value, SUM(multiplier) as multiplierSum, multiplier, key, subkey FROM ledger WHERE time > ? AND time <= ? ORDER BY time ASC GROUP BY key, subkey;"
+    FMResultSet *results = [_db executeQuery:@"SELECT SUM(value) as valueSum, value, SUM(multiplier) as multiplierSum, multiplier, key, subkey FROM ledger WHERE time > ? AND time <= ? GROUP BY key, subkey ORDER BY time ASC;"
                         withArgumentsInArray: @[@(startDelete), @(endDelete)]];
     
     NSMutableArray *newRows = [NSMutableArray array];
