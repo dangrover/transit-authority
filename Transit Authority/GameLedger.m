@@ -202,14 +202,14 @@
     //NSLog(@"That means start=%f, end=%f",startDelete, endDelete);
     
     // Take just the entries in the hour before the past hour and sum them up.
-    FMResultSet *results = [_db executeQuery:@"SELECT SUM(value) as value, SUM(multiplier) as multiplier, key, subkey FROM ledger WHERE time > ? AND time <= ? GROUP BY key, subkey;"
+    FMResultSet *results = [_db executeQuery:@"SELECT SUM(value) as valueSum, value, SUM(multiplier) as multiplierSum, multiplier, key, subkey FROM ledger WHERE time > ? AND time <= ? ORDER BY time ASC GROUP BY key, subkey;"
                         withArgumentsInArray: @[@(startDelete), @(endDelete)]];
     
     NSMutableArray *newRows = [NSMutableArray array];
     while([results next]){
         [newRows addObject:[results resultDictionary]];
     }
-
+    
     // Delete them from the DB
     BOOL worked = [_db executeUpdate:@"DELETE FROM ledger WHERE time >= ? and time < ?"
                 withArgumentsInArray:@[@(startDelete), @(endDelete)]];
@@ -217,12 +217,27 @@
     
     // Insert the aggregated versions
     for(NSDictionary *row in newRows){
+        
+        id value, multiplier;
+        if ([row[@"key"] isEqual:GameLedger_NumberOfStations] || [row[@"key"] isEqual:GameLedger_NumberOfRunningTrains])
+        {
+            // For "number of" stats, the aggregated row is simply the latest row in the time period.
+            value = row[@"value"];
+            multiplier = row[@"multiplier"];
+        }
+        else
+        {
+            // For all other stats, the aggregated row is the sum of the rows in the time period.
+            value = row[@"valueSum"];
+            multiplier = row[@"multiplierSum"];
+        }
+        
         if(row[@"subkey"] && ![row[@"subkey"] isEqual:[NSNull null]]){
             worked = [_db executeUpdate:@"INSERT INTO ledger (time, key, subkey, value, multiplier, period) VALUES (?,?,?,?,?,?);"
-               withArgumentsInArray:@[@(startDelete), row[@"key"], row[@"subkey"], row[@"value"], row[@"multiplier"], @(SECONDS_PER_HOUR)]];
+               withArgumentsInArray:@[@(startDelete), row[@"key"], row[@"subkey"], value, multiplier, @(SECONDS_PER_HOUR)]];
         }else{
             worked = [_db executeUpdate:@"INSERT INTO ledger (time, key, value, multiplier, period) VALUES (?,?,?,?,?);"
-                   withArgumentsInArray:@[@(startDelete), row[@"key"], row[@"value"], row[@"multiplier"], @(SECONDS_PER_HOUR)]];
+                   withArgumentsInArray:@[@(startDelete), row[@"key"], value, multiplier, @(SECONDS_PER_HOUR)]];
         }
         NSAssert(worked, @"could not insert summary row");
     }
