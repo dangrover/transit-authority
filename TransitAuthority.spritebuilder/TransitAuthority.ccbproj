@@ -174,6 +174,26 @@
 			<key>tabletScale</key>
 			<integer>1</integer>
 		</dict>
+		<key>hammer.png</key>
+		<dict>
+			<key>scaleFrom</key>
+			<integer>1</integer>
+		</dict>
+		<key>manage.png</key>
+		<dict>
+			<key>scaleFrom</key>
+			<integer>1</integer>
+		</dict>
+		<key>more.png</key>
+		<dict>
+			<key>scaleFrom</key>
+			<integer>1</integer>
+		</dict>
+		<key>stats.png</key>
+		<dict>
+			<key>scaleFrom</key>
+			<integer>1</integer>
+		</dict>
 	</dict>
 	<key>versionStr</key>
 	<string>Version: 1.0.4

@@ -72,11 +72,13 @@
 
 @property(strong, nonatomic, readonly) HeatMapNode *heatMap;
 
+/*
 - (IBAction) stationPressed:(id)sender;
 - (IBAction) tracksPressed:(id)sender;
 - (IBAction) linesPressed:(id)sender;
 - (IBAction) dataPressed:(id)sender;
 - (IBAction) morePressed:(id)sender;
+*/
 
 //- (IBAction) showStats:(id)sender;
 - (IBAction) showFinances:(id)sender;

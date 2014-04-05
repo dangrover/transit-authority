@@ -566,24 +566,44 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 }
 
 
+- (void) buildButtonPressed{
+    
+    NSLog(@"Build");
+}
+
+- (void) manageButtonPressed{
+    
+    NSLog(@"Manage");
+}
+
+- (void) dataButtonPressed{
+    
+    NSLog(@"Data");
+}
+
+- (void) menuButtonPressed{
+
+    NSLog(@"Menu");
+}
+
 - (void) stationPressed:(id)sender{
-    [self setMode:(uiMode == UIModePlaceStation) ? UIModeNone : UIModePlaceStation];
+  //  [self setMode:(uiMode == UIModePlaceStation) ? UIModeNone : UIModePlaceStation];
 }
 
 - (void) tracksPressed:(id)sender{
-    [self setMode:(uiMode == UIModePlaceTracks) ? UIModeNone : UIModePlaceTracks];
+ //   [self setMode:(uiMode == UIModePlaceTracks) ? UIModeNone : UIModePlaceTracks];
 }
 
 - (IBAction) linesPressed:(id)sender{
-    [self setMode:(uiMode == UIModeManageLines) ? UIModeNone : UIModeManageLines];
+  //  [self setMode:(uiMode == UIModeManageLines) ? UIModeNone : UIModeManageLines];
 }
 
 - (IBAction) morePressed:(id)sender{
-    [self setMode:(uiMode == UIModeMore) ? UIModeNone : UIModeMore];
+  //  [self setMode:(uiMode == UIModeMore) ? UIModeNone : UIModeMore];
 }
 
 - (IBAction) dataPressed:(id)sender{
-    [self setMode:(uiMode == UIModeData) ? UIModeNone : UIModeData];
+  //  [self setMode:(uiMode == UIModeData) ? UIModeNone : UIModeData];
 }
 
 
