@@ -129,7 +129,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     CCLabelTTF *cityNameLabel;
     CCLabelTTF *dateLabel;
     CCScrollView *scrollView;
-    
+    CCLabelTTF *moneyLabel;
     
     CCNode *topNode;
     CCNode *_moreMenuNode;
@@ -174,9 +174,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
         // load the map
         tiledMap = theState.map.map;
         
-        audioEngine = [OALSimpleAudio sharedInstance];
-        
-        //[audioEngine preloadEffect:SoundEffect_BuildStation];
+        [[OALSimpleAudio sharedInstance] preloadEffect:SoundEffect_BuildStation];
     }
 
     return self;
@@ -345,8 +343,10 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 }
 
 - (void) _changeZooms{
+    NSLog(@"_changeZooms");
     for(StationNode *s in _stationSprites.allValues){
         s.scale = [self scaleConsideringZoom:1];
+        NSLog(@"Updating station sprite zoom");
     }
     for(TrainNode *t in _trainSprites.allValues){
         t.scale = [self scaleConsideringZoom:1];
@@ -362,8 +362,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 }
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context{
     if([keyPath isEqual:@"currentCash"]){
-        [cashButton setTitle:FormatCurrency(@(self.gameState.currentCash))
-                    forState:UIControlStateNormal];
+        moneyLabel.string = FormatCurrency(@(self.gameState.currentCash));
     }
     else if([keyPath isEqual:@"currentDate"]){
         // update displayed date
@@ -381,8 +380,9 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
             secondColor.b*progressThroughHour + firstColor.b*(1.0f-progressThroughHour),
             secondColor.a*progressThroughHour + firstColor.a*(1.0f-progressThroughHour)};
         
-        _dayNightOverlay.color = [CCColor colorWithRed:mix.r green:mix.g blue:mix.b];
-        _dayNightOverlay.opacity = mix.a;
+        _dayNightOverlay.color = [CCColor colorWithRed:mix.r green:mix.g blue:mix.b alpha:mix.a];
+        //_dayNightOverlay.opacity = mix.a;
+        
         //NSLog(@"setting color for hour %d", hour);
         
     }else if([keyPath isEqual:@"cityName"]){
@@ -459,11 +459,11 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 - (double) scaleConsideringZoom:(double)correctScale useContentScale:(BOOL)useContentScale{
     // Put a slight damper on the extent to which things get smaller as we zoom out.
     // Also, account for screen resolution.
-    if(useContentScale){
-        return correctScale / _panZoomLayer.scale * CC_CONTENT_SCALE_FACTOR();
-    }else{
+ //   if(useContentScale){
+ //       return correctScale / _panZoomLayer.scale * CC_CONTENT_SCALE_FACTOR();
+ //   }else{
         return correctScale / _panZoomLayer.scale;
-    }
+  //  }
 }
 
 - (void) newSpeed{
@@ -478,13 +478,21 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 }
 
 - (void) _updateSpeedIcon{
+    
+    NSString *iconName = nil;
     if(currentSpeed == 0){
-        [speedIcon setTexture:[CCTexture textureWithFile:@"pause.png"]];
+        iconName = @"pause.png";
     }else if(currentSpeed == 1){
-        [speedIcon setTexture:[CCTexture textureWithFile:@"play.png"]];
+        iconName = @"play.png";
     }else if(currentSpeed == 4){
-        [speedIcon setTexture:[CCTexture textureWithFile:@"fast-forward.png"]];
+        iconName = @"fast-forward.png";
+    }else{
+        NSLog(@"UNKNOWN SPEED");
+        return;
     }
+    
+    CCTexture *tex = [CCTexture textureWithFile:iconName];
+    speedIcon.texture = tex;
 }
 
 - (void) setSpeed:(float)speedMultiplier{
@@ -567,6 +575,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 - (void) setCurrentTool:(GameTool *)aCurrentTool{
     _currentTool = aCurrentTool;
     _currentTool.parent = self;
+    [_currentTool started];
 }
 
 - (void) buildButtonPressed{
@@ -574,15 +583,24 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     NSLog(@"Build");
     
     if(!_buildSubmenuNode){
+        buildButton.selected = YES;
         _buildSubmenuNode = [CCBReader load:@"BuildSubmenu" owner:self];
     
-        [topNode addChild:_buildSubmenuNode];
         _buildSubmenuNode.positionType = buildButtonGroup.positionType;
-        _buildSubmenuNode.position = CGPointMake(buildButtonGroup.position.x + buildButtonGroup.contentSize.width + 1, buildButtonGroup.position.y);
+        _buildSubmenuNode.position = CGPointMake(buildButtonGroup.position.x + buildButtonGroup.contentSize.width,
+                                                 buildButtonGroup.position.y);
+        
+        [topNode addChild:_buildSubmenuNode];
+        _buildSubmenuNode.cascadeOpacityEnabled = YES;
+        _buildSubmenuNode.opacity = 0;
+        [_buildSubmenuNode runAction:[CCActionFadeIn actionWithDuration:0.25]];
         
     }else{
-        [_buildSubmenuNode removeFromParentAndCleanup:YES];
-        _buildSubmenuNode = nil;
+        buildButton.selected = NO;
+        [_buildSubmenuNode runAction:[CCActionSequence actions:[CCActionFadeOut actionWithDuration:0.25],[CCActionCallBlock actionWithBlock:^{
+                [_buildSubmenuNode removeFromParentAndCleanup:YES];
+                _buildSubmenuNode = nil;
+        }], nil]];
     }
 }
 
@@ -613,16 +631,28 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 
 - (void) buildTracks{
     
-    [_moreMenuNode removeFromParentAndCleanup:YES];
-    
-    self.currentTool = [[PlaceTracksTool alloc] init];
-    
+    if(!tracksButton.selected){
+        tracksButton.selected = YES;
+        stationButton.selected = NO;
+        
+        self.currentTool = [[PlaceTracksTool alloc] init];
+    }else{
+        tracksButton.selected = NO;
+        self.currentTool = nil;
+    }
     
 }
 
 - (void) buildStations{
-    [_moreMenuNode removeFromParentAndCleanup:YES];
-    self.currentTool = [[PlaceStationTool alloc] init];
+    if(!stationButton.selected){
+        tracksButton.selected = NO;
+        stationButton.selected = YES;
+        
+        self.currentTool = [[PlaceStationTool alloc] init];
+    }else{
+        stationButton.selected = NO;
+        self.currentTool = nil;
+    }
 }
 
 - (void) stationPressed:(id)sender{
@@ -1001,7 +1031,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 - (void) goalCompleted:(NSNotification *)notification{
     ScenarioGoal *goal = notification.userInfo[@"goal"];
     
-    [audioEngine playEffect:SoundEffect_CompleteGoal];
+    [[OALSimpleAudio sharedInstance] playEffect:SoundEffect_CompleteGoal];
     
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Goal Completed"
                                                     message:[NSString stringWithFormat:@"You completed the goal '%@!'",goal.caption]
@@ -1013,21 +1043,21 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 }
 
 - (void) bondIssued{
-    [audioEngine playEffect:SoundEffect_CashRegister];
+    [[OALSimpleAudio sharedInstance] playEffect:SoundEffect_CashRegister];
 }
 
 - (void) hourChime{
     unsigned hour = self.gameState.currentDateComponents.tm_hour;
     
     if(hour == (GAME_START_NIGHT_HOUR+1)){
-        [audioEngine playEffect:SoundEffect_Owl];
+        [[OALSimpleAudio sharedInstance] playEffect:SoundEffect_Owl];
     }else if(hour == GAME_END_NIGHT_HOUR){
-        [audioEngine playEffect:SoundEffect_Rooster];
+        [[OALSimpleAudio sharedInstance] playEffect:SoundEffect_Rooster];
     }
 }
 
 - (void) stationBuilt{
-    [audioEngine playEffect:SoundEffect_BuildStation];
+    [[OALSimpleAudio sharedInstance] playEffect:SoundEffect_BuildStation];
     [self.gameState forceGoalEvaluate];
 }
 

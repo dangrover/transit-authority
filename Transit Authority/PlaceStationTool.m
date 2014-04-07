@@ -105,14 +105,13 @@
         stationPlacement.texture = [CCTexture textureWithFile:@"invalid-station.png"];
         self.validMove = NO;
     }else{
-        
         // see if it hits a POI
         for(PointOfInterest *potentialPOI in _poisToCheck){
             if(PointDistance(potentialPOI.location, tileCoordinate) < 5){
                 _poiToBeAssociatedWithStation = potentialPOI;
                 tileCoordinate = potentialPOI.location;
                 pos = [self.parent.gameState.map.landLayer positionAt:tileCoordinate]; // round it off
-                
+        
                 break;
             }
         }
@@ -138,7 +137,7 @@
    // [self _fixHeatMap];
     
     // place the actual station
-    CGPoint tileCoordinate = [self.parent->tiledMap tileCoordinateFromNodeCoordinate:[self.parent->tiledMap convertToNodeSpace:[touch locationInNode:self.parent->tiledMap]]];
+    CGPoint tileCoordinate = [self.parent->tiledMap tileCoordinateFromNodeCoordinate:[touch locationInNode:self.parent->tiledMap]];
     
     if(self.validMove && (gameState.currentCash >= GAME_STATION_COST)){
         if(_poiToBeAssociatedWithStation){
@@ -149,7 +148,7 @@
             [gameState buildNewStationAt:tileCoordinate];
         }
     }else{
-    //    [self.parent->audioEngine playEffect:SoundEffect_Error];
+        [[OALSimpleAudio sharedInstance] playEffect:SoundEffect_Error];
     }
 }
 

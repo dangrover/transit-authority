@@ -33,15 +33,11 @@
     CCTiledMap *tiledMap;
     CCLayerPanZoom *_panZoomLayer;
 
-    IBOutlet UIButton *cashButton;
 
     IBOutlet UIView *toolHelpOverlay;
     IBOutlet UILabel *toolHelpLabel;
     
     NSMutableDictionary *_stationSprites;
-    
-    
-    OALSimpleAudio *audioEngine;
 }
 
 - (id) initWithGameState:(GameState *)theState;

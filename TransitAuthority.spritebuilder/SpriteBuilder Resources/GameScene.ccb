@@ -32,7 +32,7 @@
 				<key>customClass</key>
 				<string></string>
 				<key>displayName</key>
-				<string>CCNodeColor</string>
+				<string>Background Placeholder</string>
 				<key>memberVarAssignmentName</key>
 				<string>backgroundPlaceholderNode</string>
 				<key>memberVarAssignmentType</key>
@@ -546,6 +546,8 @@
 								</array>
 							</dict>
 						</array>
+						<key>selected</key>
+						<true/>
 					</dict>
 				</array>
 				<key>customClass</key>
@@ -2515,8 +2517,6 @@
 								</array>
 							</dict>
 						</array>
-						<key>selected</key>
-						<true/>
 					</dict>
 					<dict>
 						<key>baseClass</key>

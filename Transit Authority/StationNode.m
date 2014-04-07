@@ -20,7 +20,7 @@
         _dot = [[CCSprite alloc] initWithImageNamed:@"station.png"];
         [self addChild:_dot];
         
-        _countLabel = [[CCLabelTTF alloc] initWithString:@"" fontName:@"Helvetica-Bold" fontSize:26/CC_CONTENT_SCALE_FACTOR()];
+        _countLabel = [[CCLabelTTF alloc] initWithString:@"" fontName:@"Helvetica-Bold" fontSize:26];
         _countLabel.anchorPoint = CGPointMake(0.5, 0.5);
         _countLabel.position = CGPointMake(_dot.contentSize.width/2, _dot.contentSize.height / 2);
         _countLabel.color = [CCColor whiteColor];

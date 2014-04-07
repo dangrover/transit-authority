@@ -95,7 +95,7 @@
     if(endStation && (endStation != startStation) && (cost < self.parent.gameState.currentCash)){
         TrackSegment *segment = [self.parent.gameState buildTrackSegmentBetween:startStation second:endStation];
         
-       // [self.parent->audioEngine playEffect:SoundEffect_BuildTunnel];
+        [[OALSimpleAudio sharedInstance] playEffect:SoundEffect_BuildTunnel];
         
         // If there's only one line in the game, apply it here.
         if((self.parent.gameState.lines.count == 1) && ([self.parent.gameState line:self.parent.gameState.lines.allValues[0] canAddSegment:segment])){
@@ -112,7 +112,7 @@
         }
     }else{
         // invalid placement
-     //   [self.parent->audioEngine playEffect:SoundEffect_Error];
+        [[OALSimpleAudio sharedInstance] playEffect:SoundEffect_Error];
     }
     [self.parent.gameState didChangeValueForKey:@"tracks"];
     
