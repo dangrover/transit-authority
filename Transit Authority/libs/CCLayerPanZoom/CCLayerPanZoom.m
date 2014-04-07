@@ -315,6 +315,8 @@ typedef enum
                 _touchMoveBegan = YES;
             }
         }
+        
+         [self.delegate layerPanZoom:self updatedPosition:self.position scale:self.scale];
     }	
 }
 

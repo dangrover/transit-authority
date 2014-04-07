@@ -186,19 +186,16 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 
 -(void) onEnter{
    
-    NSLog(@"maingamescene onenter");
-    
     self.userInteractionEnabled = YES;
     
     _panZoomLayer = [[CCLayerPanZoom alloc] init];
-   
-    
     _panZoomLayer.mode = kCCLayerPanZoomModeSheet;
-    _panZoomLayer.minScale = 1.0f/4.0f;
-    _panZoomLayer.maxScale = 1;
+    _panZoomLayer.minScale = 1.0f/5.0f;
+    _panZoomLayer.maxScale = 1.0f/2.0f;
+    _panZoomLayer.rubberEffectRatio = 0;
     _panZoomLayer.userInteractionEnabled = YES;
     _panZoomLayer.delegate = self;
-    _panZoomLayer.rubberEffectRatio = 0;
+    
     
     CGPoint startPos = [self.gameState.map.landLayer positionAt:self.gameState.map.startPosition];
   
@@ -210,7 +207,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     _panZoomLayer.position = CGPointMake(self.boundingBox.size.width/2, self.boundingBox.size.height/2);
     
     [self addChild:_panZoomLayer z:-100];
-    _panZoomLayer.scale = _panZoomLayer.maxScale;
+    _panZoomLayer.scale = _panZoomLayer.minScale;
    
     [self _makeStreetSprites];
     [self _makeNeighborhoodNameSprites];
@@ -241,9 +238,10 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     
     CGSize screenSize = [CCDirector sharedDirector].viewSizeInPixels;
     self.heatMap = [[HeatMapNode alloc] initWithMap:self.gameState.map
-                                   viewportSize:CGSizeMake(2*ceil(screenSize.height/tiledMap.tileSize.width),
-                                                           2*ceil(screenSize.width/tiledMap.tileSize.width))
+                                   viewportSize:CGSizeMake(2*ceil(screenSize.width/tiledMap.tileSize.width),
+                                                           2*ceil(screenSize.height/tiledMap.tileSize.width))
                                      bufferSize:CGSizeMake(26, 26)];
+    
     [tiledMap addChild:self.heatMap z:90];
     
     self.heatMap.currentPosition = self.gameState.map.startPosition;
@@ -322,7 +320,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 }
 
 - (void) layerPanZoom:(CCLayerPanZoom *)sender updatedPosition:(CGPoint)pos scale:(CGFloat)scale{
-    NSLog(@"POSITION IS NOW %@", NSStringFromCGPoint(pos));
+    NSLog(@"PAN ZOOM LAYER MOVED. POSITION IS NOW %@", NSStringFromCGPoint(pos));
     
     CGPoint centerOfScreenInWorldSpace = [self convertToWorldSpace:CGPointMake(self.boundingBox.size.width/2,self.boundingBox.size.height/2)];
     
@@ -330,7 +328,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     
     //NSLog(@"Current pos = %@", NSStringFromCGPoint(_heatMap.currentPosition));
     
-    [_heatMap refresh];
+    [self.heatMap refresh];
     [self _changeZooms];
 }
 
@@ -358,6 +356,8 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     }
     
     [self.gameState.map.landLayer updateScale:_panZoomLayer.scale];
+    [self.heatMap refresh];
+    
 }
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context{
     if([keyPath isEqual:@"currentCash"]){
@@ -861,7 +861,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
             neighborhood.fontName = @"Helvetica-Oblique";
         }
         neighborhood.position = centered;
-        neighborhood.opacity = 0.4;
+        neighborhood.opacity = 0.5;
         neighborhood.scale = [self scaleConsideringZoom:1 useContentScale:NO];
         [tiledMap addChild:neighborhood z:100];
         [_nameSprites addObject:neighborhood];

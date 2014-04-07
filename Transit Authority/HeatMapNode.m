@@ -65,7 +65,7 @@
         _opQueue = [[NSOperationQueue alloc] init];
         [_opQueue setMaxConcurrentOperationCount:_numberOfSimultaneousRenders];
         
-        unsigned tilePixelDim = self.map.map.tileSize.width*CC_CONTENT_SCALE_FACTOR()*_textureScale;
+        unsigned tilePixelDim = self.map.map.tileSize.width*_textureScale;
         
         
         _renderBufferSize = 4 * ((self.bufferSize.width+(_bufferPaddingInTiles.width*2))*tilePixelDim)*((self.bufferSize.height+(_bufferPaddingInTiles.height*2))*tilePixelDim);
@@ -107,7 +107,7 @@
 }
 
 - (void) refresh{
-   NSLog(@"refreshing. pos=%@, view size=%@",NSStringFromCGPoint(self.currentPosition), NSStringFromCGSize(self.viewportSize));
+   NSLog(@"refreshing heat map. pos=%@, view size=%@",NSStringFromCGPoint(self.currentPosition), NSStringFromCGSize(self.viewportSize));
     
     CGPoint topLeftBuffer = [self _bufferForTileCoord:CGPointMake(self.currentPosition.x - ceil(self.viewportSize.width/2),
                                                                   self.currentPosition.y - ceil(self.viewportSize.height/2))];
@@ -182,7 +182,12 @@
                 }
             }else{
                 // We don't need this buffer anymore! Kill it
-              //  [self removeChild:_bufferSprites[xBufferCoord][yBufferCoord]];
+                
+                CCSprite *s = _bufferSprites[xBufferCoord][yBufferCoord];
+                //NSLog(@"Removing tile at %d,%d = %@", xBufferCoord, yBufferCoord, s);
+                if(s && ![s isEqual:[NSNull null]]){
+                    [self removeChild:s];
+                }
                 _bufferSprites[xBufferCoord][yBufferCoord] = [NSNull null];
             }
         }
@@ -227,7 +232,7 @@
 - (CCTexture *) _heatMapWithBoundingBox:(CGRect)boundingBoxInTiles{
   
     //NSLog(@"Started a render");
-    float tileSize = self.map.map.tileSize.width * CC_CONTENT_SCALE_FACTOR() * _textureScale;
+    float tileSize = self.map.map.tileSize.width * _textureScale;
     CGSize imgSize = CGSizeMake((boundingBoxInTiles.size.width + (_bufferPaddingInTiles.width * 2)) * tileSize,
                                 (boundingBoxInTiles.size.height + (_bufferPaddingInTiles.height * 2)) * tileSize);
     
