@@ -239,19 +239,18 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     [_musicPlayer play];
     #endif
     
+    CGSize screenSize = [CCDirector sharedDirector].viewSizeInPixels;
+    self.heatMap = [[HeatMapNode alloc] initWithMap:self.gameState.map
+                                   viewportSize:CGSizeMake(2*ceil(screenSize.height/tiledMap.tileSize.width),
+                                                           2*ceil(screenSize.width/tiledMap.tileSize.width))
+                                     bufferSize:CGSizeMake(26, 26)];
+    [tiledMap addChild:self.heatMap z:90];
     
-  //  self.heatMap = [[HeatMapNode alloc] initWithMap:self.gameState.map
-  //                                 viewportSize:CGSizeMake(2*ceil(screenSize.height/tiledMap.tileSize.width),
-  //                                                         2*ceil(screenSize.width/tiledMap.tileSize.width))
-  //                                   bufferSize:CGSizeMake(26, 26)];
-  //  [tiledMap addChild:self.heatMap z:90];
-    
-  //  self.heatMap.currentPosition = self.gameState.map.startPosition;
-  //  [self.heatMap refresh];
+    self.heatMap.currentPosition = self.gameState.map.startPosition;
+    [self.heatMap refresh];
     
     [self setNamesVisible:YES];
-    //[self setPopulationVisible:NO];
-    self.showPopulationHeatmap = NO;
+    self.showPopulationHeatmap = YES;
     
     // Don't show any of the real layers in the map for density,
     // because we're rendering it in the heatmap.

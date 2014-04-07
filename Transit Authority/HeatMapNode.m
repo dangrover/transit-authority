@@ -66,6 +66,8 @@
         [_opQueue setMaxConcurrentOperationCount:_numberOfSimultaneousRenders];
         
         unsigned tilePixelDim = self.map.map.tileSize.width*CC_CONTENT_SCALE_FACTOR()*_textureScale;
+        
+        
         _renderBufferSize = 4 * ((self.bufferSize.width+(_bufferPaddingInTiles.width*2))*tilePixelDim)*((self.bufferSize.height+(_bufferPaddingInTiles.height*2))*tilePixelDim);
         
         NSLog(@"Actual texture size is %@",NSStringFromCGSize(CGSizeMake(tilePixelDim*(self.bufferSize.width+_bufferPaddingInTiles.width*2),
@@ -105,10 +107,7 @@
 }
 
 - (void) refresh{
-    return;
-    
-  
-    // NSLog(@"refreshing. pos=%@, view size=%@",NSStringFromCGPoint(self.currentPosition), NSStringFromCGSize(self.viewportSize));
+   NSLog(@"refreshing. pos=%@, view size=%@",NSStringFromCGPoint(self.currentPosition), NSStringFromCGSize(self.viewportSize));
     
     CGPoint topLeftBuffer = [self _bufferForTileCoord:CGPointMake(self.currentPosition.x - ceil(self.viewportSize.width/2),
                                                                   self.currentPosition.y - ceil(self.viewportSize.height/2))];
@@ -153,11 +152,10 @@
                         _generatingBufferFlags[xBufferCoord*(unsigned)_bufferGridSize.height + yBufferCoord] = BUFFER_FLAG_GENERATING;
                         
                         [_opQueue addOperationWithBlock:^{
-                            // In order to do opengl stuff on a background thread, we need to set the context.
-                       /*     EAGLContext * auxGLcontext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2
-                                                                               sharegroup:[CCDirector sharedDirector].view.context.sharegroup];
-                            [EAGLContext setCurrentContext:auxGLcontext];
-                            */
+                            EAGLContext *auxGLContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2 sharegroup:((CCGLView *)[CCDirector sharedDirector].view).context.sharegroup];
+                            
+                            [EAGLContext setCurrentContext:auxGLContext];
+                        
                             
                             CCSprite *heatSprite = [[CCSprite alloc] initWithTexture:[self _heatMapWithBoundingBox:bufferTileRect]];
                             
@@ -184,7 +182,7 @@
                 }
             }else{
                 // We don't need this buffer anymore! Kill it
-            //    [self removeChild:_bufferSprites[xBufferCoord][yBufferCoord]];
+              //  [self removeChild:_bufferSprites[xBufferCoord][yBufferCoord]];
                 _bufferSprites[xBufferCoord][yBufferCoord] = [NSNull null];
             }
         }
@@ -227,8 +225,7 @@
 }
 
 - (CCTexture *) _heatMapWithBoundingBox:(CGRect)boundingBoxInTiles{
-    return nil;
-    /*
+  
     //NSLog(@"Started a render");
     float tileSize = self.map.map.tileSize.width * CC_CONTENT_SCALE_FACTOR() * _textureScale;
     CGSize imgSize = CGSizeMake((boundingBoxInTiles.size.width + (_bufferPaddingInTiles.width * 2)) * tileSize,
@@ -244,7 +241,7 @@
                                              8,
                                              imgSize.width * 4,
                                              rgbColorSpace,
-                                             kCGImageAlphaPremultipliedLast);
+                                             kCGBitmapByteOrder32Big | kCGImageAlphaPremultipliedLast);
     
     for(unsigned xTile = boundingBoxInTiles.origin.x; xTile < CGRectGetMaxX(boundingBoxInTiles); xTile++){
         for(unsigned yTile = boundingBoxInTiles.origin.y; yTile < CGRectGetMaxY(boundingBoxInTiles); yTile++){
@@ -273,12 +270,7 @@
         }
     }
     
-    // border for debugging
-    //  CGContextSetLineWidth(ctx, 10);
-    // CGContextSetStrokeColorWithColor(ctx, [[UIColor blackColor] CGColor]);
-    // CGContextStrokeRect(ctx, CGRectMake(1, 1, imgSize.width - 2, imgSize.height - 2));
-    
-    
+
     NSMutableData *blurRenderSpace  = nil;
     // Now blur what we drew in a separate buffer.
     if(!_disableBlur){
@@ -305,14 +297,23 @@
     }
     
     // Now generate a texture from the buffer
-    CCTexture2D *tex = [[CCTexture alloc] initWithData:_disableBlur ? [mainRenderSpace bytes] : [blurRenderSpace bytes]
-                                             pixelFormat:kCCTexture2DPixelFormat_RGBA8888
-                                              pixelsWide:imgSize.width
-                                              pixelsHigh:imgSize.height
-                                             contentSize:imgSize];
+    
+    // border for debugging
+        CGContextSetLineWidth(ctx, 10);
+        CGContextSetStrokeColorWithColor(ctx, [[UIColor blackColor] CGColor]);
+        CGContextStrokeRect(ctx, CGRectMake(1, 1, imgSize.width - 2, imgSize.height - 2));
+    
+    
+    
+    CCTexture *tex = [[CCTexture alloc] initWithData:_disableBlur ? [mainRenderSpace bytes] : [blurRenderSpace bytes]
+                        pixelFormat:CCTexturePixelFormat_RGBA8888
+                         pixelsWide:imgSize.width
+                         pixelsHigh:imgSize.height
+                contentSizeInPixels:imgSize
+                       contentScale:1];
     
     //NSLog(@"Finished a render");
-    [tex setAliasTexParameters];
+    [tex setAntialiased:NO];
     
     CGContextRelease(ctx);
     CGColorSpaceRelease(rgbColorSpace);
@@ -320,7 +321,7 @@
     if(!_disableBlur) [self _recycleRenderBuffer:blurRenderSpace];
     [self _recycleRenderBuffer:mainRenderSpace];
     
-    return tex;*/
+    return tex;
     
 }
 
