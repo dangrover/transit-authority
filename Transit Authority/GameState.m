@@ -818,8 +818,11 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
     int elevationA = [self.map elevationAt:tileA] * 5;
     int elevationB = [self.map elevationAt:tileB] * 5;
     
+    // Add an extra cost to build a bridge under a track.
+    float distanceOverWater = [self.map waterPartBetweenTile:tileA andTile:tileB];
+    
     CGFloat distanceInTiles = PointDistance3D(tileA, tileB, elevationA, elevationB);
-    return distanceInTiles * GAME_TRACK_COST_PER_TILE;
+    return distanceInTiles * GAME_TRACK_COST_PER_TILE + distanceOverWater * GAME_BRIDGE_COST_PER_TILE;
 }
 
 - (TrackSegment *) buildTrackSegmentBetween:(Station *)stationA second:(Station *)stationB{
@@ -933,7 +936,7 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
     int elevation = [self.map elevationAt:tileCoords];
     float cost = GAME_STATION_COST + elevation * 3000;
     self.currentCash -= cost;
-    
+        
     [self willChangeValueForKey:@"stations"];
     [_stationsById setObject:station forKey:station.UUID];
     [self didChangeValueForKey:@"stations"];
