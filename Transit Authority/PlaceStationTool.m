@@ -44,8 +44,12 @@
     
 }
 
-- (BOOL)ccTouchBegan:(UITouch *)touch withEvent:(UIEvent *)event{
-    [super ccTouchBegan:touch withEvent:event];
+- (BOOL) touchBegan:(UITouch *)touch withEvent:(UIEvent *)event{
+    if(event.allTouches.count > 1){
+        return NO;
+    }
+    
+    [super touchBegan:touch withEvent:event];
     
     _heatmapWasOriginallyVisible = self.parent.showPopulationHeatmap;
     
@@ -63,13 +67,14 @@
     //_clippingMask = [[CCDrawNode alloc] init];
     _clippingNode = [[CCClippingNode alloc] initWithStencil:_clippingMask];
     
-    HeatMapNode *heatMap = self.parent.heatMap;
+   /* HeatMapNode *heatMap = self.parent.heatMap;
     heatMap.visible = YES;
     [heatMap removeFromParent];
     [_clippingNode addChild:heatMap];
     [self.parent->tiledMap addChild:_clippingNode z:50];
     _clippingNode.alphaThreshold = 0.5;
-   
+   */
+    
     
     coverageOverlay = [[StationCoverageOverlay alloc] init];
     [self.parent->tiledMap addChild:coverageOverlay z:50];
@@ -81,14 +86,14 @@
    //                 radius:r
    //                  color:ccc4f(0, 0, 0, 1)];
     
-    [self ccTouchMoved:touch withEvent:event];
+    [self touchMoved:touch withEvent:event];
     
     return YES;
 }
 
 
-- (void)ccTouchMoved:(UITouch *)touch withEvent:(UIEvent *)event{
-    [super ccTouchMoved:touch withEvent:event];
+- (void) touchMoved:(UITouch *)touch withEvent:(UIEvent *)event{
+    [super touchMoved:touch withEvent:event];
     
     CGPoint pos = [touch locationInNode:self.parent->tiledMap];
     CGPoint tileCoordinate = [self.parent->tiledMap tileCoordinateFromNodeCoordinate:pos];
@@ -120,8 +125,8 @@
     
 }
 
-- (void)ccTouchEnded:(UITouch *)touch withEvent:(UIEvent *)event{
-    [super ccTouchEnded:touch withEvent:event];
+- (void) touchEnded:(UITouch *)touch withEvent:(UIEvent *)event{
+    [super touchEnded:touch withEvent:event];
     
     [self.parent->tiledMap removeChild:stationPlacement cleanup:YES];
     stationPlacement = nil;
@@ -130,7 +135,7 @@
     
     GameState *gameState = self.parent.gameState;
     
-    [self _fixHeatMap];
+   // [self _fixHeatMap];
     
     // place the actual station
     CGPoint tileCoordinate = [self.parent->tiledMap tileCoordinateFromNodeCoordinate:[self.parent->tiledMap convertToNodeSpace:[touch locationInNode:self.parent->tiledMap]]];
@@ -148,8 +153,8 @@
     }
 }
 
-- (void)ccTouchCancelled:(UITouch *)touch withEvent:(UIEvent *)event{
-    [super ccTouchCancelled:touch withEvent:event];
+- (void)touchCancelled:(UITouch *)touch withEvent:(UIEvent *)event{
+    [super touchCancelled:touch withEvent:event];
     
     [self.parent->tiledMap removeChild:stationPlacement];
     [self.parent->tiledMap removeChild:coverageOverlay];

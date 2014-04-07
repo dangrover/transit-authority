@@ -14,12 +14,6 @@
 		4D1A638218E013A100BD179B /* manage.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D1A637E18E013A100BD179B /* manage.png */; };
 		4D1A638318E013A100BD179B /* stats.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D1A637F18E013A100BD179B /* stats.png */; };
 		4D1A638518E0A4D000BD179B /* more.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D1A638418E0A4D000BD179B /* more.png */; };
-		4D1B8CF8178B43090033DD70 /* pause.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D1B8CF2178B43090033DD70 /* pause.png */; };
-		4D1B8CF9178B43090033DD70 /* fast-forward.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D1B8CF3178B43090033DD70 /* fast-forward.png */; };
-		4D1B8CFA178B43090033DD70 /* fast-forward@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D1B8CF4178B43090033DD70 /* fast-forward@2x.png */; };
-		4D1B8CFB178B43090033DD70 /* play.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D1B8CF5178B43090033DD70 /* play.png */; };
-		4D1B8CFC178B43090033DD70 /* play@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D1B8CF6178B43090033DD70 /* play@2x.png */; };
-		4D1B8CFD178B43090033DD70 /* pause@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D1B8CF7178B43090033DD70 /* pause@2x.png */; };
 		4D1B8D0A178B4B800033DD70 /* fast-forward-selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D1B8D04178B4B7F0033DD70 /* fast-forward-selected.png */; };
 		4D1B8D0B178B4B800033DD70 /* fast-forward-selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D1B8D05178B4B7F0033DD70 /* fast-forward-selected@2x.png */; };
 		4D1B8D0C178B4B800033DD70 /* play-selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D1B8D06178B4B7F0033DD70 /* play-selected.png */; };
@@ -28,8 +22,6 @@
 		4D1B8D0F178B4B800033DD70 /* pause-selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D1B8D09178B4B800033DD70 /* pause-selected@2x.png */; };
 		4D1B8D1A178B4F800033DD70 /* tool-tracks@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D1B8D10178B4F7F0033DD70 /* tool-tracks@2x.png */; };
 		4D1B8D1B178B4F800033DD70 /* tool-tracks.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D1B8D11178B4F7F0033DD70 /* tool-tracks.png */; };
-		4D1B8D1C178B4F800033DD70 /* tool-station@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D1B8D12178B4F800033DD70 /* tool-station@2x.png */; };
-		4D1B8D1D178B4F800033DD70 /* tool-station.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D1B8D13178B4F800033DD70 /* tool-station.png */; };
 		4D1B8D1E178B4F800033DD70 /* tool-more@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D1B8D14178B4F800033DD70 /* tool-more@2x.png */; };
 		4D1B8D1F178B4F800033DD70 /* tool-more.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D1B8D15178B4F800033DD70 /* tool-more.png */; };
 		4D1B8D20178B4F800033DD70 /* tool-lines@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D1B8D16178B4F800033DD70 /* tool-lines@2x.png */; };
@@ -337,6 +329,13 @@
 		4DACFF2517BC033C00B07107 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4DACFF1B17BC032100B07107 /* InfoPlist.strings */; };
 		4DAFC3F1178138CD001731CF /* NSDate+Helper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DAFC3F0178138CD001731CF /* NSDate+Helper.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		4DAFC3F31781E525001731CF /* GameControlsPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4DAFC3F21781E524001731CF /* GameControlsPhone.xib */; };
+		4DB2B6BB18F1E8FB00236F75 /* MoreMenu.ccbi in Resources */ = {isa = PBXBuildFile; fileRef = 4DB2B6BA18F1E8C100236F75 /* MoreMenu.ccbi */; };
+		4DB2B6BF18F213FF00236F75 /* fast-forward.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DB2B6BC18F213FF00236F75 /* fast-forward.png */; };
+		4DB2B6C018F213FF00236F75 /* pause.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DB2B6BD18F213FF00236F75 /* pause.png */; };
+		4DB2B6C118F213FF00236F75 /* play.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DB2B6BE18F213FF00236F75 /* play.png */; };
+		4DB2B6C718F2209A00236F75 /* BuildSubmenu.ccbi in Resources */ = {isa = PBXBuildFile; fileRef = 4DB2B6C618F2209A00236F75 /* BuildSubmenu.ccbi */; };
+		4DB2B6CE18F222B100236F75 /* station-button.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DB2B6CC18F222B100236F75 /* station-button.png */; };
+		4DB2B6CF18F222B100236F75 /* tracks-button.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DB2B6CD18F222B100236F75 /* tracks-button.png */; };
 		4DB6D7CC178DEBEF0073F0EE /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DB6D7CB178DEBEF0073F0EE /* CoreText.framework */; };
 		4DBC422817BE98E0005F343E /* Passenger.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DBC422717BE98E0005F343E /* Passenger.m */; };
 		4DC43C7C17A9875F00BF0F8C /* TrainNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DC43C7B17A9875F00BF0F8C /* TrainNode.m */; };
@@ -379,12 +378,6 @@
 		4D1A637E18E013A100BD179B /* manage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = manage.png; path = "TransitAuthority.spritebuilder/SpriteBuilder Resources/resources-auto/manage.png"; sourceTree = SOURCE_ROOT; };
 		4D1A637F18E013A100BD179B /* stats.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = stats.png; path = "TransitAuthority.spritebuilder/SpriteBuilder Resources/resources-auto/stats.png"; sourceTree = SOURCE_ROOT; };
 		4D1A638418E0A4D000BD179B /* more.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = more.png; path = "TransitAuthority.spritebuilder/SpriteBuilder Resources/resources-auto/more.png"; sourceTree = SOURCE_ROOT; };
-		4D1B8CF2178B43090033DD70 /* pause.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = pause.png; path = Resources/pause.png; sourceTree = "<group>"; };
-		4D1B8CF3178B43090033DD70 /* fast-forward.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "fast-forward.png"; path = "Resources/fast-forward.png"; sourceTree = "<group>"; };
-		4D1B8CF4178B43090033DD70 /* fast-forward@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "fast-forward@2x.png"; path = "Resources/fast-forward@2x.png"; sourceTree = "<group>"; };
-		4D1B8CF5178B43090033DD70 /* play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = play.png; path = Resources/play.png; sourceTree = "<group>"; };
-		4D1B8CF6178B43090033DD70 /* play@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "play@2x.png"; path = "Resources/play@2x.png"; sourceTree = "<group>"; };
-		4D1B8CF7178B43090033DD70 /* pause@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "pause@2x.png"; path = "Resources/pause@2x.png"; sourceTree = "<group>"; };
 		4D1B8D04178B4B7F0033DD70 /* fast-forward-selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "fast-forward-selected.png"; path = "Resources/fast-forward-selected.png"; sourceTree = "<group>"; };
 		4D1B8D05178B4B7F0033DD70 /* fast-forward-selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "fast-forward-selected@2x.png"; path = "Resources/fast-forward-selected@2x.png"; sourceTree = "<group>"; };
 		4D1B8D06178B4B7F0033DD70 /* play-selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "play-selected.png"; path = "Resources/play-selected.png"; sourceTree = "<group>"; };
@@ -393,8 +386,6 @@
 		4D1B8D09178B4B800033DD70 /* pause-selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "pause-selected@2x.png"; path = "Resources/pause-selected@2x.png"; sourceTree = "<group>"; };
 		4D1B8D10178B4F7F0033DD70 /* tool-tracks@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "tool-tracks@2x.png"; path = "Resources/tool-tracks@2x.png"; sourceTree = "<group>"; };
 		4D1B8D11178B4F7F0033DD70 /* tool-tracks.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "tool-tracks.png"; path = "Resources/tool-tracks.png"; sourceTree = "<group>"; };
-		4D1B8D12178B4F800033DD70 /* tool-station@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "tool-station@2x.png"; path = "Resources/tool-station@2x.png"; sourceTree = "<group>"; };
-		4D1B8D13178B4F800033DD70 /* tool-station.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "tool-station.png"; path = "Resources/tool-station.png"; sourceTree = "<group>"; };
 		4D1B8D14178B4F800033DD70 /* tool-more@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "tool-more@2x.png"; path = "Resources/tool-more@2x.png"; sourceTree = "<group>"; };
 		4D1B8D15178B4F800033DD70 /* tool-more.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "tool-more.png"; path = "Resources/tool-more.png"; sourceTree = "<group>"; };
 		4D1B8D16178B4F800033DD70 /* tool-lines@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "tool-lines@2x.png"; path = "Resources/tool-lines@2x.png"; sourceTree = "<group>"; };
@@ -969,6 +960,13 @@
 		4DAFC3EF178138CD001731CF /* NSDate+Helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Helper.h"; sourceTree = "<group>"; };
 		4DAFC3F0178138CD001731CF /* NSDate+Helper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Helper.m"; sourceTree = "<group>"; };
 		4DAFC3F21781E524001731CF /* GameControlsPhone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GameControlsPhone.xib; sourceTree = "<group>"; };
+		4DB2B6BA18F1E8C100236F75 /* MoreMenu.ccbi */ = {isa = PBXFileReference; lastKnownFileType = file; path = MoreMenu.ccbi; sourceTree = "<group>"; };
+		4DB2B6BC18F213FF00236F75 /* fast-forward.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "fast-forward.png"; path = "TransitAuthority.spritebuilder/SpriteBuilder Resources/resources-auto/fast-forward.png"; sourceTree = SOURCE_ROOT; };
+		4DB2B6BD18F213FF00236F75 /* pause.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = pause.png; path = "TransitAuthority.spritebuilder/SpriteBuilder Resources/resources-auto/pause.png"; sourceTree = SOURCE_ROOT; };
+		4DB2B6BE18F213FF00236F75 /* play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = play.png; path = "TransitAuthority.spritebuilder/SpriteBuilder Resources/resources-auto/play.png"; sourceTree = SOURCE_ROOT; };
+		4DB2B6C618F2209A00236F75 /* BuildSubmenu.ccbi */ = {isa = PBXFileReference; lastKnownFileType = file; name = BuildSubmenu.ccbi; path = "TransitAuthority.spritebuilder/Source/Resources/Published-iOS/BuildSubmenu.ccbi"; sourceTree = SOURCE_ROOT; };
+		4DB2B6CC18F222B100236F75 /* station-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "station-button.png"; path = "TransitAuthority.spritebuilder/SpriteBuilder Resources/resources-auto/station-button.png"; sourceTree = SOURCE_ROOT; };
+		4DB2B6CD18F222B100236F75 /* tracks-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "tracks-button.png"; path = "TransitAuthority.spritebuilder/SpriteBuilder Resources/resources-auto/tracks-button.png"; sourceTree = SOURCE_ROOT; };
 		4DB6D7CB178DEBEF0073F0EE /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		4DBC422617BE98E0005F343E /* Passenger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Passenger.h; sourceTree = "<group>"; };
 		4DBC422717BE98E0005F343E /* Passenger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Passenger.m; sourceTree = "<group>"; };
@@ -1241,11 +1239,18 @@
 		4D5E913C176129300041A073 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				4DB2B6BA18F1E8C100236F75 /* MoreMenu.ccbi */,
+				4DB2B6C618F2209A00236F75 /* BuildSubmenu.ccbi */,
 				4D1A637C18E013A100BD179B /* dummypixel.png */,
 				4D1A637D18E013A100BD179B /* hammer.png */,
 				4D1A638418E0A4D000BD179B /* more.png */,
 				4D1A637E18E013A100BD179B /* manage.png */,
+				4DB2B6BC18F213FF00236F75 /* fast-forward.png */,
+				4DB2B6BD18F213FF00236F75 /* pause.png */,
+				4DB2B6BE18F213FF00236F75 /* play.png */,
 				4D1A637F18E013A100BD179B /* stats.png */,
+				4DB2B6CC18F222B100236F75 /* station-button.png */,
+				4DB2B6CD18F222B100236F75 /* tracks-button.png */,
 				4DCA2CBD18D502C90016F5F6 /* Music */,
 				4DCA2CBB18D4DCA10016F5F6 /* NewsCycle.ttf */,
 				4D6EDB5F17E3EEC80071065B /* closebox.png */,
@@ -1295,12 +1300,6 @@
 				4D7B1E0917BAB2CA001EB23D /* checkbox-checked.png */,
 				4D298D27178B7FF7005964E3 /* bank.png */,
 				4D298D28178B7FF7005964E3 /* bank@2x.png */,
-				4D1B8CF2178B43090033DD70 /* pause.png */,
-				4D1B8CF3178B43090033DD70 /* fast-forward.png */,
-				4D1B8CF4178B43090033DD70 /* fast-forward@2x.png */,
-				4D1B8CF5178B43090033DD70 /* play.png */,
-				4D1B8CF6178B43090033DD70 /* play@2x.png */,
-				4D1B8CF7178B43090033DD70 /* pause@2x.png */,
 				4D1B8D04178B4B7F0033DD70 /* fast-forward-selected.png */,
 				4D1B8D05178B4B7F0033DD70 /* fast-forward-selected@2x.png */,
 				4D2642CA17DEA3E7006D9652 /* tool-stats-selected@2x.png */,
@@ -1321,8 +1320,6 @@
 				4D5E9153176129300041A073 /* Info.plist */,
 				4D1B8D10178B4F7F0033DD70 /* tool-tracks@2x.png */,
 				4D1B8D11178B4F7F0033DD70 /* tool-tracks.png */,
-				4D1B8D12178B4F800033DD70 /* tool-station@2x.png */,
-				4D1B8D13178B4F800033DD70 /* tool-station.png */,
 				4D1B8D14178B4F800033DD70 /* tool-more@2x.png */,
 				4D1B8D15178B4F800033DD70 /* tool-more.png */,
 				4D1B8D16178B4F800033DD70 /* tool-lines@2x.png */,
@@ -2213,13 +2210,8 @@
 				4D2642BA17DE3F2C006D9652 /* tileset-land-hd.png in Resources */,
 				4DAFC3F31781E525001731CF /* GameControlsPhone.xib in Resources */,
 				4D2642C917DEA12E006D9652 /* tool-stats.png in Resources */,
+				4DB2B6BB18F1E8FB00236F75 /* MoreMenu.ccbi in Resources */,
 				4D2642C817DEA12E006D9652 /* tool-stats@2x.png in Resources */,
-				4D1B8CF8178B43090033DD70 /* pause.png in Resources */,
-				4D1B8CF9178B43090033DD70 /* fast-forward.png in Resources */,
-				4D1B8CFA178B43090033DD70 /* fast-forward@2x.png in Resources */,
-				4D1B8CFB178B43090033DD70 /* play.png in Resources */,
-				4D1B8CFC178B43090033DD70 /* play@2x.png in Resources */,
-				4D1B8CFD178B43090033DD70 /* pause@2x.png in Resources */,
 				4D1B8D0A178B4B800033DD70 /* fast-forward-selected.png in Resources */,
 				4DCA2CBC18D4DCB10016F5F6 /* NewsCycle.ttf in Resources */,
 				4D1B8D0B178B4B800033DD70 /* fast-forward-selected@2x.png in Resources */,
@@ -2227,21 +2219,23 @@
 				4D1B8D0D178B4B800033DD70 /* play-selected@2x.png in Resources */,
 				4D1B8D0E178B4B800033DD70 /* pause-selected.png in Resources */,
 				4D1B8D0F178B4B800033DD70 /* pause-selected@2x.png in Resources */,
+				4DB2B6CE18F222B100236F75 /* station-button.png in Resources */,
 				4DCA2CBE18D502C90016F5F6 /* Music in Resources */,
 				4D1B8D1A178B4F800033DD70 /* tool-tracks@2x.png in Resources */,
 				4D1B8D1B178B4F800033DD70 /* tool-tracks.png in Resources */,
 				4DA76FBE17B5858E0092F74E /* upgrade-long-platform.png in Resources */,
-				4D1B8D1C178B4F800033DD70 /* tool-station@2x.png in Resources */,
-				4D1B8D1D178B4F800033DD70 /* tool-station.png in Resources */,
 				4D7B1E0517BAB083001EB23D /* star.png in Resources */,
 				4DD590BC18D6634D00EECA46 /* README.md in Resources */,
 				4D1B8D1E178B4F800033DD70 /* tool-more@2x.png in Resources */,
+				4DB2B6C018F213FF00236F75 /* pause.png in Resources */,
+				4DB2B6BF18F213FF00236F75 /* fast-forward.png in Resources */,
 				4D1B8D1F178B4F800033DD70 /* tool-more.png in Resources */,
 				4D2642D117DEAC7C006D9652 /* goals.png in Resources */,
 				4D1B8D20178B4F800033DD70 /* tool-lines@2x.png in Resources */,
 				4D1B8D21178B4F800033DD70 /* tool-lines.png in Resources */,
 				4D1A638518E0A4D000BD179B /* more.png in Resources */,
 				4D6BF7AB17EA720F007E2FD6 /* connection-airport.png in Resources */,
+				4DB2B6C118F213FF00236F75 /* play.png in Resources */,
 				4DA76FBD17B5858E0092F74E /* upgrade-parking.png in Resources */,
 				4D1B8D22178B4F800033DD70 /* tool-layers@2x.png in Resources */,
 				4DCA2CC418D649060016F5F6 /* GameScene.ccbi in Resources */,
@@ -2256,6 +2250,7 @@
 				4D7B1E0D17BAB2CA001EB23D /* checkbox-checked.png in Resources */,
 				4D1B8D30178B525D0033DD70 /* tool-tracks-selected.png in Resources */,
 				4D1A638318E013A100BD179B /* stats.png in Resources */,
+				4DB2B6CF18F222B100236F75 /* tracks-button.png in Resources */,
 				4D6EDB6217E3EEC80071065B /* closebox@2x.png in Resources */,
 				4D1A638018E013A100BD179B /* dummypixel.png in Resources */,
 				4D1A637918E0126200BD179B /* dummypixel.png in Resources */,
@@ -2300,6 +2295,7 @@
 				4DAB5BD61797ACB000CD35E2 /* FinancesBondsViewController.xib in Resources */,
 				4D4FD4D017D7951000172189 /* Default@2x.png in Resources */,
 				4DAB5BDB1797B09000CD35E2 /* FinancesSubsidiesViewController.xib in Resources */,
+				4DB2B6C718F2209A00236F75 /* BuildSubmenu.ccbi in Resources */,
 				4DAB5BF91799B12100CD35E2 /* StatsDetailViewController.xib in Resources */,
 				4D2642D017DEAC7C006D9652 /* goals@2x.png in Resources */,
 				4D6BF7A717EA720F007E2FD6 /* connection-ferry.png in Resources */,

@@ -33,6 +33,7 @@
 #import "CCLayerPanZoom.h"
 #import "CCScrollView.h"
 #import "CCBReader.h"
+#import "CCButton.h"
 
 #define TRAIN_UPDATE_INTERVAL 0.5
 #define EVENT_LOOP_INTERVAL (1.0/60.0)
@@ -40,21 +41,14 @@
 #define UI_CORNER_RADIUS 8
 
 
-typedef enum{
-    UIModeNone,
-    UIModePlaceStation,
-    UIModePlaceTracks,
-    UIModeManageLines,
-    UIModeData,
-    UIModeMore,
-} UIMode;
-
 @interface MainGameScene()<FinancesViewDelegate, CCLayerPanZoomClickDelegate, PopoverViewDelegate, StationNodeDelegate, TracksNodeDelegate, GoalsDelegate>
 
 @property(strong, nonatomic, readwrite) GameState *gameState;
 @property(strong, nonatomic, readwrite) HeatMapNode *heatMap;
 
-@property(strong) CCScrollView *scrollView;
+@property(strong, nonatomic, readwrite) GameTool *currentTool;
+
+//@property(strong) CCScrollView *scrollView;
 @end
 
 ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
@@ -94,9 +88,10 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     BOOL _namesLayerOn;
     BOOL _populationLayerOn;
     
+    BOOL _touchesHandledByTool;
+    
     NSDateFormatter *_dateFormatter;
-    UIMode uiMode;
-    GameTool *currentTool;
+ 
     
     float currentSpeed;
     
@@ -135,13 +130,30 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     CCLabelTTF *dateLabel;
     CCScrollView *scrollView;
     
+    
+    CCNode *topNode;
+    CCNode *_moreMenuNode;
+    CCNode *_buildSubmenuNode;
+    
+    CCNode *buildButtonGroup;
+    CCButton *buildButton;
+    CCButton *menuButton;
+    CCSprite *speedIcon;
+    
+    CCButton *stationButton;
+    CCButton *tracksButton;
+    
+    
+    CCNode *backgroundPlaceholderNode;
 }
 
 - (id) initWithGameState:(GameState *)theState{
     if(self = [super init]){
         
-        CCNode *topNode = [CCBReader load:@"GameScene" owner:self];
+        topNode = [CCBReader load:@"GameScene" owner:self];
         [self addChild:topNode];
+        
+        [backgroundPlaceholderNode removeFromParentAndCleanup:YES];
         
         self.gameState = theState;
         currentSpeed = 0;
@@ -154,7 +166,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
         _unbuiltPOISprites = [NSMutableDictionary dictionary];
         
         _dateFormatter = [[NSDateFormatter alloc] init];
-        _dateFormatter.dateFormat = @"h:mma, LLL d";
+        _dateFormatter.dateFormat = @"LLL d, h:mma";
         _dateFormatter.AMSymbol = @"am";
         _dateFormatter.PMSymbol = @"pm";
         _dateFormatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
@@ -176,6 +188,8 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 
 -(void) onEnter{
    
+    NSLog(@"maingamescene onenter");
+    
     self.userInteractionEnabled = YES;
     
     _panZoomLayer = [[CCLayerPanZoom alloc] init];
@@ -202,36 +216,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
    
     [self _makeStreetSprites];
     [self _makeNeighborhoodNameSprites];
-    
-    
- //   UIView *glView = [[CCDirector sharedDirector] view];
-  //  [[UINib nibWithNibName:@"GameControlsPhone" bundle:nil] instantiateWithOwner:self options:nil];
-    /*
-    gameControlsLeft.frame = CGRectMake(-1 * UI_CORNER_RADIUS,
-                                        glView.frame.size.height - gameControlsLeft.frame.size.height + UI_CORNER_RADIUS,
-                                        gameControlsLeft.frame.size.width,
-                                        gameControlsLeft.frame.size.height);
-    
-    gameControlsCenter.frame = CGRectMake((glView.frame.size.width/2.0) - (gameControlsCenter.frame.size.width/2.0),
-                                          glView.frame.size.height - gameControlsCenter.frame.size.height + UI_CORNER_RADIUS,
-                                          gameControlsCenter.frame.size.width,
-                                          gameControlsCenter.frame.size.height);
-    
-    gameControlsRight.frame = CGRectMake(glView.frame.size.width - gameControlsRight.frame.size.width + UI_CORNER_RADIUS,
-                                         glView.frame.size.height - gameControlsRight.frame.size.height + UI_CORNER_RADIUS,
-                                         gameControlsRight.frame.size.width,
-                                         gameControlsRight.frame.size.height);
-    
-    NSArray *toStyle = @[gameControlsLeft,toolsBackground, gameControlsRight, toolHelpOverlay];
-    for(UIView *v in toStyle){
-        [self _styleOverlay:v];
-    }
-    
-    
-    [glView addSubview:gameControlsLeft];
-    [glView addSubview:gameControlsCenter];
-    [glView addSubview:gameControlsRight];
-    */
+
     
     
     NSArray *gameStatePropsToObserve = @[@"currentCash", @"currentDate", @"cityName", @"assignedTrains", @"stations", @"tracks", @"poisWithoutStations"];
@@ -240,9 +225,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     }
     
     
-    
-    [self setMode:UIModeNone];
-    [self regularSpeed:nil];
+    [self setSpeed:1];
     [self _updateGoalDisplay];
     
     // Music
@@ -293,23 +276,48 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     [nc addObserver:self selector:@selector(goalCompleted:) name:GameStateNotification_AccomplishedGoal    object:self.gameState];
     [nc addObserver:self selector:@selector(_updateGoalDisplay) name:GameStateNotification_CheckedGoals object:self.gameState];
     
+    
+    [self schedule:@selector(clockTick) interval:REAL_SECONDS_PER_TICK];
+    
     [super onEnter];
 }
 
 - (void)touchBegan:(UITouch *)touch withEvent:(UIEvent *)event{
-    [_panZoomLayer touchBegan:touch withEvent:event];
+    if([self.currentTool touchBegan:touch withEvent:event]){
+        _touchesHandledByTool = YES;
+    }else{
+        [_panZoomLayer touchBegan:touch withEvent:event];
+    }
+    
 }
 
 - (void)touchMoved:(UITouch *)touch withEvent:(UIEvent *)event{
-    [_panZoomLayer touchMoved:touch withEvent:event];
+    if(_touchesHandledByTool){
+        [self.currentTool touchMoved:touch withEvent:event];
+    }else{
+        [_panZoomLayer touchMoved:touch withEvent:event];
+    }
+    
 }
 
 - (void)touchEnded:(UITouch *)touch withEvent:(UIEvent *)event{
-    [_panZoomLayer touchEnded:touch withEvent:event];
+    if(_touchesHandledByTool){
+        [self.currentTool touchEnded:touch withEvent:event];
+    }else{
+        [_panZoomLayer touchEnded:touch withEvent:event];
+    }
+    
+    _touchesHandledByTool = NO;
 }
 
 - (void)touchCancelled:(UITouch *)touch withEvent:(UIEvent *)event{
-    [_panZoomLayer touchCancelled:touch withEvent:event];
+    if(_touchesHandledByTool){
+        [self.currentTool touchCancelled:touch withEvent:event];
+    }else{
+        [_panZoomLayer touchCancelled:touch withEvent:event];
+    }
+    
+    _touchesHandledByTool = NO;
 }
 
 - (void) setAllowPanning:(BOOL)allowPanning{
@@ -458,6 +466,27 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     }
 }
 
+- (void) newSpeed{
+    if(currentSpeed == 0){
+        currentSpeed = 1;
+    }else if(currentSpeed == 1){
+        currentSpeed = 4;
+    }else if(currentSpeed == 4){
+        currentSpeed = 0;
+    }
+    [self _updateSpeedIcon];
+}
+
+- (void) _updateSpeedIcon{
+    if(currentSpeed == 0){
+        [speedIcon setTexture:[CCTexture textureWithFile:@"pause.png"]];
+    }else if(currentSpeed == 1){
+        [speedIcon setTexture:[CCTexture textureWithFile:@"play.png"]];
+    }else if(currentSpeed == 4){
+        [speedIcon setTexture:[CCTexture textureWithFile:@"fast-forward.png"]];
+    }
+}
+
 - (void) setSpeed:(float)speedMultiplier{
     currentSpeed = speedMultiplier;
 }
@@ -474,9 +503,10 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
        
     [self _updateTrainSpritePositions];
 }
-       
+
+ /*
 - (void) setMode:(UIMode)newMode{
-    /*[self _killCurrentTool];
+   [self _killCurrentTool];
     
     if(newMode == UIModeNone){
         [self setAllowPanning:YES];
@@ -498,46 +528,12 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
         [self _setCurrentTool:[[LinesTool alloc] init] fromButton:linesButton];
     }else if(newMode == UIModeMore){
         [self _setCurrentTool:[[MoreTool alloc] init] fromButton:moreButton];
-    }*/
+    }
     
     
     uiMode = newMode;
 }
-
-- (void) _setCurrentTool:(GameTool *)newTool fromButton:(UIButton *)theButton{
-    currentTool = newTool;
-    newTool.parent = self;
-    //[[[CCDirector sharedDirector] touchDispatcher] addTargetedDelegate:currentTool priority:3 swallowsTouches:YES];
-    
-    theButton.selected = YES;
-    
-    [currentTool started];
-    
-    UIView *glView = [[CCDirector sharedDirector] view];
-    UIView *newView = nil;
-
-    if(newTool.showsHelpText){
-        toolHelpLabel.text = newTool.helpText;
-        
-    //    toolHelpOverlay.frame = CGRectMake(gameControlsCenter.frame.origin.x + UI_CORNER_RADIUS,
-      //                                     gameControlsCenter.frame.origin.y - (UI_CORNER_RADIUS*2),
-        //                                   gameControlsCenter.frame.size.width - (UI_CORNER_RADIUS*2),
-          //                                 gameControlsCenter.frame.size.height - (UI_CORNER_RADIUS*3) - 3);
-        newView = toolHelpOverlay;
-        
-    }else if(newTool.viewController){
-   /*     newTool.viewController.view.frame = CGRectMake(gameControlsCenter.frame.origin.x + UI_CORNER_RADIUS,
-                                                 gameControlsCenter.frame.origin.y - newTool.viewController.view.frame.size.height + UI_CORNER_RADIUS*2 - 2,
-                                                 gameControlsCenter.frame.size.width - (UI_CORNER_RADIUS*2),
-                                                 newTool.viewController.view.frame.size.height);*/
-        newView = newTool.viewController.view;
-    }
-    
-    [self _styleOverlay:newView];
-    [glView addSubview:newView];
-    
-    [self setAllowPanning:newTool.allowsPanning];
-}
+*/
 
 - (void) _styleOverlay:(UIView *)overlayView{
     overlayView.layer.cornerRadius = UI_CORNER_RADIUS;
@@ -550,6 +546,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     overlayView.layer.shadowRadius = 1;
 }
 
+/*
 - (void) _killCurrentTool{
     
     [toolHelpOverlay removeFromSuperview];
@@ -563,12 +560,30 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     }
     
    // stationButton.selected = tracksButton.selected =  linesButton.selected = dataToolButton.selected = moreButton.selected = NO;
-}
+}*/
 
+
+
+- (void) setCurrentTool:(GameTool *)aCurrentTool{
+    _currentTool = aCurrentTool;
+    _currentTool.parent = self;
+}
 
 - (void) buildButtonPressed{
     
     NSLog(@"Build");
+    
+    if(!_buildSubmenuNode){
+        _buildSubmenuNode = [CCBReader load:@"BuildSubmenu" owner:self];
+    
+        [topNode addChild:_buildSubmenuNode];
+        _buildSubmenuNode.positionType = buildButtonGroup.positionType;
+        _buildSubmenuNode.position = CGPointMake(buildButtonGroup.position.x + buildButtonGroup.contentSize.width + 1, buildButtonGroup.position.y);
+        
+    }else{
+        [_buildSubmenuNode removeFromParentAndCleanup:YES];
+        _buildSubmenuNode = nil;
+    }
 }
 
 - (void) manageButtonPressed{
@@ -584,6 +599,30 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 - (void) menuButtonPressed{
 
     NSLog(@"Menu");
+    
+    if(!_moreMenuNode){
+        _moreMenuNode = [CCBReader load:@"MoreMenu"];
+    }
+    
+    [topNode addChild:_moreMenuNode];
+    _moreMenuNode.positionType = menuButton.positionType;
+    _moreMenuNode.position = CGPointMake(menuButton.position.x  + menuButton.contentSize.width + 1,
+                                         menuButton.position.y + menuButton.contentSize.height);
+    
+}
+
+- (void) buildTracks{
+    
+    [_moreMenuNode removeFromParentAndCleanup:YES];
+    
+    self.currentTool = [[PlaceTracksTool alloc] init];
+    
+    
+}
+
+- (void) buildStations{
+    [_moreMenuNode removeFromParentAndCleanup:YES];
+    self.currentTool = [[PlaceStationTool alloc] init];
 }
 
 - (void) stationPressed:(id)sender{
@@ -606,24 +645,6 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
   //  [self setMode:(uiMode == UIModeData) ? UIModeNone : UIModeData];
 }
 
-
-- (IBAction) pause:(id)sender{
- //   pauseButton.selected = YES;
- //   playButton.selected = ffButton.selected = NO;
- //   [self setSpeed:0];
-}
-
-- (IBAction) regularSpeed:(id)sender{
-  //  playButton.selected = YES;
-   // pauseButton.selected = ffButton.selected = NO;
-    [self setSpeed:1];
-}
-
-- (IBAction) fastSpeed:(id)sender{
-  //  ffButton.selected = YES;
-  //  pauseButton.selected = playButton.selected = NO;
-    [self setSpeed:6];
-}
 
 
 - (IBAction) showFinances:(id)sender{

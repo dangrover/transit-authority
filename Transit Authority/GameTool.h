@@ -20,15 +20,16 @@
 @property(assign) MainGameScene *parent;
 @property(strong, readonly) NSString *helpText;
 @property(assign, readonly) BOOL showsHelpText;
-@property(strong) IBOutlet UIViewController *viewController;
+//@property(strong) IBOutlet UIViewController *viewController;
+
 @property(assign, readonly) BOOL allowsPanning;
 @property(assign) BOOL validMove;
 
 - (void) started;
 - (void) finished;
 
-- (BOOL)ccTouchBegan:(UITouch *)touch withEvent:(UIEvent *)event;
-- (void)ccTouchMoved:(UITouch *)touch withEvent:(UIEvent *)event;
-- (void)ccTouchEnded:(UITouch *)touch withEvent:(UIEvent *)event;
-- (void)ccTouchCancelled:(UITouch *)touch withEvent:(UIEvent *)event;
+- (BOOL)touchBegan:(UITouch *)touch withEvent:(UIEvent *)event;
+- (void)touchMoved:(UITouch *)touch withEvent:(UIEvent *)event;
+- (void)touchEnded:(UITouch *)touch withEvent:(UIEvent *)event;
+- (void)touchCancelled:(UITouch *)touch withEvent:(UIEvent *)event;
 @end

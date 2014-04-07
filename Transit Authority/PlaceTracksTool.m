@@ -28,8 +28,8 @@
 }
 
 
-- (BOOL)ccTouchBegan:(UITouch *)touch withEvent:(UIEvent *)event{
-    [super ccTouchBegan:touch withEvent:event];
+- (BOOL) touchBegan:(UITouch *)touch withEvent:(UIEvent *)event{
+    [super touchBegan:touch withEvent:event];
     
     startStation = endStation = nil;
     
@@ -54,7 +54,7 @@
     return NO;
 }
 
-- (void)ccTouchMoved:(UITouch *)touch withEvent:(UIEvent *)event{
+- (void) touchMoved:(UITouch *)touch withEvent:(UIEvent *)event{
     
     if(trackPlacement){
         CGPoint nodeCoord = [touch locationInNode:self.parent->tiledMap];
@@ -85,8 +85,8 @@
     }
 }
 
-- (void)ccTouchEnded:(UITouch *)touch withEvent:(UIEvent *)event{
-    [super ccTouchEnded:touch withEvent:event];
+- (void) touchEnded:(UITouch *)touch withEvent:(UIEvent *)event{
+    [super touchEnded:touch withEvent:event];
     
     CGFloat distanceInTiles = PointDistance(startStation.tileCoordinate, endStation.tileCoordinate);
     CGFloat cost = distanceInTiles * GAME_TRACK_COST_PER_TILE;
@@ -122,8 +122,8 @@
 }
 
 
-- (void)ccTouchCancelled:(UITouch *)touch withEvent:(UIEvent *)event{
-    [super ccTouchCancelled:touch withEvent:event];
+- (void) touchCancelled:(UITouch *)touch withEvent:(UIEvent *)event{
+    [super touchCancelled:touch withEvent:event];
     if(trackPlacement){
         [self.parent->tiledMap removeChild:trackPlacement cleanup:YES];
         trackPlacement = nil;

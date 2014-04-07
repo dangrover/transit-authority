@@ -33,30 +33,8 @@
     CCTiledMap *tiledMap;
     CCLayerPanZoom *_panZoomLayer;
 
- /*   IBOutlet UIView *gameControlsLeft;
-    IBOutlet UIButton *pauseButton;
-    IBOutlet UIButton *playButton;
-    IBOutlet UIButton *ffButton;
-    
-    IBOutlet UIView *gameControlsCenter;
-    IBOutlet UIView *toolsBackground;
-    IBOutlet UIView *gameControlsRight;
-    */
-    
-   // IBOutlet UILabel *cityNameLabel;
-   // IBOutlet UILabel *dateLabel;
-    
     IBOutlet UIButton *cashButton;
-  /*
-    IBOutlet UIButton *linesButton;
-    IBOutlet UIButton *tracksButton;
-    IBOutlet UIButton *goalsButton;
-    IBOutlet UIView *goalsProgressBar;
-    IBOutlet UIButton *dataToolButton;
-    IBOutlet UIButton *stationButton;
-    IBOutlet UIButton *moreButton;
-    */
-    
+
     IBOutlet UIView *toolHelpOverlay;
     IBOutlet UILabel *toolHelpLabel;
     
@@ -72,21 +50,9 @@
 
 @property(strong, nonatomic, readonly) HeatMapNode *heatMap;
 
-/*
-- (IBAction) stationPressed:(id)sender;
-- (IBAction) tracksPressed:(id)sender;
-- (IBAction) linesPressed:(id)sender;
-- (IBAction) dataPressed:(id)sender;
-- (IBAction) morePressed:(id)sender;
-*/
-
 //- (IBAction) showStats:(id)sender;
 - (IBAction) showFinances:(id)sender;
 - (IBAction) showGoals:(id)sender;
-
-- (IBAction) pause:(id)sender;
-- (IBAction) regularSpeed:(id)sender;
-- (IBAction) fastSpeed:(id)sender;
 
 @property(assign, nonatomic) BOOL showPopulationHeatmap;
 
