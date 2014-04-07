@@ -596,6 +596,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
         [_buildSubmenuNode runAction:[CCActionFadeIn actionWithDuration:0.25]];
         
     }else{
+        self.currentTool = nil;
         buildButton.selected = NO;
         [_buildSubmenuNode runAction:[CCActionSequence actions:[CCActionFadeOut actionWithDuration:0.25],[CCActionCallBlock actionWithBlock:^{
                 [_buildSubmenuNode removeFromParentAndCleanup:YES];
@@ -614,9 +615,9 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     NSLog(@"Data");
 }
 
-- (void) menuButtonPressed{
+- (void) moreButtonPressed{
 
-    NSLog(@"Menu");
+   /* NSLog(@"Menu");
     
     if(!_moreMenuNode){
         _moreMenuNode = [CCBReader load:@"MoreMenu"];
@@ -626,6 +627,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     _moreMenuNode.positionType = menuButton.positionType;
     _moreMenuNode.position = CGPointMake(menuButton.position.x  + menuButton.contentSize.width + 1,
                                          menuButton.position.y + menuButton.contentSize.height);
+    */
     
 }
 
@@ -852,7 +854,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
         NSString *name = obj[@"name"];
         if(!name) continue;
         
-        CCLabelTTF *neighborhood = [[CCLabelTTF alloc] initWithString:name fontName:@"Helvetica-Bold" fontSize:18];
+        CCLabelTTF *neighborhood = [[CCLabelTTF alloc] initWithString:name fontName:@"Palatino-Bold" fontSize:14];
         if([obj[@"type"] isEqual:@"region"]){
             neighborhood.color = [CCColor colorWithUIColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0]];
         }else if([obj[@"type"] isEqual:@"water"]){

@@ -480,8 +480,6 @@
 
 -(void) draw
 {
-  
-    
     ccGLEnableVertexAttribs( kCCVertexAttribFlag_Position | kCCVertexAttribFlag_TexCoords );
     
     BOOL newBlend = ((blendFunc_.src != CC_BLEND_SRC) || (blendFunc_.dst != CC_BLEND_DST));
@@ -495,7 +493,6 @@
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
     CCTexture *tex = texture_;
-    //[tex setAliasTexParameters];
     [tex setAntialiased:NO];
     GLuint texName = [tex name];
 	ccGLBindTexture2D(texName);
