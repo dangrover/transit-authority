@@ -107,7 +107,7 @@
 }
 
 - (void) refresh{
-   NSLog(@"refreshing heat map. pos=%@, view size=%@",NSStringFromCGPoint(self.currentPosition), NSStringFromCGSize(self.viewportSize));
+   //NSLog(@"refreshing heat map. pos=%@, view size=%@",NSStringFromCGPoint(self.currentPosition), NSStringFromCGSize(self.viewportSize));
     
     CGPoint topLeftBuffer = [self _bufferForTileCoord:CGPointMake(self.currentPosition.x - ceil(self.viewportSize.width/2),
                                                                   self.currentPosition.y - ceil(self.viewportSize.height/2))];

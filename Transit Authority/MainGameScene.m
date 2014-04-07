@@ -320,7 +320,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 }
 
 - (void) layerPanZoom:(CCLayerPanZoom *)sender updatedPosition:(CGPoint)pos scale:(CGFloat)scale{
-    NSLog(@"PAN ZOOM LAYER MOVED. POSITION IS NOW %@", NSStringFromCGPoint(pos));
+    //NSLog(@"PAN ZOOM LAYER MOVED. POSITION IS NOW %@", NSStringFromCGPoint(pos));
     
     CGPoint centerOfScreenInWorldSpace = [self convertToWorldSpace:CGPointMake(self.boundingBox.size.width/2,self.boundingBox.size.height/2)];
     
@@ -340,10 +340,8 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 }
 
 - (void) _changeZooms{
-    NSLog(@"_changeZooms");
     for(StationNode *s in _stationSprites.allValues){
         s.scale = [self scaleConsideringZoom:1];
-        NSLog(@"Updating station sprite zoom");
     }
     for(TrainNode *t in _trainSprites.allValues){
         t.scale = [self scaleConsideringZoom:1];
