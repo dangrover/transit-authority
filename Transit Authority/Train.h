@@ -12,7 +12,8 @@
 
 typedef enum{
     TrainState_MovingOnTrack,
-    TrainState_StoppedInStation
+    TrainState_StoppedInStation,
+    TrainState_FinishedBoarding
 } TrainState;
 
 @interface Train : GameObject
@@ -26,6 +27,7 @@ typedef enum{
 @property(strong) Line *line;
 @property(strong) TrainRoute *currentRoute; // nil for nowhere
 @property(assign) TrainState state;
+@property(assign) int timeToWait;
 
 @property(assign, nonatomic) unsigned currentRouteChunk; // index
 @property(assign, nonatomic) NSTimeInterval lastStateChange; // the time we last changed the state
