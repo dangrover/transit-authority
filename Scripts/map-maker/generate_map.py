@@ -5,7 +5,7 @@ import tmxlib
 import wand
 from PIL import Image
 from util import *
-
+from PopulationMap import PopulationMap
 
 ######################
 # Constants
@@ -76,6 +76,7 @@ def main():
     city = CITIES[city_name]
 
     # Make the file structure. Copy from /template
+    # Skip this step if the -tmx option is specified to only generate tmx.
     tmxOnly = "-tmx" in sys.argv
     output_dir = os.path.join(output_base_dir, city_name)
     if not tmxOnly:
@@ -116,7 +117,7 @@ def main():
     print "RENDERING LANDFORM MAP"
     # render the map to an image
     
-    # If -r option specified attempt to read file rather than regenerate
+    # If -tmx option specified attempt to read image file rather than regenerate
     # This allows us to generate only the TMX file
     land_map_image = None
     if (tmxOnly and os.path.exists(land_image_output_uri)):
@@ -186,10 +187,18 @@ def main():
     
     neighborhoods_layer = tmx_map.add_layer(name="Neighborhoods", layer_class=tmxlib.ObjectLayer)
     streets_layer = tmx_map.add_layer(name="Streets", layer_class=tmxlib.ObjectLayer)
-
+    
     # Populate the layers based on the output
     land_image = Image.open(land_image_output_uri)
+    population = PopulationMap(bounds)
+    population.populate()
+    
+    print "Writing TMX layers..."
+    
     for x in range(0,tiles_width):
+        
+        if "-v" in sys.argv: print "Writing column %d" % (x)
+        
         for y in range(0,tiles_height):
             x_pixel = (TILE_SIZE/2) + (TILE_SIZE * x)
             y_pixel = (TILE_SIZE/2) + (TILE_SIZE * y)
@@ -205,7 +214,12 @@ def main():
                 land_gid = AIRPORT_GID
             elif r==242: # land is almost white
                 land_gid = LAND_GID
-                res_gid = 1
+                
+                tilePopulation = population.populationDensityAtLocation(x/float(tiles_width), y/float(tiles_height))
+                # Turn -1, 0 or 1 standard deviations into tile 0, 1 or 2
+                # Less than -1 is no population tile
+                res_gid = min(max(int(tilePopulation)+1,-1),2)
+                
                 com_gid = 1
             elif g > r and g > b:
                 land_gid = PARK_GID
@@ -214,10 +228,10 @@ def main():
 
             land_layer[x,y] = land_tileset[land_gid]
 
-            if com_gid:
+            if com_gid >= 0:
                 com_layer[x,y] = com_tileset[com_gid]
 
-            if res_gid:
+            if res_gid >= 0:
                 res_layer[x,y] = res_tileset[res_gid]
 
     land_layer[0, 0] = land_tileset[0]
