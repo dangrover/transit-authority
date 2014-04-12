@@ -215,12 +215,22 @@ def main():
             elif r==242: # land is almost white
                 land_gid = LAND_GID
                 
-                tilePopulation = population.populationDensityAtLocation(x/float(tiles_width), y/float(tiles_height))
-                # Turn -1, 0 or 1 standard deviations into tile 0, 1 or 2
-                # Less than -1 is no population tile
-                res_gid = min(max(int(tilePopulation)+1,-1),2)
+                # This function takes the number of deviations (sigma) from the center of a normal distribution graph
+                # It returns which third of the distribution area the value is in
+                # a.k.a., about 33% of all values lie within .4 std deviations of center
+                def deviationsToThirds(deviations):
+                    if (deviations <= -.4):
+                        return 0
+                    elif (deviations < .4):
+                        return 1
+                    else:
+                        return 2
                 
-                com_gid = 1
+                (tilePopulation, tileWorkers) = population.populationDensityAtLocation(x/float(tiles_width), y/float(tiles_height))
+                # Turn standard deviations into tile 0, 1 or 2
+                # About one third of each tile should be represented on the graph
+                res_gid = deviationsToThirds(tilePopulation)
+                com_gid = deviationsToThirds(tileWorkers)
             elif g > r and g > b:
                 land_gid = PARK_GID
             else:
