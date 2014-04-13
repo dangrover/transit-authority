@@ -73,8 +73,8 @@ class PopulationMap:
     def geoidAtLocation(self, x, y):
         w,n,e,s = self.bounds
         tic = time.clock()
-        tileLat = s + (n-s) * x
-        tileLon = w + (e-w) * y
+        tileLat = s + (n-s) * y
+        tileLon = w + (e-w) * x
         def distanceToCurrentTile(geoid):
             lat, lon, area = self.tracts[geoid]
             return (lat-tileLat)**2 + (lon-tileLon)**2
