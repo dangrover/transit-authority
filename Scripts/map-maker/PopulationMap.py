@@ -70,11 +70,9 @@ class PopulationMap:
     
     # One more efficient way of doing this would possibly be to generate
     # an equally spaced dotmap with a high enough resolution.
-    def geoidAtLocation(self, x, y):
+    def geoidAtLocation(self, tileLat, tileLon):
         w,n,e,s = self.bounds
         tic = time.clock()
-        tileLat = s + (n-s) * x
-        tileLon = w + (e-w) * y
         def distanceToCurrentTile(geoid):
             lat, lon, area = self.tracts[geoid]
             return (lat-tileLat)**2 + (lon-tileLon)**2
@@ -93,8 +91,8 @@ class PopulationMap:
         return math.sqrt(squareDiffs / float(len(values)))
            
     # Return the standard deviation of the located tract's population density from the larger area
-    def populationDensityAtLocation(self, x, y):
-        geoid = self.geoidAtLocation(x, y)
+    def populationDensityAtLocation(self, lat, lon):
+        geoid = self.geoidAtLocation(lat, lon)
         populationDeviation = (self.tractPopulations[geoid] - self.averagePopulation) / self.populationStd
         workersDeviation = (self.tractWorkers[geoid] - self.averageWorkers) / self.workersStd
         return (populationDeviation, workersDeviation)

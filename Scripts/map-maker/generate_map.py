@@ -6,6 +6,7 @@ import wand
 from PIL import Image
 from util import *
 from PopulationMap import PopulationMap
+from ElevationMap import ElevationMap
 
 ######################
 # Constants
@@ -184,6 +185,9 @@ def main():
 
     res_layer = tmx_map.add_layer('Residential')
     res_tileset = get_tileset(name="Residential Density", path=os.path.join(output_dir, "tileset-res-density.png"))
+
+    elevation_layer = tmx_map.add_layer('Elevation')
+    elevation_tileset = get_tileset(name="Elevation", path=os.path.join(output_dir, "tileset-elevation.png"))
     
     neighborhoods_layer = tmx_map.add_layer(name="Neighborhoods", layer_class=tmxlib.ObjectLayer)
     streets_layer = tmx_map.add_layer(name="Streets", layer_class=tmxlib.ObjectLayer)
@@ -192,12 +196,14 @@ def main():
     land_image = Image.open(land_image_output_uri)
     population = PopulationMap(bounds)
     population.populate()
+    elevation = ElevationMap(bounds)
+    elevation.populate()
     
     print "Writing TMX layers..."
     
     for x in range(0,tiles_width):
         
-        if "-v" in sys.argv: print "Writing column %d" % (x)
+        if "-v" in sys.argv: print "Writing column %d/%d" % (x,tiles_width)
         
         for y in range(0,tiles_height):
             x_pixel = (TILE_SIZE/2) + (TILE_SIZE * x)
@@ -214,7 +220,7 @@ def main():
                 land_gid = AIRPORT_GID
             elif r==242: # land is almost white
                 land_gid = LAND_GID
-                
+
                 # This function takes the number of deviations (sigma) from the center of a normal distribution graph
                 # It returns which third of the distribution area the value is in
                 # a.k.a., about 33% of all values lie within .4 std deviations of center
@@ -226,11 +232,25 @@ def main():
                     else:
                         return 2
                 
-                (tilePopulation, tileWorkers) = population.populationDensityAtLocation(x/float(tiles_width), y/float(tiles_height))
+                # Calculate the latitude and longitude for the tile so we can lookup population and elevation.
+                lat = s + (n-s) * y / float(tiles_height)
+                lon = w + (e-w) * x / float(tiles_width)
+
+                (tilePopulation, tileWorkers) = population.populationDensityAtLocation(lat, lon)
                 # Turn standard deviations into tile 0, 1 or 2
                 # About one third of each tile should be represented on the graph
                 res_gid = deviationsToThirds(tilePopulation)
                 com_gid = deviationsToThirds(tileWorkers)
+                
+                tileElevation = elevation.scaledElevationAtLocation(lat, lon)
+                if (tileElevation < .33):
+                    el_gid = 0
+                elif (tileElevation < .66):
+                    el_gid = 1
+                else:
+                    el_gid = 2
+                elevation_layer[x,y] = elevation_tileset[el_gid]
+                
             elif g > r and g > b:
                 land_gid = PARK_GID
             else:
