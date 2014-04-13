@@ -5,7 +5,7 @@ import tmxlib
 import wand
 from PIL import Image
 from util import *
-
+from PopulationMap import PopulationMap
 
 ######################
 # Constants
@@ -76,10 +76,13 @@ def main():
     city = CITIES[city_name]
 
     # Make the file structure. Copy from /template
+    # Skip this step if the -tmx option is specified to only generate tmx.
+    tmxOnly = "-tmx" in sys.argv
     output_dir = os.path.join(output_base_dir, city_name)
-    if os.path.exists(output_dir):
-        shutil.rmtree(output_dir)
-    shutil.copytree(template_dir, output_dir)
+    if not tmxOnly:
+        if os.path.exists(output_dir):
+            shutil.rmtree(output_dir)
+        shutil.copytree(template_dir, output_dir)
 
 
     land_image_output_uri = os.path.join(output_dir,"landform.png")
@@ -113,32 +116,42 @@ def main():
     # Render the landform map
     print "RENDERING LANDFORM MAP"
     # render the map to an image
-    land_map_image = mapnik.Image(img_width,img_height)
-    mapnik.render(land_map, land_map_image)
-    land_map_image.save(land_image_output_uri,'png')
+    
+    # If -tmx option specified attempt to read image file rather than regenerate
+    # This allows us to generate only the TMX file
+    land_map_image = None
+    if (tmxOnly and os.path.exists(land_image_output_uri)):
+            print "Loading previously generated landform image"
+            land_map_image = Image.open(land_image_output_uri)
+    
+    if (land_map_image is None):
+        land_map_image = mapnik.Image(img_width,img_height)
+        mapnik.render(land_map, land_map_image)
+        land_map_image.save(land_image_output_uri,'png')
 
-    #Render the refernce map (with streets and junk)
-    print "RENDERING REFERENCE MAP"
-    regular_map = mapnik.Map(img_width,img_height)
-    mapnik.load_map(regular_map, os.path.join(base_path, "stylesheet/osm.xml"))
-    regular_map.srs = merc.params() # ensure the target map projection is mercator
-    regular_map.zoom_to_box(merc_bbox) # fix aspect ratio
-    reference_map_path = os.path.join(output_dir, "reference.png")
-    mapnik.render_to_file(regular_map, reference_map_path)
+    if (not tmxOnly):
+        #Render the refernce map (with streets and junk)
+        print "RENDERING REFERENCE MAP"
+        regular_map = mapnik.Map(img_width,img_height)
+        mapnik.load_map(regular_map, os.path.join(base_path, "stylesheet/osm.xml"))
+        regular_map.srs = merc.params() # ensure the target map projection is mercator
+        regular_map.zoom_to_box(merc_bbox) # fix aspect ratio
+        reference_map_path = os.path.join(output_dir, "reference.png")
+        mapnik.render_to_file(regular_map, reference_map_path)
 
-    # Do any rotating we need with imagemagick
-    if city.get('rotate'):
-        print "PEFORMING ROTATION"
-        # convert reference.png -alpha set \( +clone -background none -rotate 30 \) -gravity center  -compose Src -composite  reference-rotated.png
-        ref_rotated_path = os.path.join(output_dir, "reference-rotated.png")
-        land_rotated_path = os.path.join(output_dir, "landform-rotated.png")
-        reference_rot = Image.open(reference_map_path).rotate(city['rotate'],expand=0)
-        reference_rot.save(ref_rotated_path)
-
-        land_rot = Image.open(land_image_output_uri).rotate(city['rotate'],expand=0)
-        land_rot.save(land_rotated_path)
-
-        land_image_output_uri = land_rotated_path
+        # Do any rotating we need with imagemagick
+        if city.get('rotate'):
+            print "PEFORMING ROTATION"
+            # convert reference.png -alpha set \( +clone -background none -rotate 30 \) -gravity center  -compose Src -composite  reference-rotated.png
+            ref_rotated_path = os.path.join(output_dir, "reference-rotated.png")
+            land_rotated_path = os.path.join(output_dir, "landform-rotated.png")
+            reference_rot = Image.open(reference_map_path).rotate(city['rotate'],expand=0)
+            reference_rot.save(ref_rotated_path)
+    
+            land_rot = Image.open(land_image_output_uri).rotate(city['rotate'],expand=0)
+            land_rot.save(land_rotated_path)
+    
+            land_image_output_uri = land_rotated_path
 
 
 
@@ -174,10 +187,18 @@ def main():
     
     neighborhoods_layer = tmx_map.add_layer(name="Neighborhoods", layer_class=tmxlib.ObjectLayer)
     streets_layer = tmx_map.add_layer(name="Streets", layer_class=tmxlib.ObjectLayer)
-
+    
     # Populate the layers based on the output
     land_image = Image.open(land_image_output_uri)
+    population = PopulationMap(bounds)
+    population.populate()
+    
+    print "Writing TMX layers..."
+    
     for x in range(0,tiles_width):
+        
+        if "-v" in sys.argv: print "Writing column %d" % (x)
+        
         for y in range(0,tiles_height):
             x_pixel = (TILE_SIZE/2) + (TILE_SIZE * x)
             y_pixel = (TILE_SIZE/2) + (TILE_SIZE * y)
@@ -193,8 +214,23 @@ def main():
                 land_gid = AIRPORT_GID
             elif r==242: # land is almost white
                 land_gid = LAND_GID
-                res_gid = 1
-                com_gid = 1
+                
+                # This function takes the number of deviations (sigma) from the center of a normal distribution graph
+                # It returns which third of the distribution area the value is in
+                # a.k.a., about 33% of all values lie within .4 std deviations of center
+                def deviationsToThirds(deviations):
+                    if (deviations <= -.4):
+                        return 0
+                    elif (deviations < .4):
+                        return 1
+                    else:
+                        return 2
+                
+                (tilePopulation, tileWorkers) = population.populationDensityAtLocation(x/float(tiles_width), y/float(tiles_height))
+                # Turn standard deviations into tile 0, 1 or 2
+                # About one third of each tile should be represented on the graph
+                res_gid = deviationsToThirds(tilePopulation)
+                com_gid = deviationsToThirds(tileWorkers)
             elif g > r and g > b:
                 land_gid = PARK_GID
             else:
@@ -202,10 +238,10 @@ def main():
 
             land_layer[x,y] = land_tileset[land_gid]
 
-            if com_gid:
+            if com_gid >= 0:
                 com_layer[x,y] = com_tileset[com_gid]
 
-            if res_gid:
+            if res_gid >= 0:
                 res_layer[x,y] = res_tileset[res_gid]
 
     land_layer[0, 0] = land_tileset[0]
