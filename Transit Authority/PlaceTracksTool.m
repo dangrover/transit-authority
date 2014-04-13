@@ -80,7 +80,13 @@
         }
         
         costLabel.string = FormatCurrency(@(cost));
-        costLabel.position = CGPointOffset( [self.parent convertTouchToNodeSpace:touch], 75, 0);
+        
+        // Push the cost label right so it's not under the finger,
+        // or left if it's close to the right edge.
+        CGPoint position = [self.parent convertTouchToNodeSpace:touch];
+        int labelWidth = costLabel.texture.contentSize.width;
+        int xOffset = position.x + labelWidth + 75 < self.parent.contentSize.width ? 75 : -75;
+        costLabel.position = CGPointOffset(position, xOffset, 0);
     }
 }
 
