@@ -130,6 +130,52 @@
 	[[CCDirector sharedDirector] setNextDeltaTimeZero:YES];
 }
 
+#pragma mark - Application State
+
+- (BOOL)application:(UIApplication *)application shouldSaveApplicationState:(NSCoder *)coder {
+    return YES;
+}
+
+- (BOOL)application:(UIApplication *)application shouldRestoreApplicationState:(NSCoder *)coder {
+    return YES;
+}
+
+- (void)application:(UIApplication *)application willEncodeRestorableStateWithCoder:(NSCoder *)coder
+{
+    CCScene *runningScene = self.director.runningScene;
+    if ([runningScene isKindOfClass:[MainGameScene class]])
+    {
+        NSLog(@"Saving Game State");
+        MainGameScene *gameScene = (MainGameScene *)runningScene;
+        [coder encodeObject:gameScene.gameState forKey:@"Game State"];
+    }
+    else
+    {
+        NSLog(@"Not saving Game State. Open scene is not game scene.");
+    }
+}
+
+- (void)application:(UIApplication *)application didDecodeRestorableStateWithCoder:(NSCoder *)coder {
+    NSLog(@"Loading Game State...");
+
+    GameState *gameState;
+    @try {
+        gameState = [coder decodeObjectForKey:@"Game State"];
+    }
+    @catch (NSException *exception) {
+        NSLog(@"Something went terribly wrong while loading the game state.");
+    }
+    @finally {
+        if (gameState)
+        {
+            NSLog(@"Loaded: %@", gameState);
+        }
+        else
+        {
+            NSLog(@"No game state found");
+        }
+    }
+}
 
 - (void) exitToMainMenu{
    

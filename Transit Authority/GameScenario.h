@@ -20,6 +20,7 @@
 
 /// Main initializer. Takes a full path to a JSON file.
 - (id) initWithJSON:(NSString *)jsonPath;
+@property(strong) NSString *jsonPath;
 
 @property(strong) NSString *cityName; /// The name of the city
 @property(assign) float startingCash; /// The amount of money the player starts with

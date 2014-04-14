@@ -9,6 +9,7 @@
 #import "GameScenario.h"
 #import "GameState.h"
 #import "PointOfInterest.h"
+#import "NSCoding-Macros.h"
 
 @interface MetricScenarioGoal()
 - (id) initWithJSON:(NSDictionary *)jsonDict;
@@ -36,6 +37,7 @@
         self.startingDate = [NSDate dateWithTimeIntervalSince1970:[dict[@"starting-date"] floatValue]];
         
         NSString *basePath = [jsonPath stringByDeletingLastPathComponent];
+        self.jsonPath = jsonPath;
         self.tmxMapPath = [basePath stringByAppendingPathComponent:dict[@"tmx-name"]];
         self.backgroundPath = [basePath stringByAppendingPathComponent:dict[@"bg-name"]];
         
@@ -78,6 +80,17 @@
     return self;
 }
 
+#pragma mark - Serialization
+
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    encodeObject(_jsonPath);
+}
+
+// When decoding the GameScenario from a saved GameState, reread the JSON file.
+- (id)initWithCoder:(NSCoder *)decoder {
+    decodeObject(_jsonPath);
+    return [self initWithJSON:_jsonPath];
+}
 
 @end
 

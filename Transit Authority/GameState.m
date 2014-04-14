@@ -13,6 +13,7 @@
 #import "Utilities.h"
 #import "GameLedger.h"
 #import "PointOfInterest.h"
+#import "NSCoding-Macros.h"
 
 NSString *GameStateNotification_AccomplishedGoal = @"GameStateNotification_AccomplishedGoal";
 NSString *GameStateNotification_CheckedGoals = @"GameStateNotification_CheckedGoals";
@@ -95,7 +96,7 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
 
 - (id) initWithScenario:(GameScenario *)theScenario{
     if(self = [super init]){
-        self.originalScenario = theScenario;
+        /*self.originalScenario = theScenario;
         self.currentCash = theScenario.startingCash;
         
         time_t startTimestamp = [theScenario.startingDate timeIntervalSince1970];
@@ -140,7 +141,7 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
         self.lastLocalLobbyTime = INT_MIN;
         
         // Keep track of the cash balance in the ledger any time something happens
-        [self addObserver:self forKeyPath:@"currentCash" options:NSKeyValueObservingOptionInitial context:nil];
+        [self addObserver:self forKeyPath:@"currentCash" options:NSKeyValueObservingOptionInitial context:nil];*/
     }
     
     return self;
@@ -1861,6 +1862,51 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
 
 - (NSArray *) allAvailableUpgrades{
     return @[StationUpgrade_ParkingLot, StationUpgrade_LongPlatform, StationUpgrade_Accessible];
+}
+
+#pragma mark - Serialization
+
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    encodeObject(_originalScenario);
+    //encodeObject(_ledger);
+    //encodeObject(_map);
+    
+    encodeDouble(_currentDate);
+    encodeInt(_currentDateComponents.tm_hour);
+    encodeInt(_currentDateComponents.tm_min);
+    encodeFloat(_currentCash);
+    
+    encodeFloat(_dailyLocalSubsidy);
+    encodeFloat(_dailyFederalSubsidy);
+    encodeDouble(_lastLocalLobbyTime);
+    encodeDouble(_lastFedLobbyTime);
+}
+
+- (id)initWithCoder:(NSCoder *)decoder {
+    NSLog(@"Decoding Scenario");
+    decodeObject(_originalScenario);
+    NSLog(@"Scenario decoded: %@", _originalScenario);
+    if (self = [self initWithScenario:_originalScenario])
+    {
+        // _map is initialized already.
+        NSLog(@"Game State initialized");
+        
+        // We can work on the ledger later.
+        //decodeObject(_ledger);
+        
+        decodeDouble(_currentDate);
+        //decodeInt(_currentDateComponents.tm_hour);
+        //decodeInt(_currentDateComponents.tm_min);
+        decodeFloat(_currentCash);
+        
+        decodeFloat(_dailyLocalSubsidy);
+        decodeFloat(_dailyFederalSubsidy);
+        decodeDouble(_lastLocalLobbyTime);
+        decodeDouble(_lastFedLobbyTime);
+
+        return self;
+    }
+    return nil;
 }
 
 @end
