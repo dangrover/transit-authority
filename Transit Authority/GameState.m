@@ -96,7 +96,7 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
 
 - (id) initWithScenario:(GameScenario *)theScenario{
     if(self = [super init]){
-        /*self.originalScenario = theScenario;
+        self.originalScenario = theScenario;
         self.currentCash = theScenario.startingCash;
         
         time_t startTimestamp = [theScenario.startingDate timeIntervalSince1970];
@@ -141,7 +141,7 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
         self.lastLocalLobbyTime = INT_MIN;
         
         // Keep track of the cash balance in the ledger any time something happens
-        [self addObserver:self forKeyPath:@"currentCash" options:NSKeyValueObservingOptionInitial context:nil];*/
+        [self addObserver:self forKeyPath:@"currentCash" options:NSKeyValueObservingOptionInitial context:nil];
     }
     
     return self;
@@ -1885,6 +1885,7 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
 - (id)initWithCoder:(NSCoder *)decoder {
     NSLog(@"Decoding Scenario");
     decodeObject(_originalScenario);
+    //_originalScenario = [[GameScenario alloc] initWithJSON:[[NSBundle mainBundle] pathForResource:@"boston" ofType:@"json"]];
     NSLog(@"Scenario decoded: %@", _originalScenario);
     if (self = [self initWithScenario:_originalScenario])
     {

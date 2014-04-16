@@ -155,12 +155,13 @@
     }
 }
 
-- (void)application:(UIApplication *)application didDecodeRestorableStateWithCoder:(NSCoder *)coder {
-    NSLog(@"Loading Game State...");
-
+- (void)loadSavedGame:(NSTimer *)timer {
+    NSLog(@"Loading Game State now...");
     GameState *gameState;
+    NSCoder *coder = [timer userInfo];
+    gameState = [coder decodeObjectForKey:@"Game State"];
+
     @try {
-        gameState = [coder decodeObjectForKey:@"Game State"];
     }
     @catch (NSException *exception) {
         NSLog(@"Something went terribly wrong while loading the game state.");
@@ -169,12 +170,20 @@
         if (gameState)
         {
             NSLog(@"Loaded: %@", gameState);
+            //[((AppController *)[UIApplication sharedApplication].delegate).navController popToRootViewControllerAnimated:NO];
+            MainGameScene *gameScene = [[MainGameScene alloc] initWithGameState:gameState];
+            [[CCDirector sharedDirector] pushScene:gameScene];
         }
         else
         {
             NSLog(@"No game state found");
         }
     }
+}
+
+- (void)application:(UIApplication *)application didDecodeRestorableStateWithCoder:(NSCoder *)coder {
+    NSLog(@"Loading Game State in 1s...");
+    [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(loadSavedGame:) userInfo:coder repeats:NO];
 }
 
 - (void) exitToMainMenu{
