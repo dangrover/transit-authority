@@ -87,6 +87,7 @@ def main():
 
 
     land_image_output_uri = os.path.join(output_dir,"landform.png")
+    land_rotated_path = os.path.join(output_dir, "landform-rotated.png")
     map_output_uri = os.path.join(output_dir,city_name+".tmx")
 
     # Figure out the map scale
@@ -114,18 +115,22 @@ def main():
     land_map.srs = merc.params() # ensure the target map projection is mercator
     land_map.zoom_to_box(merc_bbox) # fix aspect ratio
     
-    # Render the landform map
-    print "RENDERING LANDFORM MAP"
-    # render the map to an image
-    
     # If -tmx option specified attempt to read image file rather than regenerate
     # This allows us to generate only the TMX file
     land_map_image = None
-    if (tmxOnly and os.path.exists(land_image_output_uri)):
-            print "Loading previously generated landform image"
+    if (tmxOnly):
+        if os.path.exists(land_rotated_path):
+            land_image_output_uri = land_rotated_path
+        if os.path.exists(land_image_output_uri):
             land_map_image = Image.open(land_image_output_uri)
-    
+            print "Loading landform from " + land_image_output_uri
+        else:
+            print "No landform png found."
+
+    # Render the landform map
+    # render the map to an image
     if (land_map_image is None):
+        print "RENDERING LANDFORM MAP"
         land_map_image = mapnik.Image(img_width,img_height)
         mapnik.render(land_map, land_map_image)
         land_map_image.save(land_image_output_uri,'png')
@@ -145,13 +150,11 @@ def main():
             print "PEFORMING ROTATION"
             # convert reference.png -alpha set \( +clone -background none -rotate 30 \) -gravity center  -compose Src -composite  reference-rotated.png
             ref_rotated_path = os.path.join(output_dir, "reference-rotated.png")
-            land_rotated_path = os.path.join(output_dir, "landform-rotated.png")
             reference_rot = Image.open(reference_map_path).rotate(city['rotate'],expand=0)
             reference_rot.save(ref_rotated_path)
     
             land_rot = Image.open(land_image_output_uri).rotate(city['rotate'],expand=0)
             land_rot.save(land_rotated_path)
-    
             land_image_output_uri = land_rotated_path
 
 
