@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import sys, os, shutil, datetime
+import sys, os, shutil, datetime, math
 import mapnik
 import tmxlib
 import wand
@@ -57,6 +57,21 @@ def get_tileset(name, path):
     return tmxlib.ImageTileset(name=name, 
                                tile_size=(TILE_SIZE,TILE_SIZE),
                                image=tmxlib.Image(size=pil_image.size,source=os.path.basename(path)))
+                               
+def rotate2d(degrees,point,origin):
+    """
+    A rotation function that rotates a point around a point
+    to rotate around the origin use [0,0]
+    """
+    x = point[0] - origin[0]
+    yorz = point[1] - origin[1]
+    newx = (x*math.cos(math.radians(degrees))) - (yorz*math.sin(math.radians(degrees)))
+    newyorz = (x*math.sin(math.radians(degrees))) + (yorz*math.cos(math.radians(degrees)))
+    newx += origin[0]
+    newyorz += origin[1]
+    
+    return newx,newyorz
+
 
 def main():
     base_path = os.path.dirname(sys.argv[0])
@@ -158,7 +173,6 @@ def main():
             land_image_output_uri = land_rotated_path
 
 
-
     # Now let's generate the TMX file from the landform output
     print "Generating TMX file"
 
@@ -217,8 +231,14 @@ def main():
             y_pixel = (TILE_SIZE/2) + (TILE_SIZE * y)
             
             # Calculate the latitude and longitude for the tile so we can lookup population and elevation.
-            lat = s + (n-s) * y / float(tiles_height)
-            lon = w + (e-w) * x / float(tiles_width)
+            # First, adjust for any rotation of the image
+            if city.get('rotate'):
+                rotatedX, rotatedY = rotate2d(city.get('rotate'), (x,y), (tiles_width/2,tiles_height/2))
+            else:
+                rotatedX, rotatedY = x, y
+            # Then fit x and y into the bounds of the map
+            lat = s + (n-s) * rotatedY / float(tiles_height)
+            lon = w + (e-w) * rotatedX / float(tiles_width)
 
             # Find the elvation at this point
             tileElevation = elevation.scaledElevationAtLocation(lat, lon)
