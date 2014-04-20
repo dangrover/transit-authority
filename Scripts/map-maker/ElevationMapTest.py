@@ -1,5 +1,5 @@
 import ElevationMap
 
-map = ElevationMap.ElevationMap([-71.1372, 42.3063,-71.006, 42.3816])
+map = ElevationMap.ElevationMap([-108,37,-107,36])
 map.populate()
-print map.elevationAtLocation(42.35, -71.13)
+print map.elevationAtLocation(37,-108)

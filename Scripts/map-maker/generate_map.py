@@ -201,14 +201,27 @@ def main():
     
     print "Writing TMX layers..."
     
-    for x in range(0,tiles_width):
-        
-        if "-v" in sys.argv: print "Writing column %d/%d" % (x,tiles_width)
-        
-        for y in range(0,tiles_height):
+    previewXScale = round(tiles_height/40)
+    previewYScale = round(tiles_height/20)
+    
+    for y in range(0,tiles_height):
+    
+        for x in range(0,tiles_width):
+            
+            printPreviewTile = "-v" in sys.argv and y%previewYScale == 0 and x%previewXScale == 0
+            
             x_pixel = (TILE_SIZE/2) + (TILE_SIZE * x)
             y_pixel = (TILE_SIZE/2) + (TILE_SIZE * y)
+            
+            # Calculate the latitude and longitude for the tile so we can lookup population and elevation.
+            lat = s + (n-s) * y / float(tiles_height)
+            lon = w + (e-w) * x / float(tiles_width)
 
+            tileElevation = elevation.scaledElevationAtLocation(lat, lon)
+            if printPreviewTile:
+                sys.stdout.write("%d" % min(round(tileElevation*10),9))
+                sys.stdout.flush()
+                
             r,g,b,a = land_image.getpixel((x_pixel, y_pixel))
 
             #print "looking at pixel %f,%f,%f" % (r,g,b)
@@ -232,24 +245,21 @@ def main():
                     else:
                         return 2
                 
-                # Calculate the latitude and longitude for the tile so we can lookup population and elevation.
-                lat = s + (n-s) * y / float(tiles_height)
-                lon = w + (e-w) * x / float(tiles_width)
-
                 (tilePopulation, tileWorkers) = population.populationDensityAtLocation(lat, lon)
                 # Turn standard deviations into tile 0, 1 or 2
                 # About one third of each tile should be represented on the graph
                 res_gid = deviationsToThirds(tilePopulation)
                 com_gid = deviationsToThirds(tileWorkers)
                 
-                tileElevation = elevation.scaledElevationAtLocation(lat, lon)
-                if (tileElevation < .33):
-                    el_gid = 0
-                elif (tileElevation < .66):
-                    el_gid = 1
-                else:
+                el_gid = None
+                if (tileElevation > .6):
                     el_gid = 2
-                elevation_layer[x,y] = elevation_tileset[el_gid]
+                elif (tileElevation > .4):
+                    el_gid = 1
+                elif (tileElevation > .2):
+                    el_gid = 0
+                if not el_gid is None:
+                    elevation_layer[x,y] = elevation_tileset[el_gid]
                 
             elif g > r and g > b:
                 land_gid = PARK_GID
@@ -263,6 +273,8 @@ def main():
 
             if res_gid >= 0:
                 res_layer[x,y] = res_tileset[res_gid]
+
+        if "-v" in sys.argv and y%previewYScale == 0: print ""
 
     land_layer[0, 0] = land_tileset[0]
     tmx_map.save(map_output_uri)
