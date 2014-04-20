@@ -150,7 +150,7 @@ def main():
         mapnik.render(land_map, land_map_image)
         land_map_image.save(land_image_output_uri,'png')
 
-    if (not tmxOnly):
+    if not tmxOnly:
         #Render the refernce map (with streets and junk)
         print "RENDERING REFERENCE MAP"
         regular_map = mapnik.Map(img_width,img_height)
@@ -160,17 +160,19 @@ def main():
         reference_map_path = os.path.join(output_dir, "reference.png")
         mapnik.render_to_file(regular_map, reference_map_path)
 
-        # Do any rotating we need with imagemagick
-        if city.get('rotate'):
-            print "PEFORMING ROTATION"
+    # Do any rotating we need with imagemagick
+    if city.get('rotate') and land_image_output_uri != land_rotated_path:
+        print "PEFORMING ROTATION"
+        
+        if not tmxOnly:
             # convert reference.png -alpha set \( +clone -background none -rotate 30 \) -gravity center  -compose Src -composite  reference-rotated.png
             ref_rotated_path = os.path.join(output_dir, "reference-rotated.png")
             reference_rot = Image.open(reference_map_path).rotate(city['rotate'],expand=0)
             reference_rot.save(ref_rotated_path)
     
-            land_rot = Image.open(land_image_output_uri).rotate(city['rotate'],expand=0)
-            land_rot.save(land_rotated_path)
-            land_image_output_uri = land_rotated_path
+        land_rot = Image.open(land_image_output_uri).rotate(city['rotate'],expand=0)
+        land_rot.save(land_rotated_path)
+        land_image_output_uri = land_rotated_path
 
 
     # Now let's generate the TMX file from the landform output
