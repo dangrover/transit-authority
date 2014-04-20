@@ -230,7 +230,7 @@ def main():
             if a == 0: # if no alpha, skip the pixel
                 continue
 
-            land_gid, res_gid, com_gid = None, None, None
+            land_gid, res_gid, com_gid, el_gid = None, None, None, None
             if r==0 and g==0 and b==0:
                 land_gid = AIRPORT_GID
             elif r==242: # land is almost white
@@ -260,8 +260,6 @@ def main():
                     el_gid = 1
                 elif (tileElevation > .2):
                     el_gid = 0
-                else:
-                    el_gid = None
                 
             elif g > r and g > b:
                 land_gid = PARK_GID
