@@ -217,7 +217,9 @@ def main():
             lat = s + (n-s) * y / float(tiles_height)
             lon = w + (e-w) * x / float(tiles_width)
 
+            # Find the elvation at this point
             tileElevation = elevation.scaledElevationAtLocation(lat, lon)
+            # If -v option, print an elevation grid to the command line
             if printPreviewTile:
                 sys.stdout.write("%d" % min(round(tileElevation*10),9))
                 sys.stdout.flush()
@@ -251,29 +253,35 @@ def main():
                 res_gid = deviationsToThirds(tilePopulation)
                 com_gid = deviationsToThirds(tileWorkers)
                 
-                el_gid = None
+                # To choose which elevation tile to use, we define some threshold heights relative to the highest and lowest point on the map
                 if (tileElevation > .6):
                     el_gid = 2
                 elif (tileElevation > .4):
                     el_gid = 1
                 elif (tileElevation > .2):
                     el_gid = 0
-                if not el_gid is None:
-                    elevation_layer[x,y] = elevation_tileset[el_gid]
+                else:
+                    el_gid = None
                 
             elif g > r and g > b:
                 land_gid = PARK_GID
             else:
                 land_gid = WATER_GID
 
+            # Draw the tile for this square that will appear in the game.
             land_layer[x,y] = land_tileset[land_gid]
 
+            # Maybe add population tiles in the two population layers
             if com_gid >= 0:
                 com_layer[x,y] = com_tileset[com_gid]
-
             if res_gid >= 0:
                 res_layer[x,y] = res_tileset[res_gid]
+            
+            # Maybe add a tile in the elevation layer
+            if not el_gid is None:
+                elevation_layer[x,y] = elevation_tileset[el_gid]
 
+        # If -v option, print an elevation grid
         if "-v" in sys.argv and y%previewYScale == 0: print ""
 
     land_layer[0, 0] = land_tileset[0]
