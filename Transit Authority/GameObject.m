@@ -7,6 +7,7 @@
 //
 
 #import "GameObject.h"
+#import "NSCoding-Macros.h"
 
 @interface GameObject()
 @property(strong, readwrite) NSString *UUID;
@@ -23,6 +24,20 @@
         CFRelease(uuidRef);
     }
     
+    return self;
+}
+
+#pragma mark - Serialization
+
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    encodeObject(UUID);
+}
+
+- (id)initWithCoder:(NSCoder *)decoder {
+    if (self = [self init])
+    {
+        decodeObject(UUID);
+    }
     return self;
 }
 

@@ -8,11 +8,14 @@
 
 #import <UIKit/UIKit.h>
 #import "cocos2d.h"
+#import "GameState.h"
 
 @interface AppController : NSObject <UIApplicationDelegate, CCDirectorDelegate>
 {
 	UIWindow *window_;
 	UINavigationController *navController_;
+    
+    GameState *savedState_;
 
 	CCDirectorIOS	*director_;							// weak ref
 }

@@ -75,6 +75,19 @@
     [TestFlight setDeviceIdentifier:[[[UIDevice currentDevice] identifierForVendor] UUIDString]];
     [TestFlight takeOff:@"36d93e59-b263-4c26-a1e8-1fe37b7e934e"];
     
+    // If we loaded a serialized game on launch, open that game now that cocos2d is ready.
+    if (savedState_)
+    {
+        NSLog(@"Application finished loading. Loading decoded game state");
+
+        // The map can't be created without cocos2d.
+        [savedState_ loadMap];
+        
+        [((AppController *)[UIApplication sharedApplication].delegate).navController popToRootViewControllerAnimated:NO];
+        MainGameScene *gameScene = [[MainGameScene alloc] initWithGameState:savedState_];
+        [[CCDirector sharedDirector] pushScene:gameScene];
+    }
+    
 	return YES;
 }
 
@@ -155,12 +168,11 @@
     }
 }
 
-- (void)loadSavedGame:(NSTimer *)timer {
-    NSLog(@"Loading Game State now...");
-    GameState *gameState;
-    NSCoder *coder = [timer userInfo];
-    gameState = [coder decodeObjectForKey:@"Game State"];
+- (void)application:(UIApplication *)application didDecodeRestorableStateWithCoder:(NSCoder *)coder {
+    NSLog(@"Loading saved game state...");
 
+    GameState *gameState = [coder decodeObjectForKey:@"Game State"];
+    
     @try {
     }
     @catch (NSException *exception) {
@@ -169,22 +181,14 @@
     @finally {
         if (gameState)
         {
+            savedState_ = gameState;
             NSLog(@"Loaded: %@", gameState);
-            //[((AppController *)[UIApplication sharedApplication].delegate).navController popToRootViewControllerAnimated:NO];
-            MainGameScene *gameScene = [[MainGameScene alloc] initWithGameState:gameState];
-            [[CCDirector sharedDirector] pushScene:gameScene];
         }
         else
         {
             NSLog(@"No game state found");
         }
-    }
-}
-
-- (void)application:(UIApplication *)application didDecodeRestorableStateWithCoder:(NSCoder *)coder {
-    NSLog(@"Loading Game State in 1s...");
-    [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(loadSavedGame:) userInfo:coder repeats:NO];
-}
+    }}
 
 - (void) exitToMainMenu{
    

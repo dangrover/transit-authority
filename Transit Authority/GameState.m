@@ -14,6 +14,7 @@
 #import "GameLedger.h"
 #import "PointOfInterest.h"
 #import "NSCoding-Macros.h"
+#import "cocos2d.h"
 
 NSString *GameStateNotification_AccomplishedGoal = @"GameStateNotification_AccomplishedGoal";
 NSString *GameStateNotification_CheckedGoals = @"GameStateNotification_CheckedGoals";
@@ -81,12 +82,12 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
     unsigned _tickIncrement; // number of ticks we're incrementing this cycle
     CGPoint _startPoint; // where we pan the camera to start with
     
-    NSMutableDictionary *_stationsById;
-    NSMutableDictionary *_tracks;
-    NSMutableSet *_outstandingBonds;
-    NSMutableDictionary *_linesByColor;
-    NSMutableDictionary *_poisWithoutStations;
-    NSMutableDictionary *_stationsByConnectedPOI;
+    NSMutableDictionary *_stationsById; // of Station
+    NSMutableDictionary *_tracks; // of TrackSegment
+    NSMutableSet *_outstandingBonds; // of Bond
+    NSMutableDictionary *_linesByColor; // of Line
+    NSMutableDictionary *_poisWithoutStations; // of PointOfInterest
+    NSMutableDictionary *_stationsByConnectedPOI; // of Station
     
     NSMutableArray *_goalsMet;
     NSTimeInterval _lastGoalEvaluation;
@@ -103,8 +104,10 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
         self.currentDate = startTimestamp;
         self.currentDateComponents = *gmtime(&startTimestamp);
         
-    
-        self.map = [[GameMap alloc] initWithMapAtPath:theScenario.tmxMapPath];
+        if (theScenario.tmxMapPath)
+        {
+            self.map = [[GameMap alloc] initWithMapAtPath:theScenario.tmxMapPath];
+        }
         
         self.ledger = [[GameLedger alloc] init];
         
@@ -1866,10 +1869,10 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
 
 #pragma mark - Serialization
 
+// Serialize the game state.
 - (void)encodeWithCoder:(NSCoder *)encoder {
     encodeObject(_originalScenario);
     //encodeObject(_ledger);
-    //encodeObject(_map);
     
     encodeDouble(_currentDate);
     encodeInt(_currentDateComponents.tm_hour);
@@ -1880,19 +1883,55 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
     encodeFloat(_dailyFederalSubsidy);
     encodeDouble(_lastLocalLobbyTime);
     encodeDouble(_lastFedLobbyTime);
+    
+    encodeObject(_commercialTileDestPool);
+    encodeObject(_residentialTileDestPool);
+    encodeObject(_commercialPOIDestPoolByHour);
+    encodeObject(_residentialPOIDestPoolByHour);
+    
+    encodeInt(_averageWaitTimeForPassengerDecisionFunction);
+    
+    encodeInt(_lastCoalesce);
+    encodeInt(_lastBondPayment);
+    encodeInt(_lastSubsidyPayment);
+    encodeInt(_lastMaintenencePayment);
+    encodeInt(_lastLogRidershipNumbers);
+    
+    encodeObject(_stationsById);
+    //encodeObject(_tracks);
+    //encodeObject(_outstandingBonds);
+    //encodeObject(_linesByColor);
+    //encodeObject(_poisWithoutStations);
+    encodeObject(_stationsByConnectedPOI);
+    
+    encodeObject(_goalsMet);
+    encodeInt(_lastGoalEvaluation);
+    //ScenarioGoal *_easiestUnmetGoal;
 }
 
+// We can't create the map file in initWithCoder (loading a serialized GameState) because cocos2d hasn't loaded.
+// Using this method we create the map file at a later time.
+- (void)loadMap {
+    self.map = [[GameMap alloc] initWithMapAtPath:self.originalScenario.tmxMapPath];
+    
+    // The map has to be redrawn now.
+    [self didChangeValueForKey:@"stations"];
+    [self didChangeValueForKey:@"tracks"];
+    [self didChangeValueForKey:@"poisWithoutStations"];
+    [self didChangeValueForKey:@"stationsByConnectedPOI"];
+}
+
+// Deserialize the game state.
 - (id)initWithCoder:(NSCoder *)decoder {
-    NSLog(@"Decoding Scenario");
     decodeObject(_originalScenario);
-    //_originalScenario = [[GameScenario alloc] initWithJSON:[[NSBundle mainBundle] pathForResource:@"boston" ofType:@"json"]];
-    NSLog(@"Scenario decoded: %@", _originalScenario);
+    NSString *mapPath = _originalScenario.tmxMapPath;
+    _originalScenario.tmxMapPath = nil;
+    NSLog(@"Saved scenario decoded: %@", _originalScenario);
+    
     if (self = [self initWithScenario:_originalScenario])
     {
-        // _map is initialized already.
-        NSLog(@"Game State initialized");
+        _originalScenario.tmxMapPath = mapPath;
         
-        // We can work on the ledger later.
         //decodeObject(_ledger);
         
         decodeDouble(_currentDate);
@@ -1904,7 +1943,30 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
         decodeFloat(_dailyFederalSubsidy);
         decodeDouble(_lastLocalLobbyTime);
         decodeDouble(_lastFedLobbyTime);
-
+        
+        decodeObject(_commercialTileDestPool);
+        decodeObject(_residentialTileDestPool);
+        decodeObject(_commercialPOIDestPoolByHour);
+        decodeObject(_residentialPOIDestPoolByHour);
+        
+        decodeInt(_averageWaitTimeForPassengerDecisionFunction);
+        
+        decodeInt(_lastCoalesce);
+        decodeInt(_lastBondPayment);
+        decodeInt(_lastSubsidyPayment);
+        decodeInt(_lastMaintenencePayment);
+        decodeInt(_lastLogRidershipNumbers);
+        
+        decodeObject(_stationsById);
+        //decodeObject(_tracks);
+        //decodeObject(_outstandingBonds);
+        //decodeObject(_linesByColor);
+        //decodeObject(_poisWithoutStations);
+        decodeObject(_stationsByConnectedPOI);
+        
+        decodeObject(_goalsMet);
+        decodeInt(_lastGoalEvaluation);
+        
         return self;
     }
     return nil;
