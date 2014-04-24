@@ -10,29 +10,110 @@
 #import "Utilities.h"
 #import "UIColor+Cocos.h"
 
+static CCGLProgram *_trackShader;
+static int _trackShaderColorLocation;
+
 #define LINE_CLICK_THRESHOLD 30
 
-@implementation TracksNode
+@implementation TracksNode{
+    CCPointArray *_points;
+    GLuint _verticesBuffer;
+    
+    unsigned _numVertices;
+}
+
+- (id)init {
+    if (self = [super init])
+    {
+        if(!_trackShader){
+            _trackShader = [[CCShaderCache sharedShaderCache] programForKey:kCCShader_Position_uColor];
+            _trackShaderColorLocation = glGetUniformLocation(_trackShader.program, "u_color");
+        }
+        [self rebuffer];
+    }
+    return self;
+}
+
+- (void) rebuffer{
+    
+    _points = [[CCPointArray alloc] initWithCapacity:2];
+    [_points addControlPoint:self.start];
+    [_points addControlPoint:CGPointMake(self.start.x, self.end.y)];
+    [_points addControlPoint:self.end];
+    
+    _numVertices = _points.count * 3;
+    ccVertex2F vertices[_numVertices + 1];
+    
+	NSUInteger p;
+	CGFloat lt;
+	CGFloat deltaT = 1.0 / [_points count];
+    
+    for( NSUInteger i=0; i < _numVertices+1;i++) {
+		
+		CGFloat dt = (CGFloat)i / _numVertices;
+        
+		// border
+		if( dt == 1 ) {
+			p = [_points count] - 1;
+			lt = 1;
+		} else {
+			p = dt / deltaT;
+			lt = (dt - deltaT * (CGFloat)p) / deltaT;
+		}
+		
+		// Interpolate
+		CGPoint pp0 = [_points getControlPointAtIndex:p-1];
+		CGPoint pp1 = [_points getControlPointAtIndex:p+0];
+		CGPoint pp2 = [_points getControlPointAtIndex:p+1];
+		CGPoint pp3 = [_points getControlPointAtIndex:p+2];
+		
+		CGPoint newPos = ccCardinalSplineAt( pp0, pp1, pp2, pp3, 0.5, lt);
+		vertices[i].x = newPos.x;
+		vertices[i].y = newPos.y;
+	}
+
+    glGenBuffers(1, &_verticesBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, _verticesBuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+}
+
+- (void) dealloc{
+    glDeleteBuffers(1, &(_verticesBuffer));
+}
 
 - (void)draw {
     
-    ccDrawInit();
-    
-    CGFloat pixelDistance = PointDistance(self.start, self.end);
-  
     float lineWidth = 0;
-    if(self.segment.lines.count == 0){ // just tracks
-        // draw a dotted line?
-        if(self.valid){
-            lineWidth = 18;
-            ccDrawColor4F(0, 0, 0, 0.3);
-        }else{
-            lineWidth = 10;
-            ccDrawColor4F(1, 0, 0, 0.3);
-        }
-        
-        glLineWidth(lineWidth * CC_CONTENT_SCALE_FACTOR());
-        ccDrawLine(self.start, self.end);
+    
+    ccColor4F lineColor;
+    
+    // draw a dotted line?
+    if(self.valid){
+        lineWidth = 18;
+        lineColor = ccc4f(0, 0, 0, 0.3);
+    }else{
+        lineWidth = 10;
+        lineColor = ccc4f(1, 0, 0, 0.3);
+    }
+    
+    glLineWidth(lineWidth * CC_CONTENT_SCALE_FACTOR());
+    //ccDrawLine(self.start, self.end);
+    
+    [_trackShader use];
+    [_trackShader setUniformsForBuiltins];
+    [_trackShader setUniformLocation:_trackShaderColorLocation with4fv:(GLfloat*) &lineColor.r count:1];
+    
+    ccGLEnableVertexAttribs( kCCVertexAttribFlag_Position );
+    
+    glBindBuffer(GL_ARRAY_BUFFER, _verticesBuffer);
+    glVertexAttribPointer(kCCVertexAttrib_Position, 2, GL_FLOAT, GL_FALSE, 0, 0);
+    glDrawArrays(GL_LINE_STRIP, 0, (GLsizei) _numVertices + 1);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    
+    /*if(self.segment.lines.count == 0){ // just tracks
+     
+
     
     }else{
         // multi lines
@@ -67,7 +148,7 @@
             
             i++;
         }
-    }
+    }*/
     
     ccDrawFree();
 }

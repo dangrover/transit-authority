@@ -42,6 +42,7 @@
         
         trackPlacement.start = ((CCSprite *)self.parent->_stationSprites[station.UUID]).position;
         trackPlacement.end = nodeCoord;
+        [trackPlacement rebuffer];
         
         startStation = station;
         
@@ -87,6 +88,8 @@
         int labelWidth = costLabel.texture.contentSize.width;
         int xOffset = position.x + labelWidth + 75 < self.parent.contentSize.width ? 75 : -75;
         costLabel.position = CGPointOffset(position, xOffset, 0);
+        
+        [trackPlacement rebuffer];
     }
 }
 

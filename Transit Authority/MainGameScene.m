@@ -714,6 +714,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
             node.segment = segment;
             node.valid = YES;
             node.delegate = self;
+            [node rebuffer];
             _trackSprites[segment.UUID] = node;
             [[CCDirector sharedDirector].touchDispatcher addTargetedDelegate:node priority:5 swallowsTouches:YES];
             [tiledMap addChild:node z:99];

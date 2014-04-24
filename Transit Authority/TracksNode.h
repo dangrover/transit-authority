@@ -17,6 +17,7 @@
 @property(assign) TrackSegment *segment;
 @property(assign) BOOL valid;
 @property(assign) NSObject<TracksNodeDelegate> *delegate;
+- (void) rebuffer;
 @end
 
 
