@@ -1,5 +1,6 @@
 GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
-HEADER_SEARCH_PATHS = "${PODS_ROOT}/Headers" "${PODS_ROOT}/Headers/CorePlot" "${PODS_ROOT}/Headers/FMDB" "${PODS_ROOT}/Headers/TestFlightSDK"
+HEADER_SEARCH_PATHS = "${PODS_ROOT}/Headers" "${PODS_ROOT}/Headers/CorePlot" "${PODS_ROOT}/Headers/FMDB" "${PODS_ROOT}/Headers/FontAwesome+iOS" "${PODS_ROOT}/Headers/TestFlightSDK"
 LIBRARY_SEARCH_PATHS = "$(PODS_ROOT)/TestFlightSDK"
-OTHER_LDFLAGS = -ObjC -lTestFlight -lsqlite3 -lz -framework QuartzCore -framework UIKit
+OTHER_CFLAGS = $(inherited) -isystem "${PODS_ROOT}/Headers" -isystem "${PODS_ROOT}/Headers/CorePlot" -isystem "${PODS_ROOT}/Headers/FMDB" -isystem "${PODS_ROOT}/Headers/FontAwesome+iOS" -isystem "${PODS_ROOT}/Headers/TestFlightSDK"
+OTHER_LDFLAGS = -ObjC -lTestFlight -lsqlite3 -lz -framework CoreGraphics -framework Foundation -framework QuartzCore -framework UIKit
 PODS_ROOT = ${SRCROOT}/Pods

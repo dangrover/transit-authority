@@ -14,6 +14,7 @@
 		4D03E6AD190D94EF00405699 /* CCBReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D03E6A3190D94EF00405699 /* CCBReader.m */; };
 		4D03E6AE190D94EF00405699 /* CCBsequence.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D03E6A6190D94EF00405699 /* CCBsequence.m */; };
 		4D03E6AF190D94EF00405699 /* CCBSequenceProperty.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D03E6A8190D94EF00405699 /* CCBSequenceProperty.m */; };
+		4D03E6B3190D9A0F00405699 /* GameFontSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D03E6B2190D9A0F00405699 /* GameFontSupport.m */; };
 		4D1A637918E0126200BD179B /* dummypixel.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D1A637818E0126200BD179B /* dummypixel.png */; };
 		4D1A638018E013A100BD179B /* dummypixel.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D1A637C18E013A100BD179B /* dummypixel.png */; };
 		4D1A638118E013A100BD179B /* hammer.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D1A637D18E013A100BD179B /* hammer.png */; };
@@ -385,6 +386,8 @@
 		4D03E6A7190D94EF00405699 /* CCBSequenceProperty.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCBSequenceProperty.h; sourceTree = "<group>"; };
 		4D03E6A8190D94EF00405699 /* CCBSequenceProperty.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCBSequenceProperty.m; sourceTree = "<group>"; };
 		4D03E6A9190D94EF00405699 /* CCBuilderReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCBuilderReader.h; sourceTree = "<group>"; };
+		4D03E6B1190D9A0F00405699 /* GameFontSupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameFontSupport.h; sourceTree = "<group>"; };
+		4D03E6B2190D9A0F00405699 /* GameFontSupport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameFontSupport.m; sourceTree = "<group>"; };
 		4D0715011773D1E5008D10E3 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		4D1A637818E0126200BD179B /* dummypixel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = dummypixel.png; path = "TransitAuthority.spritebuilder/SpriteBuilder Resources/resources-auto/dummypixel.png"; sourceTree = SOURCE_ROOT; };
 		4D1A637C18E013A100BD179B /* dummypixel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = dummypixel.png; path = "TransitAuthority.spritebuilder/SpriteBuilder Resources/resources-auto/dummypixel.png"; sourceTree = SOURCE_ROOT; };
@@ -1071,6 +1074,8 @@
 				4D3929141792080000373AAD /* Tracks Inspector */,
 				4DAB5BE01799AF9900CD35E2 /* Finances */,
 				4D2329F3177A223500B513FE /* Tools */,
+				4D03E6B1190D9A0F00405699 /* GameFontSupport.h */,
+				4D03E6B2190D9A0F00405699 /* GameFontSupport.m */,
 			);
 			name = "Graphics + UI";
 			sourceTree = "<group>";
@@ -2425,6 +2430,7 @@
 				4DAB185F18CD1A80008CF267 /* cpShape.c in Sources */,
 				4DAB18CF18CD1A80008CF267 /* plane.c in Sources */,
 				4DAB18CA18CD1A80008CF267 /* mat4stack.c in Sources */,
+				4D03E6B3190D9A0F00405699 /* GameFontSupport.m in Sources */,
 				4DAB18DB18CD1A80008CF267 /* OALAudioTrackNotifications.m in Sources */,
 				4DF0E8521771024100D46A07 /* Utilities.m in Sources */,
 				4DAB187218CD1A80008CF267 /* CCActionInstant.m in Sources */,

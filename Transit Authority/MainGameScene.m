@@ -40,6 +40,7 @@
 #define STAT_UPDATE_INTERVAL 6
 #define UI_CORNER_RADIUS 8
 
+#define UI_FADE_DURATION 0.25
 
 @interface MainGameScene()<FinancesViewDelegate, CCLayerPanZoomClickDelegate, PopoverViewDelegate, StationNodeDelegate, TracksNodeDelegate, GoalsDelegate>
 
@@ -135,10 +136,17 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     CCNode *_moreMenuNode;
     CCNode *_buildSubmenuNode;
     
+    LinesTool *linesTool;
+    UIView *_linesTopView;
+    
     CCNode *buildButtonGroup;
     CCButton *buildButton;
     CCButton *menuButton;
     CCSprite *speedIcon;
+    
+    CCButton *manageButton;
+    
+    CCNode *manageButtonGroup;
     
     CCButton *stationButton;
     CCButton *tracksButton;
@@ -590,12 +598,12 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
         [topNode addChild:_buildSubmenuNode];
         _buildSubmenuNode.cascadeOpacityEnabled = YES;
         _buildSubmenuNode.opacity = 0;
-        [_buildSubmenuNode runAction:[CCActionFadeIn actionWithDuration:0.25]];
+        [_buildSubmenuNode runAction:[CCActionFadeIn actionWithDuration:UI_FADE_DURATION]];
         
     }else{
         self.currentTool = nil;
         buildButton.selected = NO;
-        [_buildSubmenuNode runAction:[CCActionSequence actions:[CCActionFadeOut actionWithDuration:0.25],[CCActionCallBlock actionWithBlock:^{
+        [_buildSubmenuNode runAction:[CCActionSequence actions:[CCActionFadeOut actionWithDuration:UI_FADE_DURATION],[CCActionCallBlock actionWithBlock:^{
                 [_buildSubmenuNode removeFromParentAndCleanup:YES];
                 _buildSubmenuNode = nil;
         }], nil]];
@@ -603,8 +611,39 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 }
 
 - (void) manageButtonPressed{
-    
-    NSLog(@"Manage");
+  
+    if(!linesTool){
+        manageButton.selected = YES;
+        linesTool = [[LinesTool alloc] init];
+        linesTool.parent = self;
+        
+        _linesTopView = linesTool.viewController.view;
+        UIView *gameView = [[CCDirector sharedDirector] view];
+        
+        _linesTopView.frame = CGRectMake(manageButtonGroup.position.x + manageButtonGroup.contentSize.width + 1,
+                                         manageButtonGroup.position.y,
+                                         240,
+                                         gameView.frame.size.height - manageButtonGroup.position.y);
+        _linesTopView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
+        _linesTopView.alpha = 0;
+        [gameView addSubview:_linesTopView];
+        [UIView animateWithDuration:UI_FADE_DURATION animations:^{
+            _linesTopView.alpha = 1;
+        } completion:^(BOOL finished) {}];
+        
+    }else{
+        manageButton.selected = NO;
+        
+        [UIView animateWithDuration:UI_FADE_DURATION animations:^{
+            _linesTopView.alpha = 0;
+        } completion:^(BOOL finished) {
+            [_linesTopView removeFromSuperview];
+        }];
+        
+        _linesTopView = nil;
+        linesTool.parent = nil;
+        linesTool = nil;
+    }
 }
 
 - (void) dataButtonPressed{
@@ -653,28 +692,6 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
         self.currentTool = nil;
     }
 }
-
-- (void) stationPressed:(id)sender{
-  //  [self setMode:(uiMode == UIModePlaceStation) ? UIModeNone : UIModePlaceStation];
-}
-
-- (void) tracksPressed:(id)sender{
- //   [self setMode:(uiMode == UIModePlaceTracks) ? UIModeNone : UIModePlaceTracks];
-}
-
-- (IBAction) linesPressed:(id)sender{
-  //  [self setMode:(uiMode == UIModeManageLines) ? UIModeNone : UIModeManageLines];
-}
-
-- (IBAction) morePressed:(id)sender{
-  //  [self setMode:(uiMode == UIModeMore) ? UIModeNone : UIModeMore];
-}
-
-- (IBAction) dataPressed:(id)sender{
-  //  [self setMode:(uiMode == UIModeData) ? UIModeNone : UIModeData];
-}
-
-
 
 - (IBAction) showFinances:(id)sender{
     financesVC = [[FinancesViewController alloc] initWithGameState:self.gameState];

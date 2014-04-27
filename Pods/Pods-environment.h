@@ -30,10 +30,15 @@
 #define COCOAPODS_VERSION_MINOR_FMDB_standard 1
 #define COCOAPODS_VERSION_PATCH_FMDB_standard 0
 
+// FontAwesome+iOS
+#define COCOAPODS_POD_AVAILABLE_FontAwesome_iOS
+#define COCOAPODS_VERSION_MAJOR_FontAwesome_iOS 0
+#define COCOAPODS_VERSION_MINOR_FontAwesome_iOS 1
+#define COCOAPODS_VERSION_PATCH_FontAwesome_iOS 1
+
 // TestFlightSDK
 #define COCOAPODS_POD_AVAILABLE_TestFlightSDK
-// This library does not follow semantic-versioning,
-// so we were not able to define version macros.
-// Please contact the author.
-// Version: 2.1.1b.
+#define COCOAPODS_VERSION_MAJOR_TestFlightSDK 3
+#define COCOAPODS_VERSION_MINOR_TestFlightSDK 0
+#define COCOAPODS_VERSION_PATCH_TestFlightSDK 0
 

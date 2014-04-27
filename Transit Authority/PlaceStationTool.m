@@ -172,8 +172,8 @@
 
 - (CCSprite *) _createCircleStencilWithWalkRadius:(unsigned)walkRadius driveRadius:(unsigned)driveRadius{
     CGSize imgPointSize = CGSizeMake(driveRadius*2, driveRadius*2);
-    CGSize imgBufferSize = CGSizeMake(driveRadius*2*CC_CONTENT_SCALE_FACTOR(),
-                                driveRadius*2*CC_CONTENT_SCALE_FACTOR());
+    CGSize imgBufferSize = CGSizeMake(driveRadius*2,
+                                driveRadius*2);
     
     NSMutableData *mainRenderSpace = [[NSMutableData alloc] initWithLength:imgBufferSize.width*imgBufferSize.height*4];
     
@@ -186,7 +186,7 @@
                                              rgbColorSpace,
                                              kCGImageAlphaOnly);
     
-    CGContextScaleCTM(ctx, CC_CONTENT_SCALE_FACTOR(), CC_CONTENT_SCALE_FACTOR());
+   // CGContextScaleCTM(ctx, CC_CONTENT_SCALE_FACTOR(), CC_CONTENT_SCALE_FACTOR());
     
     CGContextSetFillColorWithColor(ctx, [[UIColor colorWithWhite:0 alpha:0.5] CGColor]);
     CGContextFillEllipseInRect(ctx, CGRectMake(0, 0, imgPointSize.width, imgPointSize.height));

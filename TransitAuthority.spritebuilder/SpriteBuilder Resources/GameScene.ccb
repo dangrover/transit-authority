@@ -1132,8 +1132,6 @@
 						</array>
 					</dict>
 				</array>
-				<key>selected</key>
-				<true/>
 			</dict>
 			<dict>
 				<key>baseClass</key>
@@ -1150,9 +1148,9 @@
 						<key>displayName</key>
 						<string>CCButton</string>
 						<key>memberVarAssignmentName</key>
-						<string></string>
+						<string>manageButton</string>
 						<key>memberVarAssignmentType</key>
-						<integer>0</integer>
+						<integer>2</integer>
 						<key>properties</key>
 						<array>
 							<dict>
@@ -1489,6 +1487,8 @@
 								</array>
 							</dict>
 						</array>
+						<key>selected</key>
+						<true/>
 					</dict>
 					<dict>
 						<key>baseClass</key>
@@ -1583,9 +1583,9 @@
 				<key>displayName</key>
 				<string>Manage button group</string>
 				<key>memberVarAssignmentName</key>
-				<string></string>
+				<string>manageButtonGroup</string>
 				<key>memberVarAssignmentType</key>
-				<integer>0</integer>
+				<integer>2</integer>
 				<key>properties</key>
 				<array>
 					<dict>
