@@ -584,7 +584,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
         _buildSubmenuNode = [CCBReader load:@"BuildSubmenu" owner:self];
     
         _buildSubmenuNode.positionType = buildButtonGroup.positionType;
-        _buildSubmenuNode.position = CGPointMake(buildButtonGroup.position.x + buildButtonGroup.contentSize.width,
+        _buildSubmenuNode.position = CGPointMake(buildButtonGroup.position.x + buildButtonGroup.contentSize.width + 1,
                                                  buildButtonGroup.position.y);
         
         [topNode addChild:_buildSubmenuNode];

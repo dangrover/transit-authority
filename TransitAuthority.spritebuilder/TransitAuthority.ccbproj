@@ -29,7 +29,7 @@
 	<key>javascriptMainCCB</key>
 	<string>MainScene</string>
 	<key>needRepublish</key>
-	<true/>
+	<false/>
 	<key>onlyPublishCCBs</key>
 	<false/>
 	<key>publishAudioQuality_android</key>
@@ -189,7 +189,22 @@
 			<key>scaleFrom</key>
 			<integer>1</integer>
 		</dict>
+		<key>play.png</key>
+		<dict>
+			<key>scaleFrom</key>
+			<integer>1</integer>
+		</dict>
+		<key>station-button.png</key>
+		<dict>
+			<key>scaleFrom</key>
+			<integer>1</integer>
+		</dict>
 		<key>stats.png</key>
+		<dict>
+			<key>scaleFrom</key>
+			<integer>1</integer>
+		</dict>
+		<key>tracks-button.png</key>
 		<dict>
 			<key>scaleFrom</key>
 			<integer>1</integer>
