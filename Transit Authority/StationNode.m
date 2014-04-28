@@ -28,6 +28,9 @@
         
         self.passengerCount = 0;
         _glyphSprites = [NSMutableDictionary dictionary];
+        
+        self.userInteractionEnabled = YES;
+     //   self.claimsUserInteraction = YES;
     }
     
     return self;
@@ -42,15 +45,19 @@
 }
 
 
-- (BOOL)ccTouchBegan:(UITouch *)touch withEvent:(UIEvent *)event{
-    return CGRectContainsPoint(_dot.boundingBox, [touch locationInNode:self]);
+- (BOOL)hitTestWithWorldPos:(CGPoint)pos{
+    return CGRectContainsPoint(_dot.boundingBox, [self convertToNodeSpace:pos]);
 }
 
-- (void)ccTouchMoved:(UITouch *)touch withEvent:(UIEvent *)event{
+- (void) touchBegan:(UITouch *)touch withEvent:(UIEvent *)event{
+ //   return CGRectContainsPoint(_dot.boundingBox, [touch locationInNode:self]);
+}
+
+- (void) touchMoved:(UITouch *)touch withEvent:(UIEvent *)event{
     
 }
 
-- (void)ccTouchEnded:(UITouch *)touch withEvent:(UIEvent *)event{
+- (void) touchEnded:(UITouch *)touch withEvent:(UIEvent *)event{
     if(CGRectContainsPoint(_dot.boundingBox, [touch locationInNode:self])){
         [self.delegate stationNodeClicked:self];
     }

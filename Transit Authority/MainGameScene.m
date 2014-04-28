@@ -292,28 +292,33 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 }
 
 - (void)touchBegan:(UITouch *)touch withEvent:(UIEvent *)event{
+    
     if([self.currentTool touchBegan:touch withEvent:event]){
         _touchesHandledByTool = YES;
     }else{
-        [_panZoomLayer touchBegan:touch withEvent:event];
+        [super touchBegan:touch withEvent:event];
+    //    [_panZoomLayer touchBegan:touch withEvent:event];
+        
     }
-    
 }
 
 - (void)touchMoved:(UITouch *)touch withEvent:(UIEvent *)event{
     if(_touchesHandledByTool){
         [self.currentTool touchMoved:touch withEvent:event];
     }else{
-        [_panZoomLayer touchMoved:touch withEvent:event];
+        [super touchMoved:touch withEvent:event];
+    //    [_panZoomLayer touchMoved:touch withEvent:event];
+        
     }
-    
+
 }
 
 - (void)touchEnded:(UITouch *)touch withEvent:(UIEvent *)event{
     if(_touchesHandledByTool){
         [self.currentTool touchEnded:touch withEvent:event];
     }else{
-        [_panZoomLayer touchEnded:touch withEvent:event];
+        [super touchEnded:touch withEvent:event];
+       // [_panZoomLayer touchEnded:touch withEvent:event];
     }
     
     _touchesHandledByTool = NO;
@@ -323,7 +328,9 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     if(_touchesHandledByTool){
         [self.currentTool touchCancelled:touch withEvent:event];
     }else{
-        [_panZoomLayer touchCancelled:touch withEvent:event];
+        [super touchCancelled:touch withEvent:event];
+      //  [_panZoomLayer touchCancelled:touch withEvent:event];
+        
     }
     
     _touchesHandledByTool = NO;
@@ -870,6 +877,8 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
         if(![_trackSprites objectForKey:segment.UUID]){
             //NSLog(@"Making sprite for track with ID %@",segment.UUID);
             TracksNode *node = [[TracksNode alloc] init];
+            node.userInteractionEnabled = YES;
+         //   node.claimsUserInteraction = YES;
             node.start = [((StationNode *)_stationSprites[segment.startStation.UUID]) position];
             node.end = [((StationNode *)_stationSprites[segment.endStation.UUID]) position];
             //NSLog(@"making track sprite for segment %@",segment);

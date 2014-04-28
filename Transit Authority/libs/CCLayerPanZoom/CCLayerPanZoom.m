@@ -160,6 +160,10 @@ typedef enum
     return _minScale;
 }
 
+- (BOOL)hitTestWithWorldPos:(CGPoint)pos{
+    return YES;
+}
+
 @dynamic rubberEffectRatio;
 - (void) setRubberEffectRatio:(CGFloat)rubberEffectRatio
 {
