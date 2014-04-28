@@ -1898,11 +1898,13 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
     encodeInt(_lastLogRidershipNumbers);
     
     encodeObject(_stationsById);
-    //encodeObject(_tracks);
-    //encodeObject(_outstandingBonds);
-    //encodeObject(_linesByColor);
+    encodeObject(_tracks);
+    encodeObject(_outstandingBonds);
+    encodeObject(_linesByColor);
     //encodeObject(_poisWithoutStations);
     encodeObject(_stationsByConnectedPOI);
+    encodeObject(_assignedTrains);
+    encodeObject(_unassignedTrains);
     
     encodeObject(_goalsMet);
     encodeInt(_lastGoalEvaluation);
@@ -1958,14 +1960,19 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
         decodeInt(_lastLogRidershipNumbers);
         
         decodeObject(_stationsById);
-        //decodeObject(_tracks);
-        //decodeObject(_outstandingBonds);
-        //decodeObject(_linesByColor);
+        decodeObject(_tracks);
+        decodeObject(_outstandingBonds);
+        decodeObject(_linesByColor);
         //decodeObject(_poisWithoutStations);
         decodeObject(_stationsByConnectedPOI);
+        decodeObject(_assignedTrains);
+        decodeObject(_unassignedTrains);
         
         decodeObject(_goalsMet);
         decodeInt(_lastGoalEvaluation);
+        
+        // It's easier to regenerate the routes than serialize them.
+        [self regenerateAllTrainRoutes];
         
         return self;
     }

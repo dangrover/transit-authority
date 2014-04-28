@@ -693,7 +693,6 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
             
         }
     }
-    NSLog(@"drawing %d sprites", _stationSprites.count);
     
     NSArray *stationIdsWeHaveSpritesFor = _stationSprites.allKeys;
     for(NSString *stationID in stationIdsWeHaveSpritesFor){
@@ -702,7 +701,6 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
             [_stationSprites removeObjectForKey:stationID];
         }
     }
-    NSLog(@"drawing now %d sprites", _stationSprites.count);
 }
 
 - (void) _createAndRemoveTrackSprites{
@@ -732,7 +730,6 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 }
 
 - (Station *) stationAtNodeCoords:(CGPoint)thePoint{
-    NSLog(@"%d sprites", _stationSprites.count);
     for(NSString *stationID in _stationSprites.keyEnumerator){
         StationNode *sprite = _stationSprites[stationID];
         if(CGRectContainsPoint(CGRectInset(sprite.boundingBox, -40, -40), thePoint)){

@@ -85,7 +85,7 @@
     encodeObject(_links);
     encodeObject(_passengersByDestination);
     encodeObject(_upgrades);
-    encodeObject(_connectedPOI);
+    //encodeObject(_connectedPOI);
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {
@@ -98,7 +98,7 @@
         decodeObject(_links);
         decodeObject(_passengersByDestination);
         decodeObject(_upgrades);
-        decodeObject(_connectedPOI);
+        //decodeObject(_connectedPOI);
     }
     return self;
 }
@@ -119,6 +119,26 @@
 
 - (CGFloat) distanceInTiles{
     return PointDistance(self.startStation.tileCoordinate, self.endStation.tileCoordinate);
+}
+
+#pragma mark - Serialization
+
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    [super encodeWithCoder:encoder];
+    encodeObject(_startStation);
+    encodeObject(_endStation);
+    encodeInt(_built);
+    encodeObject(_lines);
+}
+
+- (id)initWithCoder:(NSCoder *)decoder {
+    if (self = [super initWithCoder:decoder])
+    {
+        decodeObject(_startStation);
+        decodeObject(_endStation);
+        decodeInt(_built);
+        decodeObject(_lines);    }
+    return self;
 }
 
 @end
