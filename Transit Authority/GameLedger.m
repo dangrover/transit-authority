@@ -11,28 +11,40 @@
 #import "FMDatabase.h"
 #import "FMDatabaseAdditions.h"
 #import "GameConstants.h"
+#import "NSCoding-Macros.h"
 
 #define KEY_SEPERATOR @"."
 
 @implementation GameLedger{
+    NSString *_path;
     FMDatabase *_db;
     NSMutableSet *_activeKeys;
 }
 
-- (id) init{
+- (id) initWithPath:(NSString *)path {
+    
     if(self = [super init]){
         
-     /*   NSString *tmPath = [NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.sqlite",[[NSUUID UUID] UUIDString]]];
-        NSLog(@"DATABASE PATH IS %@",tmPath);
-       */
-        
-        _db = [[FMDatabase alloc] initWithPath:nil]; // in-memory for now
+        _path = path;
+        _db = [[FMDatabase alloc] initWithPath:_path];
         _db.logsErrors = YES;
         _db.crashOnErrors = YES;
         _db.shouldCacheStatements = YES;
         
         [_db open];
-        
+    }
+    
+    return self;
+}
+
+- (id) init {
+    
+    // Create a new database on disk.
+    NSString *tmPath = [NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.sqlite",[[NSUUID UUID] UUIDString]]];
+    NSLog(@"DATABASE PATH IS %@",tmPath);
+
+    if (self = [self initWithPath:tmPath])
+    {
         NSString *schema = [NSString stringWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"ledger" withExtension:@"sql"] usedEncoding:nil error:nil];
         //NSLog(@"schema = %@",schema);
         [_db beginTransaction];
@@ -41,6 +53,11 @@
     }
     
     return self;
+}
+
+// This deletes the database file permanently. It should be called the user quits a game.
+- (void)destroy {
+    [_db close];
 }
 
 - (void) recordDatum:(NSNumber *)n forKey:(NSString *)key atDate:(NSTimeInterval)date{
@@ -269,4 +286,17 @@
     [r next];
     return [r intForColumn:@"c"];
 }
+
+#pragma mark - Serialization
+
+// Save the path to the mysql file.
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    encodeObject(_path);
+}
+
+// Open the database from the saved mysql file.
+- (id)initWithCoder:(NSCoder *)decoder {
+    return [self initWithPath:decodeObject(_path)];
+}
+
 @end

@@ -1872,7 +1872,7 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
 // Serialize the game state.
 - (void)encodeWithCoder:(NSCoder *)encoder {
     encodeObject(_originalScenario);
-    //encodeObject(_ledger);
+    encodeObject(_ledger);
     
     encodeDouble(_currentDate);
     encodeFloat(_currentCash);
@@ -1931,8 +1931,7 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
     if (self = [self initWithScenario:_originalScenario])
     {
         _originalScenario.tmxMapPath = mapPath;
-        
-        //decodeObject(_ledger);
+        decodeObject(_ledger);
         
         // We can get currentDateComponents from currentDate
         decodeDouble(_currentDate);
