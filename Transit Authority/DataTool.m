@@ -20,6 +20,8 @@
         self.navController.viewControllers = @[mainVC];
         self.navController.view.frame = mainVC.view.frame;
         self.navController.view.backgroundColor = [UIColor clearColor];
+        
+        mainVC.view.backgroundColor = [UIColor clearColor];
     }
     return self;
 }
@@ -49,7 +51,7 @@
 }
 
 - (void) _showVC:(UIViewController *)newVC{
-    /*if(_chosenVC){
+    if(_chosenVC){
         [_chosenVC.view removeFromSuperview];
         _chosenVC = nil;
     }
@@ -59,8 +61,8 @@
     [mainVC.view addSubview:_chosenVC.view];
     
     _chosenVC.view.frame = CGRectMake(0, 39, self.viewController.view.frame.size.width, self.viewController.view.frame.size.height);
-    [_chosenVC viewDidAppear:NO];*/
-    
+    _chosenVC.view.backgroundColor = [UIColor clearColor];
+    [_chosenVC viewDidAppear:NO];
 }
 
 @end

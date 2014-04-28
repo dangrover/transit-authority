@@ -151,6 +151,10 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     CCButton *stationButton;
     CCButton *tracksButton;
     
+    CCNode *dataButtonGroup;
+    CCButton *dataButton;
+    UIView *_dataTopView;
+    DataTool *dataTool;
     
     CCNode *backgroundPlaceholderNode;
 }
@@ -216,7 +220,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     
     [self addChild:_panZoomLayer z:-100];
     _panZoomLayer.scale = _panZoomLayer.minScale;
-   
+    
     [self _makeStreetSprites];
     [self _makeNeighborhoodNameSprites];
 
@@ -281,6 +285,8 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     
     
     [self schedule:@selector(clockTick) interval:REAL_SECONDS_PER_TICK];
+    
+    [self _changeZooms];
     
     [super onEnter];
 }
@@ -647,8 +653,46 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 }
 
 - (void) dataButtonPressed{
-    
-    NSLog(@"Data");
+    if(!dataTool){
+        dataButton.selected = YES;
+        
+        dataTool = [[DataTool alloc] init];
+        dataTool.parent = self;
+        
+        _dataTopView = dataTool.navController.view;
+        UIView *gameView = [[CCDirector sharedDirector] view];
+        
+        _dataTopView.frame = CGRectMake(manageButtonGroup.position.x + manageButtonGroup.contentSize.width + 1,
+                                         manageButtonGroup.position.y,
+                                         240,
+                                         gameView.frame.size.height - manageButtonGroup.position.y);
+        
+        _dataTopView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
+        _dataTopView.alpha = 0;
+        
+        [dataTool started];
+        [gameView addSubview:_dataTopView];
+        
+        [UIView animateWithDuration:UI_FADE_DURATION
+                         animations:^{
+                             _dataTopView.alpha = 1;
+                         }
+                         completion:^(BOOL finished){}];
+        
+    }else{
+        dataButton.selected = NO;
+        
+        [dataTool finished];
+        [UIView animateWithDuration:UI_FADE_DURATION animations:^{
+            _dataTopView.alpha = 0;
+        } completion:^(BOOL finished) {
+            [_dataTopView removeFromSuperview];
+        }];
+        
+        _dataTopView = nil;
+        dataTool.parent = nil;
+        dataTool = nil;
+    }
 }
 
 - (void) moreButtonPressed{

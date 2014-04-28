@@ -1487,8 +1487,6 @@
 								</array>
 							</dict>
 						</array>
-						<key>selected</key>
-						<true/>
 					</dict>
 					<dict>
 						<key>baseClass</key>
@@ -1664,9 +1662,9 @@
 						<key>displayName</key>
 						<string>CCButton</string>
 						<key>memberVarAssignmentName</key>
-						<string></string>
+						<string>dataButton</string>
 						<key>memberVarAssignmentType</key>
-						<integer>0</integer>
+						<integer>2</integer>
 						<key>properties</key>
 						<array>
 							<dict>
@@ -2003,6 +2001,8 @@
 								</array>
 							</dict>
 						</array>
+						<key>selected</key>
+						<true/>
 					</dict>
 					<dict>
 						<key>baseClass</key>
@@ -2097,9 +2097,9 @@
 				<key>displayName</key>
 				<string>Data Button Group</string>
 				<key>memberVarAssignmentName</key>
-				<string></string>
+				<string>dataButtonGroup</string>
 				<key>memberVarAssignmentType</key>
-				<integer>0</integer>
+				<integer>2</integer>
 				<key>properties</key>
 				<array>
 					<dict>
@@ -3331,7 +3331,7 @@
 			<key>offset</key>
 			<real>0.0</real>
 			<key>position</key>
-			<real>0.0</real>
+			<real>0.033333335071802139</real>
 			<key>resolution</key>
 			<real>30</real>
 			<key>scale</key>

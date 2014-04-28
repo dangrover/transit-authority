@@ -470,7 +470,7 @@
         // TODO Get this working right
         zoomGridSize_ = screenGridSize_;
         _displayedScale = s;
-        NSLog(@"zoom grid = %@, screen grid = %@",NSStringFromCGSize(zoomGridSize_), NSStringFromCGSize(screenGridSize_));
+        //NSLog(@"zoom grid = %@, screen grid = %@",NSStringFromCGSize(zoomGridSize_), NSStringFromCGSize(screenGridSize_));
     }
     else
     {
