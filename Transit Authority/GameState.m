@@ -1875,8 +1875,6 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
     //encodeObject(_ledger);
     
     encodeDouble(_currentDate);
-    encodeInt(_currentDateComponents.tm_hour);
-    encodeInt(_currentDateComponents.tm_min);
     encodeFloat(_currentCash);
     
     encodeFloat(_dailyLocalSubsidy);
@@ -1936,9 +1934,11 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
         
         //decodeObject(_ledger);
         
+        // We can get currentDateComponents from currentDate
         decodeDouble(_currentDate);
-        //decodeInt(_currentDateComponents.tm_hour);
-        //decodeInt(_currentDateComponents.tm_min);
+        time_t timestamp = self.currentDate;
+        self.currentDateComponents = *gmtime(&timestamp);
+        
         decodeFloat(_currentCash);
         
         decodeFloat(_dailyLocalSubsidy);
@@ -1971,6 +1971,7 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
         decodeObject(_goalsMet);
         decodeInt(_lastGoalEvaluation);
         
+        // The preferredRoute of initialized trains is now nil.
         // It's easier to regenerate the routes than serialize them.
         [self regenerateAllTrainRoutes];
         
