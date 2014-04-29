@@ -1903,10 +1903,6 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
     encodeObject(_stationsByConnectedPOI);
     encodeObject(_assignedTrains);
     encodeObject(_unassignedTrains);
-    
-    encodeObject(_goalsMet);
-    encodeInt(_lastGoalEvaluation);
-    //ScenarioGoal *_easiestUnmetGoal;
 }
 
 // We can't create the map file in initWithCoder (loading a serialized GameState) because cocos2d hasn't loaded.
@@ -1967,8 +1963,9 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
         decodeObject(_assignedTrains);
         decodeObject(_unassignedTrains);
         
-        decodeObject(_goalsMet);
-        decodeInt(_lastGoalEvaluation);
+        // Goal state variables are now reset.
+        // It's easiest to recalculate them.
+        [self _evaluateGoals];
         
         // The preferredRoute of initialized trains is now nil.
         // It's easier to regenerate the routes than serialize them.
