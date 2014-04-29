@@ -1899,7 +1899,7 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
     encodeObject(_tracks);
     encodeObject(_outstandingBonds);
     encodeObject(_linesByColor);
-    //encodeObject(_poisWithoutStations);
+    encodeObject(_poisWithoutStations);
     encodeObject(_stationsByConnectedPOI);
     encodeObject(_assignedTrains);
     encodeObject(_unassignedTrains);
@@ -1962,7 +1962,7 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
         decodeObject(_tracks);
         decodeObject(_outstandingBonds);
         decodeObject(_linesByColor);
-        //decodeObject(_poisWithoutStations);
+        decodeObject(_poisWithoutStations);
         decodeObject(_stationsByConnectedPOI);
         decodeObject(_assignedTrains);
         decodeObject(_unassignedTrains);

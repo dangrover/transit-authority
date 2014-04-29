@@ -85,7 +85,7 @@
     encodeObject(_links);
     encodeObject(_passengersByDestination);
     encodeObject(_upgrades);
-    //encodeObject(_connectedPOI);
+    encodeObject(_connectedPOI);
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {
@@ -98,7 +98,7 @@
         decodeObject(_links);
         decodeObject(_passengersByDestination);
         decodeObject(_upgrades);
-        //decodeObject(_connectedPOI);
+        decodeObject(_connectedPOI);
     }
     return self;
 }
