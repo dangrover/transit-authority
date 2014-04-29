@@ -137,7 +137,8 @@
         decodeObject(_startStation);
         decodeObject(_endStation);
         decodeInt(_built);
-        decodeObject(_lines);    }
+        decodeObject(_lines);
+    }
     return self;
 }
 

@@ -1919,17 +1919,24 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
 
 // Deserialize the game state.
 - (id)initWithCoder:(NSCoder *)decoder {
+    
     decodeObject(_originalScenario);
+    
+    // Set the scenario map path to nil, because initWithCoder: is called before cocos2d is loaded.
+    // The app will crash if we try to create the map before cocos2d.
     NSString *mapPath = _originalScenario.tmxMapPath;
     _originalScenario.tmxMapPath = nil;
+    
     NSLog(@"Saved scenario decoded: %@", _originalScenario);
     
     if (self = [self initWithScenario:_originalScenario])
     {
         _originalScenario.tmxMapPath = mapPath;
+        // Once the app is finished launching, it will check the map path again.
+        
         decodeObject(_ledger);
         
-        // We can get currentDateComponents from currentDate
+        // Get currentDateComponents from currentDate
         decodeDouble(_currentDate);
         time_t timestamp = self.currentDate;
         self.currentDateComponents = *gmtime(&timestamp);
