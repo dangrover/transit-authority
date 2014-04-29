@@ -164,7 +164,8 @@
     }
     else
     {
-        NSLog(@"Not saving Game State. Open scene is not game scene.");
+        NSLog(@"Deleting Game State. Open scene is not game scene.");
+        [coder encodeObject:nil forKey:@"Game State"];
     }
 }
 
@@ -192,11 +193,9 @@
 
 - (void) exitToMainMenu{
    
-    for(UIView *v in [CCDirector sharedDirector].view.subviews){
+    for(UIView *v in director_.view.subviews){
         [v removeFromSuperview];
     }
-    
-    [director_ popScene];
     
     MainMenuViewController *mm = [[MainMenuViewController alloc] initWithNibName:nil bundle:nil];
     [navController_ pushViewController:mm animated:NO];
