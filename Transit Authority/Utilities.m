@@ -25,6 +25,14 @@ CGFloat PointDistance3D(CGPoint point1,CGPoint point2,CGFloat z1,CGFloat z2){
     return sqrt(dx*dx + dy*dy + dz*dz);
 };
 
+CGPoint PointTowardsPoint(CGPoint pointA, CGPoint pointB, float distance)
+{
+    float totalDistance = PointDistance(pointA, pointB);
+    float portion = distance / totalDistance;
+    if (portion > 1) return pointB;
+    return CGPointOffset(pointA, portion * (pointB.x - pointA.x), portion * (pointB.y - pointA.y));
+};
+
 CGPoint CGPointOffset(CGPoint thePoint, CGFloat x, CGFloat y){
     return CGPointMake(thePoint.x + x, thePoint.y + y);
 }

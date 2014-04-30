@@ -15,8 +15,39 @@ static int _trackShaderColorLocation;
 
 #define LINE_CLICK_THRESHOLD 30
 
+void splineInterpolate(CCPointArray *points, int numVertices, ccVertex2F *vertices)
+{
+	NSUInteger p;
+	CGFloat lt;
+	CGFloat deltaT = 1.0 / [points count];
+    
+    for( NSUInteger i=0; i < numVertices;i++) {
+		
+		CGFloat dt = (CGFloat)i / numVertices;
+        
+		// border
+		if( dt == 1 ) {
+			p = [points count] - 1;
+			lt = 1;
+		} else {
+			p = dt / deltaT;
+			lt = (dt - deltaT * (CGFloat)p) / deltaT;
+		}
+		
+		// Interpolate
+		CGPoint pp0 = [points getControlPointAtIndex:p-1];
+		CGPoint pp1 = [points getControlPointAtIndex:p+0];
+		CGPoint pp2 = [points getControlPointAtIndex:p+1];
+		CGPoint pp3 = [points getControlPointAtIndex:p+2];
+		
+        //NSLog(@"%d TIME %f", i, lt);
+		CGPoint newPos = ccCardinalSplineAt( pp0, pp1, pp2, pp3, 0.5, lt);
+		vertices[i].x = newPos.x;
+		vertices[i].y = newPos.y;
+	}
+}
+
 @implementation TracksNode{
-    CCPointArray *_points;
     GLuint _verticesBuffer;
     
     unsigned _numVertices;
@@ -34,43 +65,55 @@ static int _trackShaderColorLocation;
     return self;
 }
 
+- (CCPointArray *) curvyLineFromPoint:(CGPoint)start toPoint:(CGPoint)end
+{
+    CGPoint mid = PointTowardsPoint(CGPointMake(end.x, start.y), end, abs(end.x-start.x));
+    CGPoint a = PointTowardsPoint(mid, start, 20), b = PointTowardsPoint(mid, start, 10);
+    CGPoint c = PointTowardsPoint(mid, end, 10), d = PointTowardsPoint(mid, end, 20);
+    
+    CCPointArray *points = [[CCPointArray alloc] init];
+    [points addControlPoint:a];
+    [points addControlPoint:b];
+    [points addControlPoint:c];
+    [points addControlPoint:d];
+    
+    return points;
+}
+
 - (void) rebuffer{
+
+    float aThickness = 1 / cos(3.1415/4);
     
-    _points = [[CCPointArray alloc] initWithCapacity:2];
-    [_points addControlPoint:self.start];
-    [_points addControlPoint:CGPointMake(self.start.x, self.end.y)];
-    [_points addControlPoint:self.end];
+    int lineWidth = 10;
     
-    _numVertices = _points.count * 3;
-    ccVertex2F vertices[_numVertices + 1];
+    CGPoint br = self.start, tr = self.end, bl = CGPointOffset(self.start, -lineWidth*aThickness, 0), tl = CGPointOffset(self.end, -lineWidth, 0);
+
+    CCPointArray *leftEdge = [self curvyLineFromPoint:bl
+                                              toPoint:tl];
+    CCPointArray *rightEdge = [self curvyLineFromPoint:br
+                                               toPoint:tr];
+    int verticesToAdd = leftEdge.count*2;
+    _numVertices = 2*verticesToAdd + 4;
+    ccVertex2F left[verticesToAdd], right[verticesToAdd], vertices[_numVertices];
+    splineInterpolate(leftEdge, verticesToAdd, left);
+    splineInterpolate(rightEdge, verticesToAdd, right);
+
+    vertices[0].x = bl.x;
+    vertices[0].y = bl.y;
+    vertices[1].x = br.x;
+    vertices[1].y = br.y;
+
+    int i;
+    for (i = 0; i < verticesToAdd; i++)
+    {
+        vertices[2 + 2*i] = left[i];
+        vertices[2 + 2*i + 1] = right[i];
+    }
     
-	NSUInteger p;
-	CGFloat lt;
-	CGFloat deltaT = 1.0 / [_points count];
-    
-    for( NSUInteger i=0; i < _numVertices+1;i++) {
-		
-		CGFloat dt = (CGFloat)i / _numVertices;
-        
-		// border
-		if( dt == 1 ) {
-			p = [_points count] - 1;
-			lt = 1;
-		} else {
-			p = dt / deltaT;
-			lt = (dt - deltaT * (CGFloat)p) / deltaT;
-		}
-		
-		// Interpolate
-		CGPoint pp0 = [_points getControlPointAtIndex:p-1];
-		CGPoint pp1 = [_points getControlPointAtIndex:p+0];
-		CGPoint pp2 = [_points getControlPointAtIndex:p+1];
-		CGPoint pp3 = [_points getControlPointAtIndex:p+2];
-		
-		CGPoint newPos = ccCardinalSplineAt( pp0, pp1, pp2, pp3, 0.5, lt);
-		vertices[i].x = newPos.x;
-		vertices[i].y = newPos.y;
-	}
+    vertices[2*verticesToAdd+2].x = tl.x;
+    vertices[2*verticesToAdd+2].y = tl.y;
+    vertices[2*verticesToAdd+3].x = tr.x;
+    vertices[2*verticesToAdd+3].y = tr.y;
 
     glGenBuffers(1, &_verticesBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, _verticesBuffer);
@@ -96,7 +139,7 @@ static int _trackShaderColorLocation;
         lineColor = ccc4f(1, 0, 0, 0.3);
     }
     
-    glLineWidth(lineWidth * CC_CONTENT_SCALE_FACTOR());
+    //glLineWidth(lineWidth * CC_CONTENT_SCALE_FACTOR());
     //ccDrawLine(self.start, self.end);
     
     [_trackShader use];
@@ -107,7 +150,7 @@ static int _trackShaderColorLocation;
     
     glBindBuffer(GL_ARRAY_BUFFER, _verticesBuffer);
     glVertexAttribPointer(kCCVertexAttrib_Position, 2, GL_FLOAT, GL_FALSE, 0, 0);
-    glDrawArrays(GL_LINE_STRIP, 0, (GLsizei) _numVertices + 1);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, (GLsizei) _numVertices);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     
