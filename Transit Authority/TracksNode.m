@@ -15,6 +15,7 @@ static int _trackShaderColorLocation;
 
 #define LINE_CLICK_THRESHOLD 30
 
+// Take a line of control points and return an interpolated spline line.
 void splineInterpolate(CCPointArray *points, int numVertices, ccVertex2F *vertices)
 {
 	NSUInteger p;
@@ -23,9 +24,8 @@ void splineInterpolate(CCPointArray *points, int numVertices, ccVertex2F *vertic
     
     for( NSUInteger i=0; i < numVertices;i++) {
 		
+		// Interpolate with x values between given control points
 		CGFloat dt = (CGFloat)i / numVertices;
-        
-		// border
 		if( dt == 1 ) {
 			p = [points count] - 1;
 			lt = 1;
@@ -34,13 +34,13 @@ void splineInterpolate(CCPointArray *points, int numVertices, ccVertex2F *vertic
 			lt = (dt - deltaT * (CGFloat)p) / deltaT;
 		}
 		
-		// Interpolate
+		// Use surrounding control points.
 		CGPoint pp0 = [points getControlPointAtIndex:p-1];
 		CGPoint pp1 = [points getControlPointAtIndex:p+0];
 		CGPoint pp2 = [points getControlPointAtIndex:p+1];
 		CGPoint pp3 = [points getControlPointAtIndex:p+2];
 		
-        //NSLog(@"%d TIME %f", i, lt);
+        // Create interpolated line.
 		CGPoint newPos = ccCardinalSplineAt( pp0, pp1, pp2, pp3, 0.5, lt);
 		vertices[i].x = newPos.x;
 		vertices[i].y = newPos.y;
@@ -65,44 +65,81 @@ void splineInterpolate(CCPointArray *points, int numVertices, ccVertex2F *vertic
     return self;
 }
 
-- (CCPointArray *) curvyLineFromPoint:(CGPoint)start toPoint:(CGPoint)end
+#define DIAGONAL_FIRST 1
+#define DIAGONAL_LAST 2
+
+// Return the control points necessary to draw a track.
+- (CCPointArray *) curvyLineFromPoint:(CGPoint)start
+                              toPoint:(CGPoint)end
+                                style:(int)style
 {
-    CGPoint mid = PointTowardsPoint(CGPointMake(end.x, start.y), end, abs(end.x-start.x));
-    CGPoint a = PointTowardsPoint(mid, start, 20), b = PointTowardsPoint(mid, start, 10);
-    CGPoint c = PointTowardsPoint(mid, end, 10), d = PointTowardsPoint(mid, end, 20);
+    CGPoint mid;
+    CGPoint a = (style == DIAGONAL_FIRST) ? start : end;
+    CGPoint b = (style != DIAGONAL_FIRST) ? start : end;
+    if (abs(a.x-b.x) < abs(a.y-b.y))
+    {
+        mid = PointTowardsPoint(CGPointMake(b.x, a.y), b, abs(b.x-a.x));
+    }
+    else
+    {
+        mid = PointTowardsPoint(CGPointMake(a.x, b.y), b, abs(b.y-a.y));
+    }
+    
+    CGPoint c1 = PointTowardsPoint(mid, start, 20), c2 = PointTowardsPoint(mid, start, 10);
+    CGPoint c3 = PointTowardsPoint(mid, end, 10), c4 = PointTowardsPoint(mid, end, 20);
     
     CCPointArray *points = [[CCPointArray alloc] init];
-    [points addControlPoint:a];
-    [points addControlPoint:b];
-    [points addControlPoint:c];
-    [points addControlPoint:d];
+    [points addControlPoint:c1];
+    [points addControlPoint:c2];
+    [points addControlPoint:c3];
+    [points addControlPoint:c4];
     
     return points;
 }
 
 - (void) rebuffer{
+    
+    int style = DIAGONAL_FIRST;
 
-    float aThickness = 1 / cos(3.1415/4);
+    float diagThickness = 1 / cos(3.1415/4);
+    float aThickness = (style == DIAGONAL_FIRST) ? diagThickness : 1;
+    float bThickness = (style != DIAGONAL_FIRST) ? diagThickness : 1;
     
     int lineWidth = 10;
     
-    CGPoint br = self.start, tr = self.end, bl = CGPointOffset(self.start, -lineWidth*aThickness, 0), tl = CGPointOffset(self.end, -lineWidth, 0);
-
-    CCPointArray *leftEdge = [self curvyLineFromPoint:bl
-                                              toPoint:tl];
-    CCPointArray *rightEdge = [self curvyLineFromPoint:br
-                                               toPoint:tr];
+    CGPoint a1, b1, a2, b2;
+    CCPointArray *leftEdge, *rightEdge;
+    if (abs(self.end.x-self.start.x) < abs(self.end.y-self.start.y))
+    {
+        //NSLog(@"Vertical");
+        a1 = self.start;
+        b1 = self.end;
+        a2 = CGPointOffset(self.start, -lineWidth*aThickness, 0);
+        b2 = CGPointOffset(self.end, -lineWidth*bThickness, 0);
+    }
+    else
+    {
+        //NSLog(@"Horizontal");
+        b1 = self.end;
+        b2 = CGPointOffset(self.end, 0, -lineWidth*bThickness);
+        a1 = self.start;
+        a2 = CGPointOffset(self.start, 0, -lineWidth*aThickness);
+    }
+    
+    leftEdge = [self curvyLineFromPoint:a1 toPoint:b1 style:style];
+    rightEdge = [self curvyLineFromPoint:a2 toPoint:b2 style:style];
+    
     int verticesToAdd = leftEdge.count*2;
     _numVertices = 2*verticesToAdd + 4;
     ccVertex2F left[verticesToAdd], right[verticesToAdd], vertices[_numVertices];
     splineInterpolate(leftEdge, verticesToAdd, left);
     splineInterpolate(rightEdge, verticesToAdd, right);
-
-    vertices[0].x = bl.x;
-    vertices[0].y = bl.y;
-    vertices[1].x = br.x;
-    vertices[1].y = br.y;
-
+    
+    vertices[0].x = a1.x;
+    vertices[0].y = a1.y;
+    vertices[1].x = a2.x;
+    vertices[1].y = a2.y;
+    
     int i;
     for (i = 0; i < verticesToAdd; i++)
     {
@@ -110,11 +147,11 @@ void splineInterpolate(CCPointArray *points, int numVertices, ccVertex2F *vertic
         vertices[2 + 2*i + 1] = right[i];
     }
     
-    vertices[2*verticesToAdd+2].x = tl.x;
-    vertices[2*verticesToAdd+2].y = tl.y;
-    vertices[2*verticesToAdd+3].x = tr.x;
-    vertices[2*verticesToAdd+3].y = tr.y;
-
+    vertices[2*verticesToAdd+2].x = b1.x;
+    vertices[2*verticesToAdd+2].y = b1.y;
+    vertices[2*verticesToAdd+3].x = b2.x;
+    vertices[2*verticesToAdd+3].y = b2.y;
+    
     glGenBuffers(1, &_verticesBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, _verticesBuffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
