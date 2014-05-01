@@ -79,8 +79,6 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     {0, 0, 255, 50}, // 11pm
 };
 
-
-
 @implementation MainGameScene{
     @public
     
@@ -297,8 +295,6 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
         _touchesHandledByTool = YES;
     }else{
         [super touchBegan:touch withEvent:event];
-    //    [_panZoomLayer touchBegan:touch withEvent:event];
-        
     }
 }
 
@@ -307,10 +303,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
         [self.currentTool touchMoved:touch withEvent:event];
     }else{
         [super touchMoved:touch withEvent:event];
-    //    [_panZoomLayer touchMoved:touch withEvent:event];
-        
     }
-
 }
 
 - (void)touchEnded:(UITouch *)touch withEvent:(UIEvent *)event{
@@ -318,7 +311,6 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
         [self.currentTool touchEnded:touch withEvent:event];
     }else{
         [super touchEnded:touch withEvent:event];
-       // [_panZoomLayer touchEnded:touch withEvent:event];
     }
     
     _touchesHandledByTool = NO;
@@ -329,8 +321,6 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
         [self.currentTool touchCancelled:touch withEvent:event];
     }else{
         [super touchCancelled:touch withEvent:event];
-      //  [_panZoomLayer touchCancelled:touch withEvent:event];
-        
     }
     
     _touchesHandledByTool = NO;
@@ -475,13 +465,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 }
 
 - (double) scaleConsideringZoom:(double)correctScale useContentScale:(BOOL)useContentScale{
-    // Put a slight damper on the extent to which things get smaller as we zoom out.
-    // Also, account for screen resolution.
- //   if(useContentScale){
- //       return correctScale / _panZoomLayer.scale * CC_CONTENT_SCALE_FACTOR();
- //   }else{
-        return correctScale / _panZoomLayer.scale;
-  //  }
+    return correctScale / _panZoomLayer.scale;
 }
 
 - (void) newSpeed{
@@ -529,65 +513,6 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
        
     [self _updateTrainSpritePositions];
 }
-
- /*
-- (void) setMode:(UIMode)newMode{
-   [self _killCurrentTool];
-    
-    if(newMode == UIModeNone){
-        [self setAllowPanning:YES];
-    }
-    else if (newMode == UIModePlaceStation){
-        NSLog(@"station mode");
-        PlaceStationTool *placeStation = [[PlaceStationTool alloc] init];
-        [self _setCurrentTool:placeStation fromButton:stationButton];
-        
-    }else if (newMode == UIModePlaceTracks){
-        NSLog(@"tracks mode");
-        PlaceTracksTool *placeTracks = [[PlaceTracksTool alloc] init];
-        [self _setCurrentTool:placeTracks fromButton:tracksButton];
-    }
-    else if(newMode == UIModeData){
-        [self _setCurrentTool:[[DataTool alloc] init] fromButton:dataToolButton];
-    }
-    else if(newMode == UIModeManageLines){
-        [self _setCurrentTool:[[LinesTool alloc] init] fromButton:linesButton];
-    }else if(newMode == UIModeMore){
-        [self _setCurrentTool:[[MoreTool alloc] init] fromButton:moreButton];
-    }
-    
-    
-    uiMode = newMode;
-}
-*/
-
-- (void) _styleOverlay:(UIView *)overlayView{
-    overlayView.layer.cornerRadius = UI_CORNER_RADIUS;
-    overlayView.layer.borderColor = [[UIColor grayColor] CGColor];
-    overlayView.layer.borderWidth = 0.5;
-    overlayView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.9];
-    overlayView.layer.shadowColor = [[UIColor blackColor] CGColor];
-    overlayView.layer.shadowOffset = CGSizeMake(0, -1);
-    overlayView.layer.shadowOpacity = 0.3;
-    overlayView.layer.shadowRadius = 1;
-}
-
-/*
-- (void) _killCurrentTool{
-    
-    [toolHelpOverlay removeFromSuperview];
-    
-    if(currentTool){
-        [currentTool.viewController.view removeFromSuperview];
-        [currentTool finished];
-       // [[[CCDirector sharedDirector] touchDispatcher] removeDelegate:currentTool];
-        
-        currentTool = nil;
-    }
-    
-   // stationButton.selected = tracksButton.selected =  linesButton.selected = dataToolButton.selected = moreButton.selected = NO;
-}*/
-
 
 
 - (void) setCurrentTool:(GameTool *)aCurrentTool{
