@@ -48,9 +48,10 @@ void splineInterpolate(CCPointArray *points, int numVertices, ccVertex2F *vertic
 }
 
 @implementation TracksNode{
-    GLuint _verticesBuffer;
-    
+    GLuint *_verticesBuffers;
+    unsigned _numLines;
     unsigned _numVertices;
+    ccColor4F *_colors;
 }
 
 - (id)init {
@@ -60,6 +61,10 @@ void splineInterpolate(CCPointArray *points, int numVertices, ccVertex2F *vertic
             _trackShader = [[CCShaderCache sharedShaderCache] programForKey:kCCShader_Position_uColor];
             _trackShaderColorLocation = glGetUniformLocation(_trackShader.program, "u_color");
         }
+        
+        // Create an array to hold up to 20 buffers.
+        _verticesBuffers = (GLuint *)malloc(sizeof(GLuint)*20);
+        
         [self rebuffer];
     }
     return self;
@@ -111,8 +116,31 @@ void splineInterpolate(CCPointArray *points, int numVertices, ccVertex2F *vertic
 - (void) rebuffer{
     
     int style = DIAGONAL_FIRST;
+    int lineWidth;
+    _numLines = self.segment.lines.count;
     
-    int lineWidth = self.valid ? 18 : 10;
+    if (_numLines == 0) // just tracks
+    {
+        _numLines = 1;
+        lineWidth = self.valid ? 18 : 10;
+        
+        _colors = (ccColor4F *)malloc(sizeof(ccColor4F *));
+        _colors[0] = self.valid ? ccc4f(0, 0, 0, 0.3) : ccc4f(1, 0, 0, 0.3);
+    }
+    else // multi lines
+    {
+        lineWidth = MIN(20,ceil(50.0f/self.segment.lines.count));
+        
+        NSArray *coloredLines = [self.segment.lines.allKeys sortedArrayUsingSelector:@selector(compare:)];
+        
+        _colors = (ccColor4F *)malloc(sizeof(ccColor4F *)*(_numLines));
+        int i;
+        for (i = 0; i < [coloredLines count]; i++) {
+            NSNumber *colorNum = [coloredLines objectAtIndex:i];
+            _colors[i] = [[Line uiColorForLineColor:[colorNum intValue]] c4f];
+        }
+    }
+    
 
     // We draw thick lines by shifting the endpoints in the x or y directions.
     // A horizontal or vertical line has a shift coefficient of 1.
@@ -122,120 +150,95 @@ void splineInterpolate(CCPointArray *points, int numVertices, ccVertex2F *vertic
     float bThickness = (style != DIAGONAL_FIRST) ? diagThickness : 1;
     
     // Shift a->b in order to make two edges of a thick line.
-    CGPoint a1 = self.start, a2 = self.start, b1 = self.end, b2 = self.end;
-    CCPointArray *elbow1CtlPoints, *elbow2CtlPoints;
-    if (abs(self.end.x-self.start.x) < abs(self.end.y-self.start.y))
-    {
-        // Vertical component is larger.
-        // Shift lines a2->b2 and a1->b1 apart horizontally.
-        a1 = CGPointOffset(a1, -lineWidth*aThickness/2, 0);
-        b1 = CGPointOffset(b1, -lineWidth*bThickness/2, 0);
-        a2 = CGPointOffset(a2, lineWidth*aThickness/2, 0);
-        b2 = CGPointOffset(b2, lineWidth*bThickness/2, 0);
-    }
-    else
-    {
-        // Horizontal component is larger.
-        // Shift lines a2->b2 and a1->b1 apart vertically.
-        a1 = CGPointOffset(a1, 0, -lineWidth*aThickness/2);
-        b1 = CGPointOffset(b1, 0, -lineWidth*bThickness/2);
-        a2 = CGPointOffset(a2, 0, lineWidth*aThickness/2);
-        b2 = CGPointOffset(b2, 0, lineWidth*bThickness/2);
-    }
+    CGPoint a = self.start, b = self.end;
+    CGPoint as[_numLines+1], bs[_numLines+1];
+    ccVertex2F **elbows;
+    elbows = (ccVertex2F **)malloc(sizeof(ccVertex2F *)*(_numLines+1));
     
-    elbow1CtlPoints = [self curvyLineFromPoint:a1 toPoint:b1 style:style];
-    elbow2CtlPoints = [self curvyLineFromPoint:a2 toPoint:b2 style:style];
-    
-    // Interpolate the control points to make a nice round elbow.
-    int verticesToAdd = elbow1CtlPoints.count*2;
-    _numVertices = 2*verticesToAdd + 4;
-    ccVertex2F elbow1[verticesToAdd], elbow2[verticesToAdd], polygon[_numVertices];
-    splineInterpolate(elbow1CtlPoints, verticesToAdd, elbow1);
-    splineInterpolate(elbow2CtlPoints, verticesToAdd, elbow2);
-    
-    // Combine two edges and elbows to make a polygon.
-    
-    polygon[0].x = a1.x;
-    polygon[0].y = a1.y;
-    polygon[1].x = a2.x;
-    polygon[1].y = a2.y;
-    
-    // Zip points from the two elbows together.
+    int numVertices, numElbowVertices;
     int i;
-    for (i = 0; i < verticesToAdd; i++)
+    for (i = 0; i < _numLines+1; i++)
     {
-        polygon[2 + 2*i] = elbow1[i];
-        polygon[2 + 2*i + 1] = elbow2[i];
+        if (abs(self.end.x-self.start.x) < abs(self.end.y-self.start.y))
+        {
+            // Vertical component is larger.
+            // Shift lines a2->b2 and a1->b1 apart horizontally.
+            as[i] = CGPointOffset(a, (lineWidth*aThickness)*(i-_numLines*.5), 0);
+            bs[i] = CGPointOffset(b, (lineWidth*bThickness)*(i-_numLines*.5), 0);
+        }
+        else
+        {
+            // Horizontal component is larger.
+            // Shift lines a2->b2 and a1->b1 apart vertically.
+            as[i] = CGPointOffset(a, 0, (lineWidth*aThickness)*(i-_numLines*.5));
+            bs[i] = CGPointOffset(b, 0, (lineWidth*bThickness)*(i-_numLines*.5));
+        }
+        
+        CCPointArray *elbowCtlPoints = [self curvyLineFromPoint:as[i] toPoint:bs[i] style:style];
+        
+        // Interpolate the control points to make a nice round elbow.
+        numElbowVertices = elbowCtlPoints.count;
+        numVertices = numElbowVertices*2 + 4;
+        
+        elbows[i] = (ccVertex2F *)malloc(sizeof(ccVertex2F)*numElbowVertices);
+        splineInterpolate(elbowCtlPoints, numElbowVertices, elbows[i]);
+        
+        if (i > 0)
+        {
+            ccVertex2F polygon[numVertices];
+            
+            // Combine two edges and elbows to make a polygon.
+            
+            polygon[0].x = as[i-1].x;
+            polygon[0].y = as[i-1].y;
+            polygon[1].x = as[i].x;
+            polygon[1].y = as[i].y;
+            
+            // Zip points from the two elbows together.
+            int t;
+            for (t = 0; t < numElbowVertices; t++)
+            {
+                polygon[2 + 2*t] = elbows[i-1][t];
+                polygon[2 + 2*t + 1] = elbows[i][t];
+            }
+            
+            polygon[numVertices-2].x = bs[i-1].x;
+            polygon[numVertices-2].y = bs[i-1].y;
+            polygon[numVertices-1].x = bs[i].x;
+            polygon[numVertices-1].y = bs[i].y;
+            
+            glGenBuffers(1, &_verticesBuffers[i-1]);
+            glBindBuffer(GL_ARRAY_BUFFER, _verticesBuffers[i-1]);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(polygon), polygon, GL_STATIC_DRAW);
+            //NSLog(@"filled buffer %d of %d (%d vertices)", i, _numLines, numVertices);
+        }
     }
     
-    polygon[2*verticesToAdd+2].x = b1.x;
-    polygon[2*verticesToAdd+2].y = b1.y;
-    polygon[2*verticesToAdd+3].x = b2.x;
-    polygon[2*verticesToAdd+3].y = b2.y;
-    
-    glGenBuffers(1, &_verticesBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, _verticesBuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(polygon), polygon, GL_STATIC_DRAW);
+    _numVertices = numVertices;
 }
 
 - (void) dealloc{
-    glDeleteBuffers(1, &(_verticesBuffer));
+    glDeleteBuffers(1, &_verticesBuffers[0]);
 }
 
 - (void)draw {
-    
-    ccColor4F lineColor = self.valid ? ccc4f(0, 0, 0, 0.3) : ccc4f(1, 0, 0, 0.3);
-    
+
     [_trackShader use];
     [_trackShader setUniformsForBuiltins];
-    [_trackShader setUniformLocation:_trackShaderColorLocation with4fv:(GLfloat*) &lineColor.r count:1];
     
     ccGLEnableVertexAttribs( kCCVertexAttribFlag_Position );
     
-    glBindBuffer(GL_ARRAY_BUFFER, _verticesBuffer);
-    glVertexAttribPointer(kCCVertexAttrib_Position, 2, GL_FLOAT, GL_FALSE, 0, 0);
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, (GLsizei) _numVertices);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    int i;
+    for (i = 0; i < _numLines; i++)
+    {
+        [_trackShader setUniformLocation:_trackShaderColorLocation with4fv:&_colors[i] count:1];
 
-    
-    /*if(self.segment.lines.count == 0){ // just tracks
-     
-
-    
-    }else{
-        // multi lines
-        int w = MIN(20,ceil(50.0f/self.segment.lines.count));
-        CGFloat offsetAmount = -1 * ((((float)self.segment.lines.count/2.0f) - 0.5) * w);
-        unsigned i = 0;
-        NSArray *coloredLines = [self.segment.lines.allKeys sortedArrayUsingSelector:@selector(compare:)];
-        
-        for(NSNumber *colorNum in coloredLines){
-            glLineWidth((w/2.0f) * CC_CONTENT_SCALE_FACTOR());
-            ccColor4F drawColor = [[Line uiColorForLineColor:[colorNum intValue]] c4f];
-            ccDrawColor4F(drawColor.r, drawColor.g, drawColor.b, 1);
-            
-            CGPoint s,e;
-            if(fabs(self.end.x - self.start.x) > fabs(self.end.y - self.start.y)){
-                // we are drawing horizontally
-                CGPoint offsettedStart = CGPointOffset(self.start, 0, offsetAmount);
-                CGPoint offsettedEnd = CGPointOffset(self.end, 0, offsetAmount);
-                
-                s = CGPointOffset(offsettedStart, 0, i*w);
-                e = CGPointOffset(offsettedEnd, 0, i*w);
-            }else{
-                // we are drawing vertically
-                CGPoint offsettedStart = CGPointOffset(self.start, offsetAmount, 0);
-                CGPoint offsettedEnd = CGPointOffset(self.end, offsetAmount, 0);
-                
-                s = CGPointOffset(offsettedStart, i*w, 0);
-                e = CGPointOffset(offsettedEnd, i*w, 0);
-            }
-            
-            ccDrawLine(s, e);
-            
-            i++;
-        }
-    }*/
+        //NSLog(@"drawing buffer %d with %d vertices", i+1, _numVertices);
+        glBindBuffer(GL_ARRAY_BUFFER, _verticesBuffers[0]);
+        glVertexAttribPointer(kCCVertexAttrib_Position, 2, GL_FLOAT, GL_FALSE, 0, 0);
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, (GLsizei) _numVertices);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
     
     ccDrawFree();
 }
