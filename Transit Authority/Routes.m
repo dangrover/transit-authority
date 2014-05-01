@@ -8,6 +8,7 @@
 
 #import "Routes.h"
 #import "GameState.h"
+#import "NSCoding-Macros.h"
 
 @interface Line()
 @property(assign, readwrite) LineColor color;
@@ -75,6 +76,22 @@ static NSArray *uiColorsForLines;
 + (NSString *) nameForLineColor:(LineColor)theColor{
     NSArray *colorNames = @[@"Red Line", @"Orange Line", @"Yellow Line", @"Green Line", @"Blue Line", @"Purple Line", @"Brown Line"];
     return colorNames[theColor];
+}
+
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    encodeInt(_numberOfCars);
+    encodeInt(_color);
+    encodeObject(_segmentsServed);
+}
+
+- (id)initWithCoder:(NSCoder *)decoder {
+    if (self = [self init])
+    {
+        decodeInt(_numberOfCars);
+        decodeInt(_color);
+        decodeObject(_segmentsServed);
+    }
+    return self;
 }
 
 @end

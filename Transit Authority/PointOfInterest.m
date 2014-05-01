@@ -7,6 +7,7 @@
 //
 
 #import "PointOfInterest.h"
+#import "NSCoding-Macros.h"
 
 @interface POIFacet()
 - (id) initWithJsonRepresentation:(NSDictionary *)jsonDict;
@@ -16,6 +17,7 @@
 
 @interface PointOfInterest()
 @property(strong, nonatomic, readwrite) NSString *identifier;
+@property(strong, nonatomic, readwrite) NSDictionary *json; // keep the JSON to serialize later
 @property(strong, nonatomic, readwrite) NSString *name; // the name dislayed for this POI
 @property(strong, nonatomic, readwrite) NSString *type;
 @property(assign, nonatomic, readwrite) CGPoint location; // in tile coordinates
@@ -31,6 +33,7 @@
 - (id) initWithIdentifier:(NSString *)theIdentifier jsonRepresentation:(NSDictionary *)jsonDict{
     if(self = [super init]){
         self.identifier = theIdentifier;
+        self.json = jsonDict;
         self.name = jsonDict[@"name"];
         self.type = jsonDict[@"type"];
         self.location = CGPointMake([jsonDict[@"location"][0] unsignedIntValue],
@@ -54,6 +57,20 @@
 
 - (NSString *) description{
     return [NSString stringWithFormat:@"<POI: %@>",self.name];
+}
+
+#pragma mark - Serialization
+
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    encodeObject(_identifier);
+    encodeObject(_json);
+}
+
+// When decoding the GameScenario from a saved GameState, reread the JSON file.
+- (id)initWithCoder:(NSCoder *)decoder {
+    decodeObject(_identifier);
+    decodeObject(_json);
+    return [self initWithIdentifier:_identifier jsonRepresentation:_json];
 }
 
 @end

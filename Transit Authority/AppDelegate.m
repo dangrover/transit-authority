@@ -75,6 +75,19 @@
     [TestFlight setDeviceIdentifier:[[[UIDevice currentDevice] identifierForVendor] UUIDString]];
     [TestFlight takeOff:@"36d93e59-b263-4c26-a1e8-1fe37b7e934e"];
     
+    // If we loaded a serialized game on launch, open that game now that cocos2d is ready.
+    if (savedState_)
+    {
+        NSLog(@"Application finished loading. Loading decoded game state");
+
+        // The map can't be created without cocos2d.
+        [savedState_ loadMap];
+        
+        [((AppController *)[UIApplication sharedApplication].delegate).navController popToRootViewControllerAnimated:NO];
+        MainGameScene *gameScene = [[MainGameScene alloc] initWithGameState:savedState_];
+        [[CCDirector sharedDirector] pushScene:gameScene];
+    }
+    
 	return YES;
 }
 
@@ -130,14 +143,59 @@
 	[[CCDirector sharedDirector] setNextDeltaTimeZero:YES];
 }
 
+#pragma mark - Application State
+
+- (BOOL)application:(UIApplication *)application shouldSaveApplicationState:(NSCoder *)coder {
+    return YES;
+}
+
+- (BOOL)application:(UIApplication *)application shouldRestoreApplicationState:(NSCoder *)coder {
+    return YES;
+}
+
+- (void)application:(UIApplication *)application willEncodeRestorableStateWithCoder:(NSCoder *)coder
+{
+    CCScene *runningScene = self.director.runningScene;
+    if ([runningScene isKindOfClass:[MainGameScene class]])
+    {
+        NSLog(@"Saving Game State");
+        MainGameScene *gameScene = (MainGameScene *)runningScene;
+        [coder encodeObject:gameScene.gameState forKey:@"Game State"];
+    }
+    else
+    {
+        NSLog(@"Deleting Game State. Open scene is not game scene.");
+        [coder encodeObject:nil forKey:@"Game State"];
+    }
+}
+
+- (void)application:(UIApplication *)application didDecodeRestorableStateWithCoder:(NSCoder *)coder {
+    NSLog(@"Loading saved game state...");
+
+    GameState *gameState = [coder decodeObjectForKey:@"Game State"];
+    
+    @try {
+    }
+    @catch (NSException *exception) {
+        NSLog(@"Something went terribly wrong while loading the game state.");
+    }
+    @finally {
+        if (gameState)
+        {
+            savedState_ = gameState;
+            NSLog(@"Loaded: %@", gameState);
+        }
+        else
+        {
+            NSLog(@"No game state found");
+        }
+    }}
 
 - (void) exitToMainMenu{
    
-    for(UIView *v in [CCDirector sharedDirector].view.subviews){
+    for(UIView *v in director_.view.subviews){
         [v removeFromSuperview];
     }
-    
-    [director_ popScene];
     
     MainMenuViewController *mm = [[MainMenuViewController alloc] initWithNibName:nil bundle:nil];
     [navController_ pushViewController:mm animated:NO];

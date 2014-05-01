@@ -305,6 +305,7 @@
 
 /* Begin PBXFileReference section */
 		0F3FBEBA18D5CA8000784352 /* tileset-elevation.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "tileset-elevation.png"; path = "Maps/tileset-elevation.png"; sourceTree = SOURCE_ROOT; };
+		0FD5C6DB18FB8CA500EB54D3 /* NSCoding-Macros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSCoding-Macros.h"; sourceTree = "<group>"; };
 		4D0715011773D1E5008D10E3 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		4D1B8CF2178B43090033DD70 /* pause.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = pause.png; path = Resources/pause.png; sourceTree = "<group>"; };
 		4D1B8CF3178B43090033DD70 /* fast-forward.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "fast-forward.png"; path = "Resources/fast-forward.png"; sourceTree = "<group>"; };
@@ -881,6 +882,7 @@
 				4DAB5BDE1799A41900CD35E2 /* GameLedger.m */,
 				4DAB5C04179AD4CE00CD35E2 /* GameMap.h */,
 				4DAB5C05179AD4CE00CD35E2 /* GameMap.m */,
+				0FD5C6DB18FB8CA500EB54D3 /* NSCoding-Macros.h */,
 			);
 			name = "Game State";
 			sourceTree = "<group>";

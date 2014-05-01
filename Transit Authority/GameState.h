@@ -25,6 +25,7 @@ extern NSString *GameStateNotification_HourChanged;
 @interface GameState : NSObject
 
 - (id) initWithScenario:(GameScenario *)theScenario;
+- (void)loadMap;
 
 @property(strong, nonatomic, readonly) GameScenario *originalScenario;
 @property(strong, nonatomic, readonly) GameLedger *ledger;
