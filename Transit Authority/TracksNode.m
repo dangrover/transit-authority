@@ -112,7 +112,7 @@ void splineInterpolate(CCPointArray *points, int numVertices, ccVertex2F *vertic
     
     int style = DIAGONAL_FIRST;
     
-    int lineWidth = 10;
+    int lineWidth = self.valid ? 18 : 10;
 
     // We draw thick lines by shifting the endpoints in the x or y directions.
     // A horizontal or vertical line has a shift coefficient of 1.
@@ -122,21 +122,25 @@ void splineInterpolate(CCPointArray *points, int numVertices, ccVertex2F *vertic
     float bThickness = (style != DIAGONAL_FIRST) ? diagThickness : 1;
     
     // Shift a->b in order to make two edges of a thick line.
-    CGPoint a1 = self.start, b1 = self.end, a2, b2;
+    CGPoint a1 = self.start, a2 = self.start, b1 = self.end, b2 = self.end;
     CCPointArray *elbow1CtlPoints, *elbow2CtlPoints;
     if (abs(self.end.x-self.start.x) < abs(self.end.y-self.start.y))
     {
         // Vertical component is larger.
-        // Line a2->b2 is a1->b1 shifted horizontally.
-        a2 = CGPointOffset(a1, -lineWidth*aThickness, 0);
-        b2 = CGPointOffset(b1, -lineWidth*bThickness, 0);
+        // Shift lines a2->b2 and a1->b1 apart horizontally.
+        a1 = CGPointOffset(a1, -lineWidth*aThickness/2, 0);
+        b1 = CGPointOffset(b1, -lineWidth*bThickness/2, 0);
+        a2 = CGPointOffset(a2, lineWidth*aThickness/2, 0);
+        b2 = CGPointOffset(b2, lineWidth*bThickness/2, 0);
     }
     else
     {
         // Horizontal component is larger.
-        // Line a2->b2 is a1->b1 shifted vertically.
-        a2 = CGPointOffset(a1, 0, -lineWidth*aThickness);
-        b2 = CGPointOffset(b1, 0, -lineWidth*bThickness);
+        // Shift lines a2->b2 and a1->b1 apart vertically.
+        a1 = CGPointOffset(a1, 0, -lineWidth*aThickness/2);
+        b1 = CGPointOffset(b1, 0, -lineWidth*bThickness/2);
+        a2 = CGPointOffset(a2, 0, lineWidth*aThickness/2);
+        b2 = CGPointOffset(b2, 0, lineWidth*bThickness/2);
     }
     
     elbow1CtlPoints = [self curvyLineFromPoint:a1 toPoint:b1 style:style];
@@ -180,19 +184,8 @@ void splineInterpolate(CCPointArray *points, int numVertices, ccVertex2F *vertic
 
 - (void)draw {
     
-    float lineWidth = 0;
+    ccColor4F lineColor = self.valid ? ccc4f(0, 0, 0, 0.3) : ccc4f(1, 0, 0, 0.3);
     
-    ccColor4F lineColor;
-    
-    // draw a dotted line?
-    if(self.valid){
-        lineWidth = 18;
-        lineColor = ccc4f(0, 0, 0, 0.3);
-    }else{
-        lineWidth = 10;
-        lineColor = ccc4f(1, 0, 0, 0.3);
-    }
-        
     [_trackShader use];
     [_trackShader setUniformsForBuiltins];
     [_trackShader setUniformLocation:_trackShaderColorLocation with4fv:(GLfloat*) &lineColor.r count:1];
