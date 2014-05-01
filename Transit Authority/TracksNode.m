@@ -65,34 +65,45 @@ void splineInterpolate(CCPointArray *points, int numVertices, ccVertex2F *vertic
     return self;
 }
 
+/*
+     Two ways to draw a track from point A to point B:
+ 
+     Diagonal first:   /------ B     Flat part first:           B
+                      /                                        /
+                     A                                A ------/
+*/
 #define DIAGONAL_FIRST 1
 #define DIAGONAL_LAST 2
 
-// Return the control points necessary to draw a track.
-- (CCPointArray *) curvyLineFromPoint:(CGPoint)start
-                              toPoint:(CGPoint)end
+// Calculate line segments making up the track and return the control points necessary to draw a rounded elbow.
+- (CCPointArray *) curvyLineFromPoint:(CGPoint)a
+                              toPoint:(CGPoint)b
                                 style:(int)style
 {
-    CGPoint mid;
-    CGPoint a = (style == DIAGONAL_FIRST) ? start : end;
-    CGPoint b = (style != DIAGONAL_FIRST) ? start : end;
-    if (abs(a.x-b.x) < abs(a.y-b.y))
+    // Point a and b are two ordered points, as in the diagrams above.
+    // Let point f be the one on the flat line, and d the one on the diagonal.
+    CGPoint f = (style == DIAGONAL_FIRST) ? a : b;
+    CGPoint d = (style != DIAGONAL_FIRST) ? a : b;
+    
+    CGPoint elbow;
+    if (abs(f.x-d.x) < abs(f.y-d.y))
     {
-        mid = PointTowardsPoint(CGPointMake(b.x, a.y), b, abs(b.x-a.x));
+        // Flat component of diagonal line component is longer
+        elbow = PointTowardsPoint(CGPointMake(d.x, f.y), d, abs(d.x-f.x));
     }
     else
     {
-        mid = PointTowardsPoint(CGPointMake(a.x, b.y), b, abs(b.y-a.y));
+        // Flat line is longer
+        elbow = PointTowardsPoint(CGPointMake(f.x, d.y), d, abs(d.y-f.y));
     }
     
-    CGPoint c1 = PointTowardsPoint(mid, start, 20), c2 = PointTowardsPoint(mid, start, 10);
-    CGPoint c3 = PointTowardsPoint(mid, end, 10), c4 = PointTowardsPoint(mid, end, 20);
-    
+    // Put two control points on either side of the elbow, but not on the elbow.
+    // When we spline this it will make a nice curve.
     CCPointArray *points = [[CCPointArray alloc] init];
-    [points addControlPoint:c1];
-    [points addControlPoint:c2];
-    [points addControlPoint:c3];
-    [points addControlPoint:c4];
+    [points addControlPoint:PointTowardsPoint(elbow, a, 20)];
+    [points addControlPoint:PointTowardsPoint(elbow, a, 10)];
+    [points addControlPoint:PointTowardsPoint(elbow, b, 10)];
+    [points addControlPoint:PointTowardsPoint(elbow, b, 20)];
     
     return points;
 }
@@ -100,61 +111,67 @@ void splineInterpolate(CCPointArray *points, int numVertices, ccVertex2F *vertic
 - (void) rebuffer{
     
     int style = DIAGONAL_FIRST;
+    
+    int lineWidth = 10;
 
+    // We draw thick lines by shifting the endpoints in the x or y directions.
+    // A horizontal or vertical line has a shift coefficient of 1.
+    // A line at a 45 degree angle has a shift of about 1.4.
     float diagThickness = 1 / cos(3.1415/4);
     float aThickness = (style == DIAGONAL_FIRST) ? diagThickness : 1;
     float bThickness = (style != DIAGONAL_FIRST) ? diagThickness : 1;
     
-    int lineWidth = 10;
-    
-    CGPoint a1, b1, a2, b2;
-    CCPointArray *leftEdge, *rightEdge;
+    // Shift a->b in order to make two edges of a thick line.
+    CGPoint a1 = self.start, b1 = self.end, a2, b2;
+    CCPointArray *elbow1CtlPoints, *elbow2CtlPoints;
     if (abs(self.end.x-self.start.x) < abs(self.end.y-self.start.y))
     {
-        //NSLog(@"Vertical");
-        a1 = self.start;
-        b1 = self.end;
-        a2 = CGPointOffset(self.start, -lineWidth*aThickness, 0);
-        b2 = CGPointOffset(self.end, -lineWidth*bThickness, 0);
+        // Vertical component is larger.
+        // Line a2->b2 is a1->b1 shifted horizontally.
+        a2 = CGPointOffset(a1, -lineWidth*aThickness, 0);
+        b2 = CGPointOffset(b1, -lineWidth*bThickness, 0);
     }
     else
     {
-        //NSLog(@"Horizontal");
-        b1 = self.end;
-        b2 = CGPointOffset(self.end, 0, -lineWidth*bThickness);
-        a1 = self.start;
-        a2 = CGPointOffset(self.start, 0, -lineWidth*aThickness);
+        // Horizontal component is larger.
+        // Line a2->b2 is a1->b1 shifted vertically.
+        a2 = CGPointOffset(a1, 0, -lineWidth*aThickness);
+        b2 = CGPointOffset(b1, 0, -lineWidth*bThickness);
     }
     
-    leftEdge = [self curvyLineFromPoint:a1 toPoint:b1 style:style];
-    rightEdge = [self curvyLineFromPoint:a2 toPoint:b2 style:style];
+    elbow1CtlPoints = [self curvyLineFromPoint:a1 toPoint:b1 style:style];
+    elbow2CtlPoints = [self curvyLineFromPoint:a2 toPoint:b2 style:style];
     
-    int verticesToAdd = leftEdge.count*2;
+    // Interpolate the control points to make a nice round elbow.
+    int verticesToAdd = elbow1CtlPoints.count*2;
     _numVertices = 2*verticesToAdd + 4;
-    ccVertex2F left[verticesToAdd], right[verticesToAdd], vertices[_numVertices];
-    splineInterpolate(leftEdge, verticesToAdd, left);
-    splineInterpolate(rightEdge, verticesToAdd, right);
+    ccVertex2F elbow1[verticesToAdd], elbow2[verticesToAdd], polygon[_numVertices];
+    splineInterpolate(elbow1CtlPoints, verticesToAdd, elbow1);
+    splineInterpolate(elbow2CtlPoints, verticesToAdd, elbow2);
     
-    vertices[0].x = a1.x;
-    vertices[0].y = a1.y;
-    vertices[1].x = a2.x;
-    vertices[1].y = a2.y;
+    // Combine two edges and elbows to make a polygon.
     
+    polygon[0].x = a1.x;
+    polygon[0].y = a1.y;
+    polygon[1].x = a2.x;
+    polygon[1].y = a2.y;
+    
+    // Zip points from the two elbows together.
     int i;
     for (i = 0; i < verticesToAdd; i++)
     {
-        vertices[2 + 2*i] = left[i];
-        vertices[2 + 2*i + 1] = right[i];
+        polygon[2 + 2*i] = elbow1[i];
+        polygon[2 + 2*i + 1] = elbow2[i];
     }
     
-    vertices[2*verticesToAdd+2].x = b1.x;
-    vertices[2*verticesToAdd+2].y = b1.y;
-    vertices[2*verticesToAdd+3].x = b2.x;
-    vertices[2*verticesToAdd+3].y = b2.y;
+    polygon[2*verticesToAdd+2].x = b1.x;
+    polygon[2*verticesToAdd+2].y = b1.y;
+    polygon[2*verticesToAdd+3].x = b2.x;
+    polygon[2*verticesToAdd+3].y = b2.y;
     
     glGenBuffers(1, &_verticesBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, _verticesBuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(polygon), polygon, GL_STATIC_DRAW);
 }
 
 - (void) dealloc{
@@ -175,10 +192,7 @@ void splineInterpolate(CCPointArray *points, int numVertices, ccVertex2F *vertic
         lineWidth = 10;
         lineColor = ccc4f(1, 0, 0, 0.3);
     }
-    
-    //glLineWidth(lineWidth * CC_CONTENT_SCALE_FACTOR());
-    //ccDrawLine(self.start, self.end);
-    
+        
     [_trackShader use];
     [_trackShader setUniformsForBuiltins];
     [_trackShader setUniformLocation:_trackShaderColorLocation with4fv:(GLfloat*) &lineColor.r count:1];
