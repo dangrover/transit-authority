@@ -80,7 +80,7 @@
     [self.parent->tiledMap addChild:coverageOverlay z:50];
     coverageOverlay.walkTiles = GAME_STATION_WALK_RADIUS_TILES;
     coverageOverlay.carTiles = GAME_STATION_CAR_RADIUS_TILES;
-   
+    coverageOverlay.scale = 1.0f/self.parent->tiledMap.parent.scale;
     //CGFloat r = GAME_STATION_CAR_RADIUS_TILES*self.parent.gameState.map.map.tileSize.width*2;
    // [_clippingMask drawDot:CGPointMake(-0.5*r, -0.5*r)
    //                 radius:r
@@ -186,7 +186,7 @@
                                              rgbColorSpace,
                                              kCGImageAlphaOnly);
     
-   // CGContextScaleCTM(ctx, CC_CONTENT_SCALE_FACTOR(), CC_CONTENT_SCALE_FACTOR());
+  //  CGContextScaleCTM(ctx, CC_CONTENT_SCALE_FACTOR(), CC_CONTENT_SCALE_FACTOR());
     
     CGContextSetFillColorWithColor(ctx, [[UIColor colorWithWhite:0 alpha:0.5] CGColor]);
     CGContextFillEllipseInRect(ctx, CGRectMake(0, 0, imgPointSize.width, imgPointSize.height));

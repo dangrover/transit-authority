@@ -81,6 +81,7 @@
 		4D3929181792082A00373AAD /* StationNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D3929171792082A00373AAD /* StationNode.m */; };
 		4D39291C1792086A00373AAD /* StationInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D39291A1792086A00373AAD /* StationInspector.m */; };
 		4D39291D1792086A00373AAD /* StationInspector.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4D39291B1792086A00373AAD /* StationInspector.xib */; };
+		4D3E7D4719123B7E00595592 /* HUDGraphTheme.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D3E7D4619123B7E00595592 /* HUDGraphTheme.m */; };
 		4D4FD4D017D7951000172189 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D4FD4CE17D7951000172189 /* Default@2x.png */; };
 		4D4FD4D117D7951000172189 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D4FD4CF17D7951000172189 /* Default.png */; };
 		4D4FD4D617D7AF9A00172189 /* HeatMapNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D4FD4D517D7AF9A00172189 /* HeatMapNode.m */; };
@@ -469,6 +470,8 @@
 		4D3929191792086A00373AAD /* StationInspector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StationInspector.h; sourceTree = "<group>"; };
 		4D39291A1792086A00373AAD /* StationInspector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StationInspector.m; sourceTree = "<group>"; };
 		4D39291B1792086A00373AAD /* StationInspector.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StationInspector.xib; sourceTree = "<group>"; };
+		4D3E7D4519123B7E00595592 /* HUDGraphTheme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUDGraphTheme.h; sourceTree = "<group>"; };
+		4D3E7D4619123B7E00595592 /* HUDGraphTheme.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUDGraphTheme.m; sourceTree = "<group>"; };
 		4D4FD4CE17D7951000172189 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default@2x.png"; path = "Resources/Default@2x.png"; sourceTree = "<group>"; };
 		4D4FD4CF17D7951000172189 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Default.png; path = Resources/Default.png; sourceTree = "<group>"; };
 		4D4FD4D417D7AF9A00172189 /* HeatMapNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeatMapNode.h; sourceTree = "<group>"; };
@@ -1125,6 +1128,8 @@
 				4DAB5BF51799B12100CD35E2 /* StatsDetailViewController.h */,
 				4DAB5BF61799B12100CD35E2 /* StatsDetailViewController.m */,
 				4DAB5BF71799B12100CD35E2 /* StatsDetailViewController.xib */,
+				4D3E7D4519123B7E00595592 /* HUDGraphTheme.h */,
+				4D3E7D4619123B7E00595592 /* HUDGraphTheme.m */,
 			);
 			name = Data;
 			sourceTree = "<group>";
@@ -2536,6 +2541,7 @@
 				4DAB186B18CD1A80008CF267 /* ChipmunkConstraint.m in Sources */,
 				4DAB187118CD1A80008CF267 /* CCActionEase.m in Sources */,
 				4DAB18A518CD1A80008CF267 /* CCTexturePVR.m in Sources */,
+				4D3E7D4719123B7E00595592 /* HUDGraphTheme.m in Sources */,
 				4D03E6AB190D94EF00405699 /* CCBKeyframe.m in Sources */,
 				4D03E6AC190D94EF00405699 /* CCBLocalizationManager.m in Sources */,
 				4DAB18AB18CD1A80008CF267 /* cocos2d.m in Sources */,
