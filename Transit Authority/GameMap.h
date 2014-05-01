@@ -45,7 +45,8 @@
 // Misc
 - (BOOL) tileCoordinateIsInBounds:(CGPoint)tileCoordinate;
 - (BOOL) tileIsLand:(CGPoint)p;
-
+- (NSArray *)tilesBetweenTile:(CGPoint)tileA andTile:(CGPoint)tileB;
+- (float)waterPartBetweenTile:(CGPoint)tileA andTile:(CGPoint)tileB;
 
 // Population Info
 @property(assign, nonatomic, readonly) unsigned totalPopulation;

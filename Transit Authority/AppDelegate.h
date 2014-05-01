@@ -8,8 +8,18 @@
 
 #import <UIKit/UIKit.h>
 #import "cocos2d.h"
+#import "GameState.h"
 
+<<<<<<< HEAD
 @interface AppController : CCAppDelegate <UIApplicationDelegate, CCDirectorDelegate>
+=======
+@interface AppController : NSObject <UIApplicationDelegate, CCDirectorDelegate>
+{
+	UIWindow *window_;
+	UINavigationController *navController_;
+    
+    GameState *savedState_;
+>>>>>>> master
 
 
 @property (nonatomic, retain) UIWindow *window;

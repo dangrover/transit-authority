@@ -7,8 +7,31 @@
 //
 
 #import "Passenger.h"
+#import "NSCoding-Macros.h"
 
 @implementation Passenger
+
+#pragma mark - Serialization
+
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    encodeObject(_origin);
+    encodeObject(_finalDestination);
+    encodeInt(_enteredStationTime);
+    encodeInt(_boardedTrainTime);
+    encodeInt(_transfersMade);
+}
+
+- (id)initWithCoder:(NSCoder *)decoder {
+    if (self = [self init])
+    {
+        decodeObject(_origin);
+        decodeObject(_finalDestination);
+        decodeInt(_enteredStationTime);
+        decodeInt(_boardedTrainTime);
+        decodeInt(_transfersMade);
+    }
+    return self;
+}
 
 @end
 

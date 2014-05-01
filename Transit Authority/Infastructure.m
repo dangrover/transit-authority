@@ -9,6 +9,7 @@
 #import "Infastructure.h"
 #import "GameState.h"
 #import "Utilities.h"
+#import "NSCoding-Macros.h"
 
 @interface Station()
 @property(strong, nonatomic, readwrite) PointOfInterest *connectedPOI;
@@ -73,6 +74,35 @@
     return _upgrades;
 }
 
+#pragma mark - Serialization
+
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    [super encodeWithCoder:encoder];
+    encodeObject(_name);
+    encodeFloat(_tileCoordinate.x);
+    encodeFloat(_tileCoordinate.y);
+    encodeInt(_built);
+    encodeObject(_links);
+    encodeObject(_passengersByDestination);
+    encodeObject(_upgrades);
+    encodeObject(_connectedPOI);
+}
+
+- (id)initWithCoder:(NSCoder *)decoder {
+    if (self = [super initWithCoder:decoder])
+    {
+        decodeObject(_name);
+        decodeFloat(_tileCoordinate.x);
+        decodeFloat(_tileCoordinate.y);
+        decodeInt(_built);
+        decodeObject(_links);
+        decodeObject(_passengersByDestination);
+        decodeObject(_upgrades);
+        decodeObject(_connectedPOI);
+    }
+    return self;
+}
+
 @end
 
 #pragma mark -
@@ -89,6 +119,27 @@
 
 - (CGFloat) distanceInTiles{
     return PointDistance(self.startStation.tileCoordinate, self.endStation.tileCoordinate);
+}
+
+#pragma mark - Serialization
+
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    [super encodeWithCoder:encoder];
+    encodeObject(_startStation);
+    encodeObject(_endStation);
+    encodeInt(_built);
+    encodeObject(_lines);
+}
+
+- (id)initWithCoder:(NSCoder *)decoder {
+    if (self = [super initWithCoder:decoder])
+    {
+        decodeObject(_startStation);
+        decodeObject(_endStation);
+        decodeInt(_built);
+        decodeObject(_lines);
+    }
+    return self;
 }
 
 @end

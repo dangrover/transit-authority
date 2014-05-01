@@ -9,5 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @interface GameObject : NSObject
+- (id)initWithCoder:(NSCoder *)decoder;
+- (void)encodeWithCoder:(NSCoder *)encoder;
 @property(strong, readonly) NSString *UUID;
 @end

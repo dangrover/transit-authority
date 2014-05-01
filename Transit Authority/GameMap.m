@@ -13,6 +13,7 @@
 
 #define TILE_GID_LAND 10
 #define TILE_GID_AIRPORT 75
+#define TILE_GID_WATER 30
 
 @interface GameMap()
 @property(strong, readwrite) NSString *originalPath;
@@ -113,6 +114,61 @@
             && (tileCoordinate.x < self.map.mapSize.width)
             && (tileCoordinate.y < self.map.mapSize.height));
 }
+
+// This is a simplified rasterization function which returns all of the grid squares on a diagonal from A to B.
+- (NSArray *)tilesBetweenTile:(CGPoint)tileA andTile:(CGPoint)tileB {
+    
+    // Count two times the amount of tiles needed for a horizontal or vertical line.
+    float deltaX = tileA.x - tileB.x;
+    float deltaY = tileA.y - tileB.y;
+    float distance = sqrt(deltaX * deltaX + deltaY * deltaY);
+    int pointsToMake = round(distance*2);
+    
+    int i;
+    NSMutableArray *tiles = [NSMutableArray arrayWithCapacity:pointsToMake];
+    for (i = 0; i < pointsToMake; i++)
+    {
+        // Find and add the point i/pointsToMake of the way from A to B.
+        NSValue *newPoint = [NSValue valueWithCGPoint:CGPointMake(
+                                                                  tileB.x + round(i*deltaX/pointsToMake),
+                                                                  tileB.y + round(i*deltaY/pointsToMake)
+                                                                  )];
+        if (![[tiles lastObject] isEqual:newPoint])
+        {
+            [tiles addObject:newPoint];
+        }
+    }
+    return tiles;
+}
+
+// This function returns the distance of a track that is water between two points, in tile lengths.
+- (float)waterPartBetweenTile:(CGPoint)tileA andTile:(CGPoint)tileB
+{
+    float deltaX = tileA.x - tileB.x;
+    float deltaY = tileA.y - tileB.y;
+    float distance = sqrt(deltaX * deltaX + deltaY * deltaY);
+    
+    NSArray *tiles = [self tilesBetweenTile:tileA andTile:tileB];
+    int totalTiles = [tiles count];
+
+    if (totalTiles == 0)
+    {
+        return 0;
+    }
+    
+    int totalWaterTiles = 0;
+    int i;
+    for (i = 0; i < [tiles count]; i++)
+    {
+        CGPoint tile = [[tiles objectAtIndex:i] CGPointValue];
+        if ([self.landLayer tileGIDAt:tile] == TILE_GID_WATER)
+        {
+            totalWaterTiles++;
+        }
+    }
+    return distance*totalWaterTiles/totalTiles;
+}
+
 
 - (BOOL) tileIsLand:(CGPoint)p{
     unsigned gid = [self.landLayer tileGIDAt:p];

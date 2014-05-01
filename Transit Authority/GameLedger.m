@@ -11,28 +11,40 @@
 #import "FMDatabase.h"
 #import "FMDatabaseAdditions.h"
 #import "GameConstants.h"
+#import "NSCoding-Macros.h"
 
 #define KEY_SEPERATOR @"."
 
 @implementation GameLedger{
+    NSString *_path;
     FMDatabase *_db;
     NSMutableSet *_activeKeys;
 }
 
-- (id) init{
+- (id) initWithPath:(NSString *)path {
+    
     if(self = [super init]){
         
-     /*   NSString *tmPath = [NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.sqlite",[[NSUUID UUID] UUIDString]]];
-        NSLog(@"DATABASE PATH IS %@",tmPath);
-       */
-        
-        _db = [[FMDatabase alloc] initWithPath:nil]; // in-memory for now
+        _path = path;
+        _db = [[FMDatabase alloc] initWithPath:_path];
         _db.logsErrors = YES;
         _db.crashOnErrors = YES;
         _db.shouldCacheStatements = YES;
         
         [_db open];
-        
+    }
+    
+    return self;
+}
+
+- (id) init {
+    
+    // Create a new database on disk.
+    NSString *tmPath = [NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.sqlite",[[NSUUID UUID] UUIDString]]];
+    NSLog(@"DATABASE PATH IS %@",tmPath);
+
+    if (self = [self initWithPath:tmPath])
+    {
         NSString *schema = [NSString stringWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"ledger" withExtension:@"sql"] usedEncoding:nil error:nil];
         //NSLog(@"schema = %@",schema);
         [_db beginTransaction];
@@ -41,6 +53,11 @@
     }
     
     return self;
+}
+
+// This deletes the database file permanently. It should be called the user quits a game.
+- (void)destroy {
+    [_db close];
 }
 
 - (void) recordDatum:(NSNumber *)n forKey:(NSString *)key atDate:(NSTimeInterval)date{
@@ -202,14 +219,14 @@
     //NSLog(@"That means start=%f, end=%f",startDelete, endDelete);
     
     // Take just the entries in the hour before the past hour and sum them up.
-    FMResultSet *results = [_db executeQuery:@"SELECT SUM(value) as value, SUM(multiplier) as multiplier, key, subkey FROM ledger WHERE time > ? AND time <= ? GROUP BY key, subkey;"
+    FMResultSet *results = [_db executeQuery:@"SELECT SUM(value) as valueSum, value, SUM(multiplier) as multiplierSum, multiplier, key, subkey FROM ledger WHERE time > ? AND time <= ? GROUP BY key, subkey ORDER BY time ASC;"
                         withArgumentsInArray: @[@(startDelete), @(endDelete)]];
     
     NSMutableArray *newRows = [NSMutableArray array];
     while([results next]){
         [newRows addObject:[results resultDictionary]];
     }
-
+    
     // Delete them from the DB
     BOOL worked = [_db executeUpdate:@"DELETE FROM ledger WHERE time >= ? and time < ?"
                 withArgumentsInArray:@[@(startDelete), @(endDelete)]];
@@ -217,12 +234,27 @@
     
     // Insert the aggregated versions
     for(NSDictionary *row in newRows){
+        
+        id value, multiplier;
+        if ([row[@"key"] isEqual:GameLedger_NumberOfStations] || [row[@"key"] isEqual:GameLedger_NumberOfRunningTrains])
+        {
+            // For "number of" stats, the aggregated row is simply the latest row in the time period.
+            value = row[@"value"];
+            multiplier = row[@"multiplier"];
+        }
+        else
+        {
+            // For all other stats, the aggregated row is the sum of the rows in the time period.
+            value = row[@"valueSum"];
+            multiplier = row[@"multiplierSum"];
+        }
+        
         if(row[@"subkey"] && ![row[@"subkey"] isEqual:[NSNull null]]){
             worked = [_db executeUpdate:@"INSERT INTO ledger (time, key, subkey, value, multiplier, period) VALUES (?,?,?,?,?,?);"
-               withArgumentsInArray:@[@(startDelete), row[@"key"], row[@"subkey"], row[@"value"], row[@"multiplier"], @(SECONDS_PER_HOUR)]];
+               withArgumentsInArray:@[@(startDelete), row[@"key"], row[@"subkey"], value, multiplier, @(SECONDS_PER_HOUR)]];
         }else{
             worked = [_db executeUpdate:@"INSERT INTO ledger (time, key, value, multiplier, period) VALUES (?,?,?,?,?);"
-                   withArgumentsInArray:@[@(startDelete), row[@"key"], row[@"value"], row[@"multiplier"], @(SECONDS_PER_HOUR)]];
+                   withArgumentsInArray:@[@(startDelete), row[@"key"], value, multiplier, @(SECONDS_PER_HOUR)]];
         }
         NSAssert(worked, @"could not insert summary row");
     }
@@ -254,4 +286,17 @@
     [r next];
     return [r intForColumn:@"c"];
 }
+
+#pragma mark - Serialization
+
+// Save the path to the mysql file.
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    encodeObject(_path);
+}
+
+// Open the database from the saved mysql file.
+- (id)initWithCoder:(NSCoder *)decoder {
+    return [self initWithPath:decodeObject(_path)];
+}
+
 @end

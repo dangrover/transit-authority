@@ -257,8 +257,6 @@
             trainToAdd.currentRouteChunk = arc4random_uniform(trainToAdd.currentRoute.routeChunks.count);
         }
         
-        NSLog(@"Added a train to line %@",self.line);
-        NSLog(@"trains=%@",self.parent.parent.gameState.assignedTrains);
     }else{
         // get rid of a train
         Train *trainToRemove = nil;
