@@ -1945,8 +1945,6 @@
 						</array>
 					</dict>
 				</array>
-				<key>selected</key>
-				<true/>
 				<key>seqExpanded</key>
 				<true/>
 			</dict>
@@ -2090,7 +2088,7 @@
 			<key>offset</key>
 			<real>0.0</real>
 			<key>position</key>
-			<real>4.5666666030883789</real>
+			<real>3.2666666507720947</real>
 			<key>resolution</key>
 			<real>30</real>
 			<key>scale</key>
@@ -2100,7 +2098,7 @@
 			<key>soundChannel</key>
 			<dict>
 				<key>isExpanded</key>
-				<true/>
+				<false/>
 				<key>keyframes</key>
 				<array>
 					<dict>
@@ -2115,7 +2113,7 @@
 						<integer>11</integer>
 						<key>value</key>
 						<array>
-							<string>Music/menu-music.mp3</string>
+							<string>Music/theme-music.mp3</string>
 							<real>1</real>
 							<real>0.0</real>
 							<real>1</real>

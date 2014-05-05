@@ -373,7 +373,6 @@
 
 /* Begin PBXFileReference section */
 		0F3FBEBA18D5CA8000784352 /* tileset-elevation.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "tileset-elevation.png"; path = "Maps/tileset-elevation.png"; sourceTree = SOURCE_ROOT; };
-<<<<<<< HEAD
 		4D03E69C190D94EF00405699 /* CCBAnimationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCBAnimationManager.h; sourceTree = "<group>"; };
 		4D03E69D190D94EF00405699 /* CCBAnimationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCBAnimationManager.m; sourceTree = "<group>"; };
 		4D03E69E190D94EF00405699 /* CCBKeyframe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCBKeyframe.h; sourceTree = "<group>"; };
@@ -390,9 +389,7 @@
 		4D03E6A9190D94EF00405699 /* CCBuilderReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCBuilderReader.h; sourceTree = "<group>"; };
 		4D03E6B1190D9A0F00405699 /* GameFontSupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameFontSupport.h; sourceTree = "<group>"; };
 		4D03E6B2190D9A0F00405699 /* GameFontSupport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameFontSupport.m; sourceTree = "<group>"; };
-=======
 		0FD5C6DB18FB8CA500EB54D3 /* NSCoding-Macros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSCoding-Macros.h"; sourceTree = "<group>"; };
->>>>>>> master
 		4D0715011773D1E5008D10E3 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		4D1A637818E0126200BD179B /* dummypixel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = dummypixel.png; path = "TransitAuthority.spritebuilder/SpriteBuilder Resources/resources-auto/dummypixel.png"; sourceTree = SOURCE_ROOT; };
 		4D1A637C18E013A100BD179B /* dummypixel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = dummypixel.png; path = "TransitAuthority.spritebuilder/SpriteBuilder Resources/resources-auto/dummypixel.png"; sourceTree = SOURCE_ROOT; };

@@ -90,6 +90,19 @@
 		</dict>
 		<key>GameScene.ccbi</key>
 		<dict/>
+		<key>Music/theme-music.mp3</key>
+		<dict>
+			<key>format_android_sound</key>
+			<integer>0</integer>
+			<key>format_android_sound_quality</key>
+			<integer>0</integer>
+			<key>format_ios_sound</key>
+			<integer>1</integer>
+			<key>format_ios_sound_quality</key>
+			<integer>0</integer>
+			<key>isDirty</key>
+			<true/>
+		</dict>
 		<key>Sprites</key>
 		<dict/>
 		<key>ccbResources</key>

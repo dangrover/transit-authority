@@ -69,10 +69,4 @@
 -(void) mainLoop:(id)sender;
 @end
 
-<<<<<<< HEAD
-=======
-// optimization. Should only be used to read it. Never to write it.
-extern float	__ccContentScaleFactor;
-
->>>>>>> master
 #endif // __CC_PLATFORM_IOS

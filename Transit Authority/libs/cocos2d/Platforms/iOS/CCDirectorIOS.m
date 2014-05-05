@@ -57,15 +57,7 @@
 #import "../../Support/CCProfiling.h"
 #endif
 
-<<<<<<< HEAD
 #import "CCDirector_Private.h"
-=======
-
-#pragma mark -
-#pragma mark Director - global variables (optimization)
-
-float	__ccContentScaleFactor = 1;
->>>>>>> master
 
 #pragma mark -
 #pragma mark Director
