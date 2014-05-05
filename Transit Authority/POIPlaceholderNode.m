@@ -24,9 +24,9 @@
         
         _glyph = [CCSprite spriteWithImageNamed:glyphFilename];
         _dottedLine = [CCSprite spriteWithImageNamed:@"poi-placeholder.png"];
-        _nameLabel = [[CCLabelTTF alloc] initWithString:[displayName uppercaseString]
-                                               fontName:@"HelveticaNeue-CondensedBold"
-                                               fontSize:20];
+        _nameLabel = [[CCLabelTTF alloc] initWithString:displayName
+                                               fontName:@"NewsCycle"
+                                               fontSize:22];
         
         
         [self addChild:_dottedLine];

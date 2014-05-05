@@ -128,7 +128,8 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     CCLabelTTF *cityNameLabel;
     CCLabelTTF *dateLabel;
     CCScrollView *scrollView;
-    CCLabelTTF *moneyLabel;
+//    CCLabelTTF *moneyLabel;
+    CCButton *cashButton;
     
     CCNode *topNode;
     CCNode *_moreMenuNode;
@@ -141,6 +142,8 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     CCButton *buildButton;
     CCButton *menuButton;
     CCSprite *speedIcon;
+    
+    CCButton *goalsButton;
     
     CCButton *manageButton;
     
@@ -258,7 +261,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     [self.heatMap refresh];
     
     [self setNamesVisible:YES];
-    self.showPopulationHeatmap = YES;
+    self.showPopulationHeatmap = NO;
     
     // Don't show any of the real layers in the map for density,
     // because we're rendering it in the heatmap.
@@ -370,11 +373,11 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 }
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context{
     if([keyPath isEqual:@"currentCash"]){
-        moneyLabel.string = FormatCurrency(@(self.gameState.currentCash));
+        cashButton.title = FormatCurrency(@(self.gameState.currentCash));
     }
     else if([keyPath isEqual:@"currentDate"]){
         // update displayed date
-        dateLabel.string = [_dateFormatter stringFromDate:[NSDate dateWithTimeIntervalSince1970:self.gameState.currentDate]];
+        dateLabel.string = [[_dateFormatter stringFromDate:[NSDate dateWithTimeIntervalSince1970:self.gameState.currentDate]] uppercaseString];
         
         
         struct tm info = self.gameState.currentDateComponents;
@@ -669,14 +672,14 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     }
 }
 
-- (IBAction) showFinances:(id)sender{
+- (IBAction) showFinances{
     financesVC = [[FinancesViewController alloc] initWithGameState:self.gameState];
     financesVC.delegate = self;
 
     [self _showModal:financesVC];
 }
 
-- (IBAction) showGoals:(id)sender{
+- (IBAction) showGoals{
     goalsVC = [[GoalsViewController alloc] initWithGameState:self.gameState];
     goalsVC.delegate = self;
  
@@ -735,10 +738,12 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 - (void) _updateGoalDisplay{
     ScenarioGoal *g = [self.gameState easiestUnmetGoal];
     
+    goalsButton.label.string = [g formatResult:g.lastEvaluationResult descriptionLevel:GoalFormat_StatusBar];
+    
     dispatch_async(dispatch_get_main_queue(), ^{
-     /*   [goalsButton setTitle:[g formatResult:g.lastEvaluationResult descriptionLevel:GoalFormat_StatusBar]
-                     forState:UIControlStateNormal];
-        goalsProgressBar.frame = CGRectMake(goalsProgressBar.frame.origin.x,
+     //   goalsButton.title = [g formatResult:g.lastEvaluationResult descriptionLevel:GoalFormat_StatusBar];
+        
+      /*  goalsProgressBar.frame = CGRectMake(goalsProgressBar.frame.origin.x,
                                             goalsProgressBar.frame.origin.y,
                                             g.lastEvaluationResult.progress*goalsButton.frame.size.width,
                                             goalsProgressBar.frame.size.height);
@@ -846,12 +851,13 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
         NSString *name = obj[@"name"];
         if(!name) continue;
         
-        CCLabelTTF *neighborhood = [[CCLabelTTF alloc] initWithString:name fontName:@"Palatino-Bold" fontSize:14];
+        CCLabelTTF *neighborhood = [[CCLabelTTF alloc] initWithString:name fontName:@"Palatino-Bold" fontSize:12];
         if([obj[@"type"] isEqual:@"region"]){
             neighborhood.color = [CCColor colorWithUIColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0]];
+            neighborhood.string = [name uppercaseString];
         }else if([obj[@"type"] isEqual:@"water"]){
             neighborhood.color = [CCColor colorWithUIColor:[UIColor colorWithRed:1 green:1 blue:1 alpha:1]];
-            neighborhood.fontName = @"Helvetica-Oblique";
+            neighborhood.fontName = @"Palatino-Italic";
         }
         neighborhood.position = centered;
         neighborhood.opacity = 0.5;

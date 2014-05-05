@@ -173,6 +173,7 @@
     CPTMutableTextStyle *ts = [[CPTMutableTextStyle alloc] init];
     ts.fontName = @"Helvetica Neue";
     ts.fontSize = 9;
+    ts.color = [CPTColor whiteColor];
     
     NSMutableSet *labels = [NSMutableSet set];
     NSMutableSet *tickLocs = [NSMutableSet set];
