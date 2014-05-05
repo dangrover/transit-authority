@@ -81,6 +81,19 @@
 		4D3929181792082A00373AAD /* StationNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D3929171792082A00373AAD /* StationNode.m */; };
 		4D39291C1792086A00373AAD /* StationInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D39291A1792086A00373AAD /* StationInspector.m */; };
 		4D39291D1792086A00373AAD /* StationInspector.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4D39291B1792086A00373AAD /* StationInspector.xib */; };
+		4D3CD3E919180F57001268C6 /* old-subway-map.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 4D3CD3E819180F57001268C6 /* old-subway-map.jpg */; };
+		4D3CD3F819184974001268C6 /* NewsCycle-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4D3CD3EC19184974001268C6 /* NewsCycle-Bold.ttf */; };
+		4D3CD3F919184974001268C6 /* NewsCycle.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4D3CD3ED19184974001268C6 /* NewsCycle.ttf */; };
+		4D3CD3FA19184974001268C6 /* old-subway-map.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 4D3CD3EE19184974001268C6 /* old-subway-map.jpg */; };
+		4D3CD3FB19184974001268C6 /* Raleway-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4D3CD3EF19184974001268C6 /* Raleway-Bold.ttf */; };
+		4D3CD3FC19184974001268C6 /* Raleway-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4D3CD3F019184974001268C6 /* Raleway-ExtraBold.ttf */; };
+		4D3CD3FD19184974001268C6 /* Raleway-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4D3CD3F119184974001268C6 /* Raleway-ExtraLight.ttf */; };
+		4D3CD3FE19184974001268C6 /* Raleway-Heavy.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4D3CD3F219184974001268C6 /* Raleway-Heavy.ttf */; };
+		4D3CD3FF19184974001268C6 /* Raleway-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4D3CD3F319184974001268C6 /* Raleway-Light.ttf */; };
+		4D3CD40019184974001268C6 /* Raleway-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4D3CD3F419184974001268C6 /* Raleway-Medium.ttf */; };
+		4D3CD40119184974001268C6 /* Raleway-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4D3CD3F519184974001268C6 /* Raleway-Regular.ttf */; };
+		4D3CD40219184974001268C6 /* Raleway-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4D3CD3F619184974001268C6 /* Raleway-SemiBold.ttf */; };
+		4D3CD40319184974001268C6 /* Raleway-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4D3CD3F719184974001268C6 /* Raleway-Thin.ttf */; };
 		4D3E7D4719123B7E00595592 /* HUDGraphTheme.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D3E7D4619123B7E00595592 /* HUDGraphTheme.m */; };
 		4D4FD4D017D7951000172189 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D4FD4CE17D7951000172189 /* Default@2x.png */; };
 		4D4FD4D117D7951000172189 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D4FD4CF17D7951000172189 /* Default.png */; };
@@ -331,11 +344,9 @@
 		4DACFF2517BC033C00B07107 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4DACFF1B17BC032100B07107 /* InfoPlist.strings */; };
 		4DAFC3F1178138CD001731CF /* NSDate+Helper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DAFC3F0178138CD001731CF /* NSDate+Helper.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		4DAFC3F31781E525001731CF /* GameControlsPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4DAFC3F21781E524001731CF /* GameControlsPhone.xib */; };
-		4DB2B6BB18F1E8FB00236F75 /* MoreMenu.ccbi in Resources */ = {isa = PBXBuildFile; fileRef = 4DB2B6BA18F1E8C100236F75 /* MoreMenu.ccbi */; };
 		4DB2B6BF18F213FF00236F75 /* fast-forward.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DB2B6BC18F213FF00236F75 /* fast-forward.png */; };
 		4DB2B6C018F213FF00236F75 /* pause.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DB2B6BD18F213FF00236F75 /* pause.png */; };
 		4DB2B6C118F213FF00236F75 /* play.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DB2B6BE18F213FF00236F75 /* play.png */; };
-		4DB2B6C718F2209A00236F75 /* BuildSubmenu.ccbi in Resources */ = {isa = PBXBuildFile; fileRef = 4DB2B6C618F2209A00236F75 /* BuildSubmenu.ccbi */; };
 		4DB2B6CE18F222B100236F75 /* station-button.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DB2B6CC18F222B100236F75 /* station-button.png */; };
 		4DB2B6CF18F222B100236F75 /* tracks-button.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DB2B6CD18F222B100236F75 /* tracks-button.png */; };
 		4DB6D7CC178DEBEF0073F0EE /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DB6D7CB178DEBEF0073F0EE /* CoreText.framework */; };
@@ -343,7 +354,6 @@
 		4DC43C7C17A9875F00BF0F8C /* TrainNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DC43C7B17A9875F00BF0F8C /* TrainNode.m */; };
 		4DCA2CAB18D4D4350016F5F6 /* MainMenu.ccbi in Resources */ = {isa = PBXBuildFile; fileRef = 4DCA2CAA18D4D4350016F5F6 /* MainMenu.ccbi */; };
 		4DCA2CB618D4D8B90016F5F6 /* MainMenuController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DCA2CB518D4D8B90016F5F6 /* MainMenuController.m */; };
-		4DCA2CBC18D4DCB10016F5F6 /* NewsCycle.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4DCA2CBB18D4DCA10016F5F6 /* NewsCycle.ttf */; };
 		4DCA2CBE18D502C90016F5F6 /* Music in Resources */ = {isa = PBXBuildFile; fileRef = 4DCA2CBD18D502C90016F5F6 /* Music */; };
 		4DCA2CC418D649060016F5F6 /* GameScene.ccbi in Resources */ = {isa = PBXBuildFile; fileRef = 4DCA2CC318D649060016F5F6 /* GameScene.ccbi */; };
 		4DCBB8CE17E7C7CD005C3A5C /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DCBB8CD17E7C7CD005C3A5C /* AdSupport.framework */; };
@@ -373,6 +383,7 @@
 
 /* Begin PBXFileReference section */
 		0F3FBEBA18D5CA8000784352 /* tileset-elevation.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "tileset-elevation.png"; path = "Maps/tileset-elevation.png"; sourceTree = SOURCE_ROOT; };
+		0FD5C6DB18FB8CA500EB54D3 /* NSCoding-Macros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSCoding-Macros.h"; sourceTree = "<group>"; };
 		4D03E69C190D94EF00405699 /* CCBAnimationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCBAnimationManager.h; sourceTree = "<group>"; };
 		4D03E69D190D94EF00405699 /* CCBAnimationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCBAnimationManager.m; sourceTree = "<group>"; };
 		4D03E69E190D94EF00405699 /* CCBKeyframe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCBKeyframe.h; sourceTree = "<group>"; };
@@ -389,7 +400,6 @@
 		4D03E6A9190D94EF00405699 /* CCBuilderReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCBuilderReader.h; sourceTree = "<group>"; };
 		4D03E6B1190D9A0F00405699 /* GameFontSupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameFontSupport.h; sourceTree = "<group>"; };
 		4D03E6B2190D9A0F00405699 /* GameFontSupport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameFontSupport.m; sourceTree = "<group>"; };
-		0FD5C6DB18FB8CA500EB54D3 /* NSCoding-Macros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSCoding-Macros.h"; sourceTree = "<group>"; };
 		4D0715011773D1E5008D10E3 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		4D1A637818E0126200BD179B /* dummypixel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = dummypixel.png; path = "TransitAuthority.spritebuilder/SpriteBuilder Resources/resources-auto/dummypixel.png"; sourceTree = SOURCE_ROOT; };
 		4D1A637C18E013A100BD179B /* dummypixel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = dummypixel.png; path = "TransitAuthority.spritebuilder/SpriteBuilder Resources/resources-auto/dummypixel.png"; sourceTree = SOURCE_ROOT; };
@@ -471,6 +481,23 @@
 		4D3929191792086A00373AAD /* StationInspector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StationInspector.h; sourceTree = "<group>"; };
 		4D39291A1792086A00373AAD /* StationInspector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StationInspector.m; sourceTree = "<group>"; };
 		4D39291B1792086A00373AAD /* StationInspector.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StationInspector.xib; sourceTree = "<group>"; };
+		4D3CD3E819180F57001268C6 /* old-subway-map.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = "old-subway-map.jpg"; path = "TransitAuthority.spritebuilder/SpriteBuilder Resources/old-subway-map.jpg"; sourceTree = SOURCE_ROOT; };
+		4D3CD3EC19184974001268C6 /* NewsCycle-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "NewsCycle-Bold.ttf"; path = "TransitAuthority.spritebuilder/Source/Resources/Published-iOS/NewsCycle-Bold.ttf"; sourceTree = SOURCE_ROOT; };
+		4D3CD3ED19184974001268C6 /* NewsCycle.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = NewsCycle.ttf; path = "TransitAuthority.spritebuilder/Source/Resources/Published-iOS/NewsCycle.ttf"; sourceTree = SOURCE_ROOT; };
+		4D3CD3EE19184974001268C6 /* old-subway-map.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = "old-subway-map.jpg"; path = "TransitAuthority.spritebuilder/Source/Resources/Published-iOS/old-subway-map.jpg"; sourceTree = SOURCE_ROOT; };
+		4D3CD3EF19184974001268C6 /* Raleway-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Raleway-Bold.ttf"; path = "TransitAuthority.spritebuilder/Source/Resources/Published-iOS/Raleway-Bold.ttf"; sourceTree = SOURCE_ROOT; };
+		4D3CD3F019184974001268C6 /* Raleway-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Raleway-ExtraBold.ttf"; path = "TransitAuthority.spritebuilder/Source/Resources/Published-iOS/Raleway-ExtraBold.ttf"; sourceTree = SOURCE_ROOT; };
+		4D3CD3F119184974001268C6 /* Raleway-ExtraLight.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Raleway-ExtraLight.ttf"; path = "TransitAuthority.spritebuilder/Source/Resources/Published-iOS/Raleway-ExtraLight.ttf"; sourceTree = SOURCE_ROOT; };
+		4D3CD3F219184974001268C6 /* Raleway-Heavy.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Raleway-Heavy.ttf"; path = "TransitAuthority.spritebuilder/Source/Resources/Published-iOS/Raleway-Heavy.ttf"; sourceTree = SOURCE_ROOT; };
+		4D3CD3F319184974001268C6 /* Raleway-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Raleway-Light.ttf"; path = "TransitAuthority.spritebuilder/Source/Resources/Published-iOS/Raleway-Light.ttf"; sourceTree = SOURCE_ROOT; };
+		4D3CD3F419184974001268C6 /* Raleway-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Raleway-Medium.ttf"; path = "TransitAuthority.spritebuilder/Source/Resources/Published-iOS/Raleway-Medium.ttf"; sourceTree = SOURCE_ROOT; };
+		4D3CD3F519184974001268C6 /* Raleway-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Raleway-Regular.ttf"; path = "TransitAuthority.spritebuilder/Source/Resources/Published-iOS/Raleway-Regular.ttf"; sourceTree = SOURCE_ROOT; };
+		4D3CD3F619184974001268C6 /* Raleway-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Raleway-SemiBold.ttf"; path = "TransitAuthority.spritebuilder/Source/Resources/Published-iOS/Raleway-SemiBold.ttf"; sourceTree = SOURCE_ROOT; };
+		4D3CD3F719184974001268C6 /* Raleway-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Raleway-Thin.ttf"; path = "TransitAuthority.spritebuilder/Source/Resources/Published-iOS/Raleway-Thin.ttf"; sourceTree = SOURCE_ROOT; };
+		4D3CD40419184987001268C6 /* BuildSubmenu.ccbi */ = {isa = PBXFileReference; lastKnownFileType = file; name = BuildSubmenu.ccbi; path = "TransitAuthority.spritebuilder/Source/Resources/Published-iOS/BuildSubmenu.ccbi"; sourceTree = SOURCE_ROOT; };
+		4D3CD40519184987001268C6 /* GameScene.ccbi */ = {isa = PBXFileReference; lastKnownFileType = file; name = GameScene.ccbi; path = "TransitAuthority.spritebuilder/Source/Resources/Published-iOS/GameScene.ccbi"; sourceTree = SOURCE_ROOT; };
+		4D3CD40619184987001268C6 /* LinesSubmenu.ccbi */ = {isa = PBXFileReference; lastKnownFileType = file; name = LinesSubmenu.ccbi; path = "TransitAuthority.spritebuilder/Source/Resources/Published-iOS/LinesSubmenu.ccbi"; sourceTree = SOURCE_ROOT; };
+		4D3CD40719184987001268C6 /* MainMenu.ccbi */ = {isa = PBXFileReference; lastKnownFileType = file; name = MainMenu.ccbi; path = "TransitAuthority.spritebuilder/Source/Resources/Published-iOS/MainMenu.ccbi"; sourceTree = SOURCE_ROOT; };
 		4D3E7D4519123B7E00595592 /* HUDGraphTheme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUDGraphTheme.h; sourceTree = "<group>"; };
 		4D3E7D4619123B7E00595592 /* HUDGraphTheme.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUDGraphTheme.m; sourceTree = "<group>"; };
 		4D4FD4CE17D7951000172189 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default@2x.png"; path = "Resources/Default@2x.png"; sourceTree = "<group>"; };
@@ -967,11 +994,9 @@
 		4DAFC3EF178138CD001731CF /* NSDate+Helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Helper.h"; sourceTree = "<group>"; };
 		4DAFC3F0178138CD001731CF /* NSDate+Helper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Helper.m"; sourceTree = "<group>"; };
 		4DAFC3F21781E524001731CF /* GameControlsPhone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GameControlsPhone.xib; sourceTree = "<group>"; };
-		4DB2B6BA18F1E8C100236F75 /* MoreMenu.ccbi */ = {isa = PBXFileReference; lastKnownFileType = file; path = MoreMenu.ccbi; sourceTree = "<group>"; };
 		4DB2B6BC18F213FF00236F75 /* fast-forward.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "fast-forward.png"; path = "TransitAuthority.spritebuilder/SpriteBuilder Resources/resources-auto/fast-forward.png"; sourceTree = SOURCE_ROOT; };
 		4DB2B6BD18F213FF00236F75 /* pause.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = pause.png; path = "TransitAuthority.spritebuilder/SpriteBuilder Resources/resources-auto/pause.png"; sourceTree = SOURCE_ROOT; };
 		4DB2B6BE18F213FF00236F75 /* play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = play.png; path = "TransitAuthority.spritebuilder/SpriteBuilder Resources/resources-auto/play.png"; sourceTree = SOURCE_ROOT; };
-		4DB2B6C618F2209A00236F75 /* BuildSubmenu.ccbi */ = {isa = PBXFileReference; lastKnownFileType = file; name = BuildSubmenu.ccbi; path = "TransitAuthority.spritebuilder/Source/Resources/Published-iOS/BuildSubmenu.ccbi"; sourceTree = SOURCE_ROOT; };
 		4DB2B6CC18F222B100236F75 /* station-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "station-button.png"; path = "TransitAuthority.spritebuilder/SpriteBuilder Resources/resources-auto/station-button.png"; sourceTree = SOURCE_ROOT; };
 		4DB2B6CD18F222B100236F75 /* tracks-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "tracks-button.png"; path = "TransitAuthority.spritebuilder/SpriteBuilder Resources/resources-auto/tracks-button.png"; sourceTree = SOURCE_ROOT; };
 		4DB6D7CB178DEBEF0073F0EE /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
@@ -982,7 +1007,6 @@
 		4DCA2CAA18D4D4350016F5F6 /* MainMenu.ccbi */ = {isa = PBXFileReference; lastKnownFileType = file; name = MainMenu.ccbi; path = "TransitAuthority.spritebuilder/Source/Resources/Published-iOS/MainMenu.ccbi"; sourceTree = SOURCE_ROOT; };
 		4DCA2CB418D4D8B90016F5F6 /* MainMenuController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainMenuController.h; sourceTree = "<group>"; };
 		4DCA2CB518D4D8B90016F5F6 /* MainMenuController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainMenuController.m; sourceTree = "<group>"; };
-		4DCA2CBB18D4DCA10016F5F6 /* NewsCycle.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = NewsCycle.ttf; path = "TransitAuthority.spritebuilder/SpriteBuilder Resources/NewsCycle.ttf"; sourceTree = SOURCE_ROOT; };
 		4DCA2CBD18D502C90016F5F6 /* Music */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Music; path = "TransitAuthority.spritebuilder/Source/Resources/Published-iOS/Music"; sourceTree = SOURCE_ROOT; };
 		4DCA2CC318D649060016F5F6 /* GameScene.ccbi */ = {isa = PBXFileReference; lastKnownFileType = file; name = GameScene.ccbi; path = "TransitAuthority.spritebuilder/Source/Resources/Published-iOS/GameScene.ccbi"; sourceTree = SOURCE_ROOT; };
 		4DCBB8CD17E7C7CD005C3A5C /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
@@ -1273,8 +1297,22 @@
 		4D5E913C176129300041A073 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				4DB2B6BA18F1E8C100236F75 /* MoreMenu.ccbi */,
-				4DB2B6C618F2209A00236F75 /* BuildSubmenu.ccbi */,
+				4D3CD40419184987001268C6 /* BuildSubmenu.ccbi */,
+				4D3CD40519184987001268C6 /* GameScene.ccbi */,
+				4D3CD40619184987001268C6 /* LinesSubmenu.ccbi */,
+				4D3CD40719184987001268C6 /* MainMenu.ccbi */,
+				4D3CD3EC19184974001268C6 /* NewsCycle-Bold.ttf */,
+				4D3CD3ED19184974001268C6 /* NewsCycle.ttf */,
+				4D3CD3EE19184974001268C6 /* old-subway-map.jpg */,
+				4D3CD3EF19184974001268C6 /* Raleway-Bold.ttf */,
+				4D3CD3F019184974001268C6 /* Raleway-ExtraBold.ttf */,
+				4D3CD3F119184974001268C6 /* Raleway-ExtraLight.ttf */,
+				4D3CD3F219184974001268C6 /* Raleway-Heavy.ttf */,
+				4D3CD3F319184974001268C6 /* Raleway-Light.ttf */,
+				4D3CD3F419184974001268C6 /* Raleway-Medium.ttf */,
+				4D3CD3F519184974001268C6 /* Raleway-Regular.ttf */,
+				4D3CD3F619184974001268C6 /* Raleway-SemiBold.ttf */,
+				4D3CD3F719184974001268C6 /* Raleway-Thin.ttf */,
 				4D1A637C18E013A100BD179B /* dummypixel.png */,
 				4D1A637D18E013A100BD179B /* hammer.png */,
 				4D1A638418E0A4D000BD179B /* more.png */,
@@ -1285,8 +1323,8 @@
 				4D1A637F18E013A100BD179B /* stats.png */,
 				4DB2B6CC18F222B100236F75 /* station-button.png */,
 				4DB2B6CD18F222B100236F75 /* tracks-button.png */,
+				4D3CD3E819180F57001268C6 /* old-subway-map.jpg */,
 				4DCA2CBD18D502C90016F5F6 /* Music */,
-				4DCA2CBB18D4DCA10016F5F6 /* NewsCycle.ttf */,
 				4D6EDB5F17E3EEC80071065B /* closebox.png */,
 				4D6EDB6017E3EEC80071065B /* closebox@2x.png */,
 				4D1A637818E0126200BD179B /* dummypixel.png */,
@@ -2222,15 +2260,15 @@
 				4D2642BA17DE3F2C006D9652 /* tileset-land-hd.png in Resources */,
 				4DAFC3F31781E525001731CF /* GameControlsPhone.xib in Resources */,
 				4D2642C917DEA12E006D9652 /* tool-stats.png in Resources */,
-				4DB2B6BB18F1E8FB00236F75 /* MoreMenu.ccbi in Resources */,
 				4D2642C817DEA12E006D9652 /* tool-stats@2x.png in Resources */,
 				4D1B8D0A178B4B800033DD70 /* fast-forward-selected.png in Resources */,
-				4DCA2CBC18D4DCB10016F5F6 /* NewsCycle.ttf in Resources */,
+				4D3CD3F819184974001268C6 /* NewsCycle-Bold.ttf in Resources */,
 				4D1B8D0B178B4B800033DD70 /* fast-forward-selected@2x.png in Resources */,
 				4D1B8D0C178B4B800033DD70 /* play-selected.png in Resources */,
 				4D1B8D0D178B4B800033DD70 /* play-selected@2x.png in Resources */,
 				4D1B8D0E178B4B800033DD70 /* pause-selected.png in Resources */,
 				4D1B8D0F178B4B800033DD70 /* pause-selected@2x.png in Resources */,
+				4D3CD40119184974001268C6 /* Raleway-Regular.ttf in Resources */,
 				4DB2B6CE18F222B100236F75 /* station-button.png in Resources */,
 				4DCA2CBE18D502C90016F5F6 /* Music in Resources */,
 				4D1B8D1A178B4F800033DD70 /* tool-tracks@2x.png in Resources */,
@@ -2238,6 +2276,7 @@
 				4DA76FBE17B5858E0092F74E /* upgrade-long-platform.png in Resources */,
 				4D7B1E0517BAB083001EB23D /* star.png in Resources */,
 				4DD590BC18D6634D00EECA46 /* README.md in Resources */,
+				4D3CD3FD19184974001268C6 /* Raleway-ExtraLight.ttf in Resources */,
 				4D1B8D1E178B4F800033DD70 /* tool-more@2x.png in Resources */,
 				4DB2B6C018F213FF00236F75 /* pause.png in Resources */,
 				4DB2B6BF18F213FF00236F75 /* fast-forward.png in Resources */,
@@ -2247,6 +2286,7 @@
 				4D1B8D21178B4F800033DD70 /* tool-lines.png in Resources */,
 				4D1A638518E0A4D000BD179B /* more.png in Resources */,
 				4D6BF7AB17EA720F007E2FD6 /* connection-airport.png in Resources */,
+				4D3CD3F919184974001268C6 /* NewsCycle.ttf in Resources */,
 				4DB2B6C118F213FF00236F75 /* play.png in Resources */,
 				4DA76FBD17B5858E0092F74E /* upgrade-parking.png in Resources */,
 				4D1B8D22178B4F800033DD70 /* tool-layers@2x.png in Resources */,
@@ -2263,8 +2303,10 @@
 				4D1B8D30178B525D0033DD70 /* tool-tracks-selected.png in Resources */,
 				4D1A638318E013A100BD179B /* stats.png in Resources */,
 				4DB2B6CF18F222B100236F75 /* tracks-button.png in Resources */,
+				4D3CD3FC19184974001268C6 /* Raleway-ExtraBold.ttf in Resources */,
 				4D6EDB6217E3EEC80071065B /* closebox@2x.png in Resources */,
 				4D1A638018E013A100BD179B /* dummypixel.png in Resources */,
+				4D3CD40219184974001268C6 /* Raleway-SemiBold.ttf in Resources */,
 				4D1A637918E0126200BD179B /* dummypixel.png in Resources */,
 				4D1B8D31178B525D0033DD70 /* tool-tracks-selected@2x.png in Resources */,
 				4D7B1E0A17BAB2CA001EB23D /* checkbox-unchecked@2x.png in Resources */,
@@ -2276,6 +2318,8 @@
 				4D1B8D33178B525D0033DD70 /* tool-lines-selected@2x.png in Resources */,
 				4D1B8D34178B525D0033DD70 /* tool-layers-selected.png in Resources */,
 				4D5A962F17E10097008175B8 /* owl.aiff in Resources */,
+				4D3CD3FA19184974001268C6 /* old-subway-map.jpg in Resources */,
+				4D3CD3E919180F57001268C6 /* old-subway-map.jpg in Resources */,
 				4D1B8D35178B525D0033DD70 /* tool-layers-selected@2x.png in Resources */,
 				4D1B8D36178B525D0033DD70 /* tool-more-selected.png in Resources */,
 				4D2642CD17DEA3E7006D9652 /* tool-stats-selected.png in Resources */,
@@ -2286,12 +2330,14 @@
 				4D298D30178B8069005964E3 /* disclosure-arrow@2x.png in Resources */,
 				4D298D33178BD151005964E3 /* blue-back.png in Resources */,
 				4D5A961F17E0E18B008175B8 /* jazzy-glide.mp3 in Resources */,
+				4D3CD40319184974001268C6 /* Raleway-Thin.ttf in Resources */,
 				4D298D34178BD151005964E3 /* blue-back@2x.png in Resources */,
 				4D298D39178BD8C3005964E3 /* MoreToolUI.xib in Resources */,
 				4D298D48178C7F8F005964E3 /* FinancesViewController.xib in Resources */,
 				4D298D4B178C844E005964E3 /* big-blue-back.png in Resources */,
 				4D298D4C178C844E005964E3 /* big-blue-back@2x.png in Resources */,
 				4D3929131791F29300373AAD /* TracksInspector.xib in Resources */,
+				4D3CD40019184974001268C6 /* Raleway-Medium.ttf in Resources */,
 				4D39291D1792086A00373AAD /* StationInspector.xib in Resources */,
 				4D7B1E0417BAB083001EB23D /* star@2x.png in Resources */,
 				4D5A962017E0E18B008175B8 /* swing.mp3 in Resources */,
@@ -2303,14 +2349,16 @@
 				4D5A962417E0E34F008175B8 /* big-boy-blues.mp3 in Resources */,
 				4D2C7B70179671F600AF64E4 /* InstructionsViewController.xib in Resources */,
 				4D2C7B721796733800AF64E4 /* instructions.html in Resources */,
+				4D3CD3FE19184974001268C6 /* Raleway-Heavy.ttf in Resources */,
 				4DCD3F03179768C30096587C /* FinanceRowCell.xib in Resources */,
 				4DAB5BD61797ACB000CD35E2 /* FinancesBondsViewController.xib in Resources */,
 				4D4FD4D017D7951000172189 /* Default@2x.png in Resources */,
 				4DAB5BDB1797B09000CD35E2 /* FinancesSubsidiesViewController.xib in Resources */,
-				4DB2B6C718F2209A00236F75 /* BuildSubmenu.ccbi in Resources */,
 				4DAB5BF91799B12100CD35E2 /* StatsDetailViewController.xib in Resources */,
 				4D2642D017DEAC7C006D9652 /* goals@2x.png in Resources */,
+				4D3CD3FF19184974001268C6 /* Raleway-Light.ttf in Resources */,
 				4D6BF7A717EA720F007E2FD6 /* connection-ferry.png in Resources */,
+				4D3CD3FB19184974001268C6 /* Raleway-Bold.ttf in Resources */,
 				4D6BF7A917EA720F007E2FD6 /* connection-rail.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

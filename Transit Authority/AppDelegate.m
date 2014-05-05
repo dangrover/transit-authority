@@ -61,7 +61,9 @@
 
 - (CCScene *) startScene{
     mmControler = [[MainMenuController alloc] init];
-    return [CCBReader loadAsScene:@"MainMenu.ccbi" owner:mmControler];
+    CCScene *scene = [CCBReader loadAsScene:@"MainMenu.ccbi" owner:mmControler];
+    
+    return scene;
 }
 
 
