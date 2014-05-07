@@ -82,8 +82,6 @@
 		4D39291C1792086A00373AAD /* StationInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D39291A1792086A00373AAD /* StationInspector.m */; };
 		4D39291D1792086A00373AAD /* StationInspector.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4D39291B1792086A00373AAD /* StationInspector.xib */; };
 		4D3CD3E919180F57001268C6 /* old-subway-map.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 4D3CD3E819180F57001268C6 /* old-subway-map.jpg */; };
-		4D3CD3F819184974001268C6 /* NewsCycle-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4D3CD3EC19184974001268C6 /* NewsCycle-Bold.ttf */; };
-		4D3CD3F919184974001268C6 /* NewsCycle.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4D3CD3ED19184974001268C6 /* NewsCycle.ttf */; };
 		4D3CD3FA19184974001268C6 /* old-subway-map.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 4D3CD3EE19184974001268C6 /* old-subway-map.jpg */; };
 		4D3CD3FB19184974001268C6 /* Raleway-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4D3CD3EF19184974001268C6 /* Raleway-Bold.ttf */; };
 		4D3CD3FC19184974001268C6 /* Raleway-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4D3CD3F019184974001268C6 /* Raleway-ExtraBold.ttf */; };
@@ -95,6 +93,7 @@
 		4D3CD40219184974001268C6 /* Raleway-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4D3CD3F619184974001268C6 /* Raleway-SemiBold.ttf */; };
 		4D3CD40319184974001268C6 /* Raleway-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4D3CD3F719184974001268C6 /* Raleway-Thin.ttf */; };
 		4D3CD4091919B897001268C6 /* MenuBackgroundMontage.ccbi in Resources */ = {isa = PBXBuildFile; fileRef = 4D3CD4081919B883001268C6 /* MenuBackgroundMontage.ccbi */; };
+		4D3CD40A1919C931001268C6 /* BuildSubmenu.ccbi in Resources */ = {isa = PBXBuildFile; fileRef = 4D3CD40419184987001268C6 /* BuildSubmenu.ccbi */; };
 		4D3E7D4719123B7E00595592 /* HUDGraphTheme.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D3E7D4619123B7E00595592 /* HUDGraphTheme.m */; };
 		4D4FD4D017D7951000172189 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D4FD4CE17D7951000172189 /* Default@2x.png */; };
 		4D4FD4D117D7951000172189 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D4FD4CF17D7951000172189 /* Default.png */; };
@@ -483,8 +482,6 @@
 		4D39291A1792086A00373AAD /* StationInspector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StationInspector.m; sourceTree = "<group>"; };
 		4D39291B1792086A00373AAD /* StationInspector.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StationInspector.xib; sourceTree = "<group>"; };
 		4D3CD3E819180F57001268C6 /* old-subway-map.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = "old-subway-map.jpg"; path = "TransitAuthority.spritebuilder/SpriteBuilder Resources/old-subway-map.jpg"; sourceTree = SOURCE_ROOT; };
-		4D3CD3EC19184974001268C6 /* NewsCycle-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "NewsCycle-Bold.ttf"; path = "TransitAuthority.spritebuilder/Source/Resources/Published-iOS/NewsCycle-Bold.ttf"; sourceTree = SOURCE_ROOT; };
-		4D3CD3ED19184974001268C6 /* NewsCycle.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = NewsCycle.ttf; path = "TransitAuthority.spritebuilder/Source/Resources/Published-iOS/NewsCycle.ttf"; sourceTree = SOURCE_ROOT; };
 		4D3CD3EE19184974001268C6 /* old-subway-map.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = "old-subway-map.jpg"; path = "TransitAuthority.spritebuilder/Source/Resources/Published-iOS/old-subway-map.jpg"; sourceTree = SOURCE_ROOT; };
 		4D3CD3EF19184974001268C6 /* Raleway-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Raleway-Bold.ttf"; path = "TransitAuthority.spritebuilder/Source/Resources/Published-iOS/Raleway-Bold.ttf"; sourceTree = SOURCE_ROOT; };
 		4D3CD3F019184974001268C6 /* Raleway-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Raleway-ExtraBold.ttf"; path = "TransitAuthority.spritebuilder/Source/Resources/Published-iOS/Raleway-ExtraBold.ttf"; sourceTree = SOURCE_ROOT; };
@@ -1304,8 +1301,6 @@
 				4D3CD40619184987001268C6 /* LinesSubmenu.ccbi */,
 				4D3CD40719184987001268C6 /* MainMenu.ccbi */,
 				4D3CD4081919B883001268C6 /* MenuBackgroundMontage.ccbi */,
-				4D3CD3EC19184974001268C6 /* NewsCycle-Bold.ttf */,
-				4D3CD3ED19184974001268C6 /* NewsCycle.ttf */,
 				4D3CD3EE19184974001268C6 /* old-subway-map.jpg */,
 				4D3CD3EF19184974001268C6 /* Raleway-Bold.ttf */,
 				4D3CD3F019184974001268C6 /* Raleway-ExtraBold.ttf */,
@@ -2265,7 +2260,6 @@
 				4D2642C917DEA12E006D9652 /* tool-stats.png in Resources */,
 				4D2642C817DEA12E006D9652 /* tool-stats@2x.png in Resources */,
 				4D1B8D0A178B4B800033DD70 /* fast-forward-selected.png in Resources */,
-				4D3CD3F819184974001268C6 /* NewsCycle-Bold.ttf in Resources */,
 				4D1B8D0B178B4B800033DD70 /* fast-forward-selected@2x.png in Resources */,
 				4D1B8D0C178B4B800033DD70 /* play-selected.png in Resources */,
 				4D1B8D0D178B4B800033DD70 /* play-selected@2x.png in Resources */,
@@ -2290,7 +2284,6 @@
 				4D1B8D21178B4F800033DD70 /* tool-lines.png in Resources */,
 				4D1A638518E0A4D000BD179B /* more.png in Resources */,
 				4D6BF7AB17EA720F007E2FD6 /* connection-airport.png in Resources */,
-				4D3CD3F919184974001268C6 /* NewsCycle.ttf in Resources */,
 				4DB2B6C118F213FF00236F75 /* play.png in Resources */,
 				4DA76FBD17B5858E0092F74E /* upgrade-parking.png in Resources */,
 				4D1B8D22178B4F800033DD70 /* tool-layers@2x.png in Resources */,
@@ -2349,6 +2342,7 @@
 				4D7B1DFF17BAAF9D001EB23D /* GoalsViewController.xib in Resources */,
 				4D5A963017E10097008175B8 /* rooster.aiff in Resources */,
 				4D7B91A617965DB400549C23 /* bad-logo@2x.png in Resources */,
+				4D3CD40A1919C931001268C6 /* BuildSubmenu.ccbi in Resources */,
 				4D7B91A717965DB400549C23 /* bad-logo.png in Resources */,
 				4D5A962417E0E34F008175B8 /* big-boy-blues.mp3 in Resources */,
 				4D2C7B70179671F600AF64E4 /* InstructionsViewController.xib in Resources */,

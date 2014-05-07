@@ -35,7 +35,7 @@
 @implementation UIFont (GameFont)
 
 + (UIFont *) gameFontOfSize:(CGFloat)theSize{
-    return [UIFont fontWithName:@"NewsCycle" size:theSize];
+    return [UIFont fontWithName:@"Raleway" size:theSize];
 }
 
 @end

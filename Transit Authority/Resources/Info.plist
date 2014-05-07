@@ -39,8 +39,9 @@
 	<true/>
 	<key>UIAppFonts</key>
 	<array>
-		<string>NewsCycle-Bold.ttf</string>
-		<string>NewsCycle-Regular.ttf</string>
+		<string>Raleway-Regular.ttf</string>
+		<string>Raleway-Bold.ttf</string>
+		<string>Raleway-SemiBold.ttf</string>
 	</array>
 	<key>UIPrerenderedIcon</key>
 	<true/>
