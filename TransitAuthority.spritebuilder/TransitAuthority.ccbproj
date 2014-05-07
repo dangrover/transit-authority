@@ -35,7 +35,7 @@
 	<key>publishAudioQuality_android</key>
 	<integer>4</integer>
 	<key>publishAudioQuality_ios</key>
-	<integer>4</integer>
+	<integer>5</integer>
 	<key>publishDirectory</key>
 	<string>Source/Resources/Published-iOS</string>
 	<key>publishDirectoryAndroid</key>
@@ -67,9 +67,9 @@
 	<key>publishResolution_ios_phonehd</key>
 	<true/>
 	<key>publishResolution_ios_tablet</key>
-	<true/>
+	<false/>
 	<key>publishResolution_ios_tablethd</key>
-	<true/>
+	<false/>
 	<key>publishToZipFile</key>
 	<false/>
 	<key>resourceAutoScaleFactor</key>
@@ -90,6 +90,8 @@
 		</dict>
 		<key>GameScene.ccbi</key>
 		<dict/>
+		<key>MainMenu.ccbi</key>
+		<dict/>
 		<key>Music/theme-music.mp3</key>
 		<dict>
 			<key>format_android_sound</key>
@@ -100,8 +102,6 @@
 			<integer>1</integer>
 			<key>format_ios_sound_quality</key>
 			<integer>0</integer>
-			<key>isDirty</key>
-			<true/>
 		</dict>
 		<key>Sprites</key>
 		<dict/>
