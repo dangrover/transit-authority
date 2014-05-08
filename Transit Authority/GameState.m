@@ -19,6 +19,7 @@ NSString *GameStateNotification_CheckedGoals = @"GameStateNotification_CheckedGo
 NSString *GameStateNotification_IssuedBond = @"GameStateNotification_IssuedBond";
 NSString *GameStateNotification_HourChanged = @"GameStateNotification_HourChanged";
 NSString *GameStateNotification_StationBuilt = @"GameStateNotification_StationBuilt";
+NSString *GameStateNotification_TrackUpdated = @"GameStateNotification_TrackUpdated";
 
 #define LEDGER_COALESCE_INTERVAL (SECONDS_PER_HOUR)   // How often to compress ledger entries for efficiency
 #define EVALUATE_GOALS_FREQUENCY SECONDS_PER_MINUTE*10 // How often to evaluate the scenario goals
@@ -1084,6 +1085,9 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
     }
     
     [self _moveAllTrainsToCurrentPreferredRoutes];
+    
+    // Redraw tracks.
+    [[NSNotificationCenter defaultCenter] postNotificationName:GameStateNotification_TrackUpdated object:self];
 
     _regeneratingRoutes = NO;
 }

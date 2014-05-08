@@ -281,6 +281,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     [nc addObserver:self selector:@selector(bondIssued) name:GameStateNotification_IssuedBond object:self.gameState];
     [nc addObserver:self selector:@selector(hourChime) name:GameStateNotification_HourChanged object:self.gameState];
     [nc addObserver:self selector:@selector(stationBuilt) name:GameStateNotification_StationBuilt object:self.gameState];
+    [nc addObserver:self selector:@selector(trackUpdated) name:GameStateNotification_TrackUpdated object:self.gameState];
     [nc addObserver:self selector:@selector(goalCompleted:) name:GameStateNotification_AccomplishedGoal    object:self.gameState];
     [nc addObserver:self selector:@selector(_updateGoalDisplay) name:GameStateNotification_CheckedGoals object:self.gameState];
     
@@ -957,6 +958,14 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 - (void) stationBuilt{
     [audioEngine playEffect:SoundEffect_BuildStation];
     [self.gameState forceGoalEvaluate];
+}
+
+- (void)trackUpdated {
+    for (TrackSegment *segment in self.gameState.trackSegments.allValues){
+        if([_trackSprites objectForKey:segment.UUID]){
+            [_trackSprites[segment.UUID] rebuffer];
+        }
+    }
 }
 
 @end
