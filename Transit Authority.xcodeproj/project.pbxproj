@@ -359,6 +359,11 @@
 		4DCBB8CE17E7C7CD005C3A5C /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DCBB8CD17E7C7CD005C3A5C /* AdSupport.framework */; };
 		4DCD3F03179768C30096587C /* FinanceRowCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4DCD3F02179768C30096587C /* FinanceRowCell.xib */; };
 		4DCD3F061797690B0096587C /* FinanceRowCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DCD3F051797690B0096587C /* FinanceRowCell.m */; };
+		4DD481981919DC3000BD540D /* MoreSubmenu.ccbi in Resources */ = {isa = PBXBuildFile; fileRef = 4DD481971919DC3000BD540D /* MoreSubmenu.ccbi */; };
+		4DD4819C1919DCB100BD540D /* exit.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DD481991919DCB100BD540D /* exit.png */; };
+		4DD4819D1919DCB100BD540D /* save.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DD4819A1919DCB100BD540D /* save.png */; };
+		4DD4819E1919DCB100BD540D /* share.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DD4819B1919DCB100BD540D /* share.png */; };
+		4DD481A01919DCC800BD540D /* setting.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DD4819F1919DCC800BD540D /* setting.png */; };
 		4DD590BA18D6634D00EECA46 /* HKTMXLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DD590B518D6634D00EECA46 /* HKTMXLayer.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		4DD590BB18D6634D00EECA46 /* HKTMXTiledMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DD590B718D6634D00EECA46 /* HKTMXTiledMap.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		4DD590BC18D6634D00EECA46 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 4DD590B818D6634D00EECA46 /* README.md */; };
@@ -1012,6 +1017,11 @@
 		4DCD3F02179768C30096587C /* FinanceRowCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FinanceRowCell.xib; sourceTree = "<group>"; };
 		4DCD3F041797690B0096587C /* FinanceRowCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FinanceRowCell.h; sourceTree = "<group>"; };
 		4DCD3F051797690B0096587C /* FinanceRowCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FinanceRowCell.m; sourceTree = "<group>"; };
+		4DD481971919DC3000BD540D /* MoreSubmenu.ccbi */ = {isa = PBXFileReference; lastKnownFileType = file; name = MoreSubmenu.ccbi; path = "TransitAuthority.spritebuilder/Source/Resources/Published-iOS/MoreSubmenu.ccbi"; sourceTree = SOURCE_ROOT; };
+		4DD481991919DCB100BD540D /* exit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = exit.png; path = "TransitAuthority.spritebuilder/SpriteBuilder Resources/resources-auto/exit.png"; sourceTree = SOURCE_ROOT; };
+		4DD4819A1919DCB100BD540D /* save.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = save.png; path = "TransitAuthority.spritebuilder/SpriteBuilder Resources/resources-auto/save.png"; sourceTree = SOURCE_ROOT; };
+		4DD4819B1919DCB100BD540D /* share.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = share.png; path = "TransitAuthority.spritebuilder/SpriteBuilder Resources/resources-auto/share.png"; sourceTree = SOURCE_ROOT; };
+		4DD4819F1919DCC800BD540D /* setting.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = setting.png; path = "TransitAuthority.spritebuilder/SpriteBuilder Resources/resources-auto/setting.png"; sourceTree = SOURCE_ROOT; };
 		4DD590B418D6634D00EECA46 /* HKTMXLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HKTMXLayer.h; sourceTree = "<group>"; };
 		4DD590B518D6634D00EECA46 /* HKTMXLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HKTMXLayer.m; sourceTree = "<group>"; };
 		4DD590B618D6634D00EECA46 /* HKTMXTiledMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HKTMXTiledMap.h; sourceTree = "<group>"; };
@@ -1301,6 +1311,7 @@
 				4D3CD40619184987001268C6 /* LinesSubmenu.ccbi */,
 				4D3CD40719184987001268C6 /* MainMenu.ccbi */,
 				4D3CD4081919B883001268C6 /* MenuBackgroundMontage.ccbi */,
+				4DD481971919DC3000BD540D /* MoreSubmenu.ccbi */,
 				4D3CD3EE19184974001268C6 /* old-subway-map.jpg */,
 				4D3CD3EF19184974001268C6 /* Raleway-Bold.ttf */,
 				4D3CD3F019184974001268C6 /* Raleway-ExtraBold.ttf */,
@@ -1319,6 +1330,10 @@
 				4DB2B6BD18F213FF00236F75 /* pause.png */,
 				4DB2B6BE18F213FF00236F75 /* play.png */,
 				4D1A637F18E013A100BD179B /* stats.png */,
+				4DD481991919DCB100BD540D /* exit.png */,
+				4DD4819A1919DCB100BD540D /* save.png */,
+				4DD4819B1919DCB100BD540D /* share.png */,
+				4DD4819F1919DCC800BD540D /* setting.png */,
 				4DB2B6CC18F222B100236F75 /* station-button.png */,
 				4DB2B6CD18F222B100236F75 /* tracks-button.png */,
 				4D3CD3E819180F57001268C6 /* old-subway-map.jpg */,
@@ -2240,6 +2255,7 @@
 				4DCA2CAB18D4D4350016F5F6 /* MainMenu.ccbi in Resources */,
 				4D5E9146176129300041A073 /* fps_images-ipadhd.png in Resources */,
 				4D5A962C17E0EB04008175B8 /* cash-register.wav in Resources */,
+				4DD4819E1919DCB100BD540D /* share.png in Resources */,
 				0F3FBEBB18D5CA8000784352 /* tileset-elevation.png in Resources */,
 				4D7B1E0C17BAB2CA001EB23D /* checkbox-checked@2x.png in Resources */,
 				4D2642B917DE3F2C006D9652 /* tileset-land.png in Resources */,
@@ -2266,6 +2282,7 @@
 				4D1B8D0E178B4B800033DD70 /* pause-selected.png in Resources */,
 				4D1B8D0F178B4B800033DD70 /* pause-selected@2x.png in Resources */,
 				4D3CD40119184974001268C6 /* Raleway-Regular.ttf in Resources */,
+				4DD4819C1919DCB100BD540D /* exit.png in Resources */,
 				4DB2B6CE18F222B100236F75 /* station-button.png in Resources */,
 				4D3CD4091919B897001268C6 /* MenuBackgroundMontage.ccbi in Resources */,
 				4DCA2CBE18D502C90016F5F6 /* Music in Resources */,
@@ -2312,6 +2329,7 @@
 				4D6BF7A517EA720F007E2FD6 /* connection-stadium-baseball.png in Resources */,
 				4D5A962B17E0EB04008175B8 /* complete-goal.aiff in Resources */,
 				4D6D7FAF17A818D000217607 /* Default-568h@2x.png in Resources */,
+				4DD481981919DC3000BD540D /* MoreSubmenu.ccbi in Resources */,
 				4D1B8D33178B525D0033DD70 /* tool-lines-selected@2x.png in Resources */,
 				4D1B8D34178B525D0033DD70 /* tool-layers-selected.png in Resources */,
 				4D5A962F17E10097008175B8 /* owl.aiff in Resources */,
@@ -2343,6 +2361,7 @@
 				4D5A963017E10097008175B8 /* rooster.aiff in Resources */,
 				4D7B91A617965DB400549C23 /* bad-logo@2x.png in Resources */,
 				4D3CD40A1919C931001268C6 /* BuildSubmenu.ccbi in Resources */,
+				4DD4819D1919DCB100BD540D /* save.png in Resources */,
 				4D7B91A717965DB400549C23 /* bad-logo.png in Resources */,
 				4D5A962417E0E34F008175B8 /* big-boy-blues.mp3 in Resources */,
 				4D2C7B70179671F600AF64E4 /* InstructionsViewController.xib in Resources */,
@@ -2355,6 +2374,7 @@
 				4DAB5BF91799B12100CD35E2 /* StatsDetailViewController.xib in Resources */,
 				4D2642D017DEAC7C006D9652 /* goals@2x.png in Resources */,
 				4D3CD3FF19184974001268C6 /* Raleway-Light.ttf in Resources */,
+				4DD481A01919DCC800BD540D /* setting.png in Resources */,
 				4D6BF7A717EA720F007E2FD6 /* connection-ferry.png in Resources */,
 				4D3CD3FB19184974001268C6 /* Raleway-Bold.ttf in Resources */,
 				4D6BF7A917EA720F007E2FD6 /* connection-rail.png in Resources */,

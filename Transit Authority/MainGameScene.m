@@ -40,7 +40,7 @@
 #define STAT_UPDATE_INTERVAL 6
 #define UI_CORNER_RADIUS 8
 
-#define UI_FADE_DURATION 0.25
+#define UI_FADE_DURATION 0.1
 
 @interface MainGameScene()<FinancesViewDelegate, CCLayerPanZoomClickDelegate, PopoverViewDelegate, StationNodeDelegate, TracksNodeDelegate, GoalsDelegate>
 
@@ -140,6 +140,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     
     CCNode *buildButtonGroup;
     CCButton *buildButton;
+    CCNode *menuButtonGroup;
     CCButton *menuButton;
     CCSprite *speedIcon;
     
@@ -632,19 +633,48 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 
 - (void) moreButtonPressed{
 
-   /* NSLog(@"Menu");
+    NSLog(@"Menu");
     
     if(!_moreMenuNode){
-        _moreMenuNode = [CCBReader load:@"MoreMenu"];
+        _moreMenuNode = [CCBReader load:@"MoreSubmenu"];
+    
+        menuButton.selected = YES;
+        _moreMenuNode.positionType = menuButtonGroup.positionType;
+        _moreMenuNode.position = CGPointMake(menuButtonGroup.position.x  + menuButtonGroup.contentSize.width + 1,
+                                             menuButtonGroup.position.y - 1);
+        
+        [topNode addChild:_moreMenuNode];
+        _moreMenuNode.cascadeOpacityEnabled = YES;
+        _moreMenuNode.opacity = 0;
+        [_moreMenuNode runAction:[CCActionFadeIn actionWithDuration:UI_FADE_DURATION]];
+        
+    }else{
+        menuButton.selected = NO;
+        
+        [_moreMenuNode runAction:[CCActionSequence actions:[CCActionFadeOut actionWithDuration:UI_FADE_DURATION],[CCActionCallBlock actionWithBlock:^{
+            [_moreMenuNode removeFromParentAndCleanup:YES];
+            _moreMenuNode = nil;
+        }], nil]];
     }
-    
-    [topNode addChild:_moreMenuNode];
-    _moreMenuNode.positionType = menuButton.positionType;
-    _moreMenuNode.position = CGPointMake(menuButton.position.x  + menuButton.contentSize.width + 1,
-                                         menuButton.position.y + menuButton.contentSize.height);
-    */
-    
 }
+
+- (void) saveGame{
+    NSLog(@"Save game");
+}
+
+- (void) share{
+    NSLog(@"Share");
+}
+
+- (void) showSettings{
+    NSLog(@"Settings");
+}
+
+- (void) exitGame{
+    NSLog(@"Exit game");
+}
+
+#pragma mark -
 
 - (void) buildTracks{
     

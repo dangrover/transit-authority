@@ -92,6 +92,11 @@
 		<dict/>
 		<key>MainMenu.ccbi</key>
 		<dict/>
+		<key>MoreSubmenu.ccbi</key>
+		<dict>
+			<key>isDirty</key>
+			<true/>
+		</dict>
 		<key>Music/theme-music.mp3</key>
 		<dict>
 			<key>format_android_sound</key>
@@ -187,6 +192,11 @@
 			<key>tabletScale</key>
 			<integer>1</integer>
 		</dict>
+		<key>exit.png</key>
+		<dict>
+			<key>scaleFrom</key>
+			<integer>1</integer>
+		</dict>
 		<key>hammer.png</key>
 		<dict>
 			<key>scaleFrom</key>
@@ -203,6 +213,21 @@
 			<integer>1</integer>
 		</dict>
 		<key>play.png</key>
+		<dict>
+			<key>scaleFrom</key>
+			<integer>1</integer>
+		</dict>
+		<key>save.png</key>
+		<dict>
+			<key>scaleFrom</key>
+			<integer>1</integer>
+		</dict>
+		<key>setting.png</key>
+		<dict>
+			<key>scaleFrom</key>
+			<integer>1</integer>
+		</dict>
+		<key>share.png</key>
 		<dict>
 			<key>scaleFrom</key>
 			<integer>1</integer>
