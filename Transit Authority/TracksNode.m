@@ -121,16 +121,15 @@ void splineInterpolate(CCPointArray *points, int numVertices, ccVertex2F *vertic
     
     [bufferingLock lock];
     
-    glDeleteBuffers(_numLines, _verticesBuffers);
-    _numLines = self.segment.lines.count;
-    glGenBuffers(_numLines, _verticesBuffers);
-    
     int style = DIAGONAL_FIRST;
     int lineWidth;
+    
+    glDeleteBuffers(_numLines, _verticesBuffers);
+    _numLines = max(self.segment.lines.count,1);
+    glGenBuffers(_numLines, _verticesBuffers);
 
-    if (_numLines == 0) // just tracks
+    if (self.segment.lines.count == 0) // just tracks
     {
-        _numLines = 1;
         lineWidth = self.valid ? 18 : 10;
         
         _colors = [NSArray arrayWithObject: self.valid ? [UIColor colorWithRed:0 green:0 blue:0 alpha:0.3] : [UIColor colorWithRed:1 green:0 blue:0 alpha:0.3]];
@@ -152,8 +151,6 @@ void splineInterpolate(CCPointArray *points, int numVertices, ccVertex2F *vertic
         _colors = [NSArray arrayWithArray:colors];
     }
     
-    NSLog(@"%@", _colors);
-
     // We draw thick lines by shifting the endpoints in the x or y directions.
     // A horizontal or vertical line has a shift coefficient of 1.
     // A line at a 45 degree angle has a shift of about 1.4.
@@ -258,7 +255,7 @@ void splineInterpolate(CCPointArray *points, int numVertices, ccVertex2F *vertic
         
         [_trackShader setUniformLocation:_trackShaderColorLocation with4fv:&color count:1];
 
-        //NSLog(@"drawing buffer %d with %d vertices", i+1, _numVertices);
+        //NSLog(@"drawing buffer [%d] %d with %d vertices", _verticesBuffers[i], i, _numVertices);
         glBindBuffer(GL_ARRAY_BUFFER, _verticesBuffers[i]);
         glVertexAttribPointer(kCCVertexAttrib_Position, 2, GL_FLOAT, GL_FALSE, 0, 0);
         glDrawArrays(GL_TRIANGLE_STRIP, 0, (GLsizei) _numVertices); // GL_LINE_STRIP for debugging
