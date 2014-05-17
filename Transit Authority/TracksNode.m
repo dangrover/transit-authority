@@ -53,7 +53,7 @@ void splineInterpolate(CCPointArray *points, int numVertices, ccVertex2F *vertic
     NSLock *bufferingLock;
     unsigned _numLines;
     unsigned _numVertices;
-    ccColor4F *_colors;
+    NSArray *_colors;
 }
 
 - (id)init {
@@ -64,7 +64,7 @@ void splineInterpolate(CCPointArray *points, int numVertices, ccVertex2F *vertic
             _trackShaderColorLocation = glGetUniformLocation(_trackShader.program, "u_color");
         }
         
-        // Create an array to hold up to 20 buffers.
+        // Create an array to hold up to 20 buffers. We'll have one for every line on the track.
         _verticesBuffers = (GLuint *)malloc(sizeof(GLuint)*20);
         
         [self rebuffer];
@@ -106,10 +106,12 @@ void splineInterpolate(CCPointArray *points, int numVertices, ccVertex2F *vertic
     
     // Put two control points on either side of the elbow, but not on the elbow.
     // When we spline this it will make a nice curve.
-    CCPointArray *points = [CCPointArray arrayWithCapacity:4];
+    CCPointArray *points = [CCPointArray arrayWithCapacity:6];
     [points addControlPoint:PointTowardsPoint(elbow, a, 20)];
-    [points addControlPoint:PointTowardsPoint(elbow, a, 10)];
-    [points addControlPoint:PointTowardsPoint(elbow, b, 10)];
+    [points addControlPoint:PointTowardsPoint(elbow, a, 20)];
+    [points addControlPoint:PointTowardsPoint(elbow, a, 5)];
+    [points addControlPoint:PointTowardsPoint(elbow, b, 5)];
+    [points addControlPoint:PointTowardsPoint(elbow, b, 20)];
     [points addControlPoint:PointTowardsPoint(elbow, b, 20)];
     
     return points;
@@ -117,7 +119,7 @@ void splineInterpolate(CCPointArray *points, int numVertices, ccVertex2F *vertic
 
 - (void) rebuffer{
     
-    //[bufferingLock lock];
+    [bufferingLock lock];
     
     glDeleteBuffers(_numLines, _verticesBuffers);
     _numLines = self.segment.lines.count;
@@ -126,27 +128,31 @@ void splineInterpolate(CCPointArray *points, int numVertices, ccVertex2F *vertic
     int style = DIAGONAL_FIRST;
     int lineWidth;
 
-    free(_colors);
     if (_numLines == 0) // just tracks
     {
         _numLines = 1;
         lineWidth = self.valid ? 18 : 10;
         
-        _colors = (ccColor4F *)malloc(sizeof(ccColor4F));
-        _colors[0] = self.valid ? ccc4f(0, 0, 0, 0.3) : ccc4f(1, 0, 0, 0.3);
+        _colors = [NSArray arrayWithObject: self.valid ? [UIColor colorWithRed:0 green:0 blue:0 alpha:0.3] : [UIColor colorWithRed:1 green:0 blue:0 alpha:0.3]];
     }
-    else // multi lines
+    else
     {
-        lineWidth = MIN(20,ceil(50.0f/self.segment.lines.count));
+        // When a track has multiple lines, they should be 20 points wide each, or no more than 30 total.
+        lineWidth = MIN(20,ceil(30.0f/self.segment.lines.count));
         
-        NSArray *coloredLines = [self.segment.lines.allKeys sortedArrayUsingSelector:@selector(compare:)];
-        _colors = (ccColor4F *)malloc(sizeof(ccColor4F)*(_numLines));
+        // Convert the LineColors to UIColors:
         int i;
-        for (i = 0; i < _numLines; i++) {
-            NSNumber *colorNum = [coloredLines objectAtIndex:i];
-            _colors[i] = [[Line uiColorForLineColor:[colorNum intValue]] c4f];
+        NSArray *lineColors = [self.segment.lines.allKeys sortedArrayUsingSelector:@selector(compare:)];
+        NSMutableArray *colors = [NSMutableArray array];
+        for (i = 0; i < self.segment.lines.count; i++)
+        {
+            NSNumber *colorNum = [lineColors objectAtIndex:i];
+            [colors addObject:[Line uiColorForLineColor:[colorNum intValue]]];
         }
+        _colors = [NSArray arrayWithArray:colors];
     }
+    
+    NSLog(@"%@", _colors);
 
     // We draw thick lines by shifting the endpoints in the x or y directions.
     // A horizontal or vertical line has a shift coefficient of 1.
@@ -185,10 +191,9 @@ void splineInterpolate(CCPointArray *points, int numVertices, ccVertex2F *vertic
         // Calculate where the elbow should be.
         CCPointArray *elbowCtlPoints = [self curvyLineFromPoint:as[i] toPoint:bs[i] style:style];
         // Interpolate the points to make a nice round elbow.
-        numElbowVertices = elbowCtlPoints.count;
+        numElbowVertices = elbowCtlPoints.count * 10;
         numVertices = numElbowVertices*2 + 4;
         
-        //NSLog(@"ALLOC ELBOW %d", i);
         elbows[i] = (ccVertex2F *)malloc(sizeof(ccVertex2F)*numElbowVertices);
         splineInterpolate(elbowCtlPoints, numElbowVertices, elbows[i]);
         
@@ -225,7 +230,6 @@ void splineInterpolate(CCPointArray *points, int numVertices, ccVertex2F *vertic
     
     for (int i = 0; i < numEdges; i++)
     {
-        //NSLog(@"FREE ELBOW %d", i);
         free(elbows[i]);
     }
     
@@ -250,12 +254,14 @@ void splineInterpolate(CCPointArray *points, int numVertices, ccVertex2F *vertic
     int i;
     for (i = 0; i < _numLines; i++)
     {
-        [_trackShader setUniformLocation:_trackShaderColorLocation with4fv:&_colors[i] count:1];
+        ccColor4F color = [[_colors objectAtIndex:i] c4f];
+        
+        [_trackShader setUniformLocation:_trackShaderColorLocation with4fv:&color count:1];
 
         //NSLog(@"drawing buffer %d with %d vertices", i+1, _numVertices);
         glBindBuffer(GL_ARRAY_BUFFER, _verticesBuffers[i]);
         glVertexAttribPointer(kCCVertexAttrib_Position, 2, GL_FLOAT, GL_FALSE, 0, 0);
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, (GLsizei) _numVertices);
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, (GLsizei) _numVertices); // GL_LINE_STRIP for debugging
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
     
