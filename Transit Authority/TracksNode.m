@@ -9,6 +9,7 @@
 #import "TracksNode.h"
 #import "Utilities.h"
 #import "UIColor+Cocos.h"
+#import "TrainPath.h"
 
 static CCGLProgram *_trackShader;
 static int _trackShaderColorLocation;
@@ -67,6 +68,8 @@ void splineInterpolate(CCPointArray *points, int numVertices, ccVertex2F *vertic
         // Create an array to hold up to 20 buffers. We'll have one for every line on the track.
         _verticesBuffers = (GLuint *)malloc(sizeof(GLuint)*20);
         
+        _trainPaths = [[NSMutableArray alloc] init];
+        
         [self rebuffer];
     }
     return self;
@@ -124,9 +127,13 @@ void splineInterpolate(CCPointArray *points, int numVertices, ccVertex2F *vertic
     int style = DIAGONAL_FIRST;
     int lineWidth;
     
+    // One buffer corresponds to one colored strip in the visible track between two stations.
     glDeleteBuffers(_numLines, _verticesBuffers);
     _numLines = max(self.segment.lines.count,1);
     glGenBuffers(_numLines, _verticesBuffers);
+    
+    // One train path corresponds to the line that an animated train follows on a track.
+    [_trainPaths removeAllObjects];
 
     if (self.segment.lines.count == 0) // just tracks
     {
@@ -159,30 +166,28 @@ void splineInterpolate(CCPointArray *points, int numVertices, ccVertex2F *vertic
     float bThickness = (style != DIAGONAL_FIRST) ? diagThickness : 1;
     
     // Shift a->b in order to make two edges of a thick line.
-    int numEdges = _numLines + 1;
+    int numEdges = _numLines*2 + 1;
     CGPoint a = self.start, b = self.end;
     CGPoint as[numEdges], bs[numEdges];
     ccVertex2F *elbows[numEdges];
     
     int numVertices, numElbowVertices;
-    int i;
-    for (i = 0; i < numEdges; i++)
+    for (int i = 0; i < numEdges; i++)
     {
-        
-        // Position this edge in relatino to the other edges.
+        // Position this edge in relation to the other edges.
         if (abs(self.end.x-self.start.x) < abs(self.end.y-self.start.y))
         {
             // Vertical component is larger.
             // Shift lines a2->b2 and a1->b1 apart horizontally.
-            as[i] = CGPointOffset(a, (lineWidth*aThickness)*(i-_numLines*.5), 0);
-            bs[i] = CGPointOffset(b, (lineWidth*bThickness)*(i-_numLines*.5), 0);
+            as[i] = CGPointOffset(a, (lineWidth*aThickness)*(i-(float)_numLines)*.5, 0);
+            bs[i] = CGPointOffset(b, (lineWidth*bThickness)*(i-(float)_numLines)*.5, 0);
         }
         else
         {
             // Horizontal component is larger.
             // Shift lines a2->b2 and a1->b1 apart vertically.
-            as[i] = CGPointOffset(a, 0, (lineWidth*aThickness)*(i-_numLines*.5));
-            bs[i] = CGPointOffset(b, 0, (lineWidth*bThickness)*(i-_numLines*.5));
+            as[i] = CGPointOffset(a, 0, (lineWidth*aThickness)*(i-(float)_numLines)*.5);
+            bs[i] = CGPointOffset(b, 0, (lineWidth*bThickness)*(i-(float)_numLines)*.5);
         }
         
         // Calculate where the elbow should be.
@@ -196,32 +201,50 @@ void splineInterpolate(CCPointArray *points, int numVertices, ccVertex2F *vertic
         
         if (i > 0)
         {
-            ccVertex2F polygon[numVertices];
-            
-            // Combine two edges and elbows to make a polygon.
-            
-            polygon[0].x = as[i-1].x;
-            polygon[0].y = as[i-1].y;
-            polygon[1].x = as[i].x;
-            polygon[1].y = as[i].y;
-            
-            // Zip points from the two elbows together.
-            int t;
-            for (t = 0; t < numElbowVertices; t++)
+            if (i%2==0)
             {
-                polygon[2 + 2*t] = elbows[i-1][t];
-                polygon[2 + 2*t + 1] = elbows[i][t];
+                ccVertex2F polygon[numVertices];
+                
+                // Combine two edges and elbows to make a polygon.
+                
+                // First straight part:
+                polygon[0].x = as[i-2].x; // Edge 1
+                polygon[0].y = as[i-2].y;
+                polygon[1].x = as[i].x; // Edge 2
+                polygon[1].y = as[i].y;
+                
+                // Zip points from the two elbows (curved part) together.
+                for (int t = 0; t < numElbowVertices; t++)
+                {
+                    polygon[2 + 2*t] = elbows[i-2][t]; // Edge 1
+                    polygon[2 + 2*t + 1] = elbows[i][t]; // Edge 2
+                }
+                
+                // Second straight part:
+                polygon[numVertices-2].x = bs[i-2].x; // Edge 1
+                polygon[numVertices-2].y = bs[i-2].y;
+                polygon[numVertices-1].x = bs[i].x; // Edge 2
+                polygon[numVertices-1].y = bs[i].y;
+                
+                glBindBuffer(GL_ARRAY_BUFFER, _verticesBuffers[i/2-1]);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(polygon), polygon, GL_STATIC_DRAW);
+                
+                //NSLog(@"filled buffer [%d] %d of %d (%d vertices)", _verticesBuffers[i-1], i, _numLines, numVertices);
             }
-            
-            polygon[numVertices-2].x = bs[i-1].x;
-            polygon[numVertices-2].y = bs[i-1].y;
-            polygon[numVertices-1].x = bs[i].x;
-            polygon[numVertices-1].y = bs[i].y;
-            
-            glBindBuffer(GL_ARRAY_BUFFER, _verticesBuffers[i-1]);
-            glBufferData(GL_ARRAY_BUFFER, sizeof(polygon), polygon, GL_STATIC_DRAW);
-
-            //NSLog(@"filled buffer [%d] %d of %d (%d vertices)", _verticesBuffers[i-1], i, _numLines, numVertices);
+            else
+            {
+                NSMutableArray *points = [NSMutableArray array];
+                
+                [points addObject:[NSValue valueWithCGPoint:as[i]]];
+                for (int t = 0; t < numElbowVertices; t++)
+                {
+                    [points addObject:[NSValue valueWithCGPoint:CGPointMake(elbows[i][t].x, elbows[i][t].y)]];
+                }
+                [points addObject:[NSValue valueWithCGPoint:bs[i]]];
+                
+                TrainPath *path = [[TrainPath alloc] initWithControlPoints:points];
+                [_trainPaths addObject:path];
+            }
         }
     }
     
@@ -267,6 +290,10 @@ void splineInterpolate(CCPointArray *points, int numVertices, ccVertex2F *vertic
     [bufferingLock unlock];
 }
 
+- (CGPoint)coordForTrainAtPosition:(double)position
+                            onLine:(int)line {
+    return [[_trainPaths objectAtIndex:line] coordinatesAtPosition:position];
+}
 
 - (BOOL)ccTouchBegan:(UITouch *)touch withEvent:(UIEvent *)event{
     return [self _touchIsOnLine:touch];
@@ -299,11 +326,11 @@ void splineInterpolate(CCPointArray *points, int numVertices, ccVertex2F *vertic
     if(!CGRectContainsPoint([self lineRect], touchLoc)){
         return NO;
     }else{
-        CGSize s = [self distanceFromLine:touchLoc];
-        return ((s.width < LINE_CLICK_THRESHOLD) || (s.height < LINE_CLICK_THRESHOLD));
+        return YES;
+        //CGSize s = [self distanceFromLine:touchLoc];
+        //return ((s.width < LINE_CLICK_THRESHOLD) || (s.height < LINE_CLICK_THRESHOLD));
     }
 }
-
 
 - (CGSize) distanceFromLine:(CGPoint)touchLoc{
     float xCovered = self.end.x - self.start.x;
