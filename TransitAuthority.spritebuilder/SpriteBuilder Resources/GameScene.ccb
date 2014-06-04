@@ -2028,8 +2028,6 @@
 								</array>
 							</dict>
 						</array>
-						<key>selected</key>
-						<true/>
 					</dict>
 					<dict>
 						<key>baseClass</key>
@@ -2895,7 +2893,7 @@
 								<key>type</key>
 								<string>FontTTF</string>
 								<key>value</key>
-								<string>NewsCycle.ttf</string>
+								<string>Raleway-Medium.ttf</string>
 							</dict>
 							<dict>
 								<key>name</key>
@@ -3311,7 +3309,7 @@
 						<key>type</key>
 						<string>FontTTF</string>
 						<key>value</key>
-						<string>NewsCycle.ttf</string>
+						<string>Raleway-Medium.ttf</string>
 					</dict>
 					<dict>
 						<key>name</key>
@@ -3640,7 +3638,7 @@
 						<key>type</key>
 						<string>FontTTF</string>
 						<key>value</key>
-						<string>NewsCycle.ttf</string>
+						<string>Raleway-Medium.ttf</string>
 					</dict>
 					<dict>
 						<key>name</key>

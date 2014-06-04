@@ -21,6 +21,7 @@
 		4D1A638218E013A100BD179B /* manage.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D1A637E18E013A100BD179B /* manage.png */; };
 		4D1A638318E013A100BD179B /* stats.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D1A637F18E013A100BD179B /* stats.png */; };
 		4D1A638518E0A4D000BD179B /* more.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D1A638418E0A4D000BD179B /* more.png */; };
+		4D1B11A1193FCC6A0035A98D /* NewsCycle-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4D1B11A0193FCC6A0035A98D /* NewsCycle-Bold.ttf */; };
 		4D1B8D0A178B4B800033DD70 /* fast-forward-selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D1B8D04178B4B7F0033DD70 /* fast-forward-selected.png */; };
 		4D1B8D0B178B4B800033DD70 /* fast-forward-selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D1B8D05178B4B7F0033DD70 /* fast-forward-selected@2x.png */; };
 		4D1B8D0C178B4B800033DD70 /* play-selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D1B8D06178B4B7F0033DD70 /* play-selected.png */; };
@@ -412,6 +413,8 @@
 		4D1A637E18E013A100BD179B /* manage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = manage.png; path = "TransitAuthority.spritebuilder/SpriteBuilder Resources/resources-auto/manage.png"; sourceTree = SOURCE_ROOT; };
 		4D1A637F18E013A100BD179B /* stats.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = stats.png; path = "TransitAuthority.spritebuilder/SpriteBuilder Resources/resources-auto/stats.png"; sourceTree = SOURCE_ROOT; };
 		4D1A638418E0A4D000BD179B /* more.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = more.png; path = "TransitAuthority.spritebuilder/SpriteBuilder Resources/resources-auto/more.png"; sourceTree = SOURCE_ROOT; };
+		4D1B11A0193FCC6A0035A98D /* NewsCycle-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "NewsCycle-Bold.ttf"; path = "TransitAuthority.spritebuilder/Source/Resources/Published-iOS/NewsCycle-Bold.ttf"; sourceTree = SOURCE_ROOT; };
+		4D1B11A2193FCD170035A98D /* NewsCycle.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = NewsCycle.ttf; path = "TransitAuthority.spritebuilder/Source/Resources/Published-iOS/NewsCycle.ttf"; sourceTree = SOURCE_ROOT; };
 		4D1B8D04178B4B7F0033DD70 /* fast-forward-selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "fast-forward-selected.png"; path = "Resources/fast-forward-selected.png"; sourceTree = "<group>"; };
 		4D1B8D05178B4B7F0033DD70 /* fast-forward-selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "fast-forward-selected@2x.png"; path = "Resources/fast-forward-selected@2x.png"; sourceTree = "<group>"; };
 		4D1B8D06178B4B7F0033DD70 /* play-selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "play-selected.png"; path = "Resources/play-selected.png"; sourceTree = "<group>"; };
@@ -1322,6 +1325,8 @@
 				4D3CD3F519184974001268C6 /* Raleway-Regular.ttf */,
 				4D3CD3F619184974001268C6 /* Raleway-SemiBold.ttf */,
 				4D3CD3F719184974001268C6 /* Raleway-Thin.ttf */,
+				4D1B11A2193FCD170035A98D /* NewsCycle.ttf */,
+				4D1B11A0193FCC6A0035A98D /* NewsCycle-Bold.ttf */,
 				4D1A637C18E013A100BD179B /* dummypixel.png */,
 				4D1A637D18E013A100BD179B /* hammer.png */,
 				4D1A638418E0A4D000BD179B /* more.png */,
@@ -2285,6 +2290,7 @@
 				4DD4819C1919DCB100BD540D /* exit.png in Resources */,
 				4DB2B6CE18F222B100236F75 /* station-button.png in Resources */,
 				4D3CD4091919B897001268C6 /* MenuBackgroundMontage.ccbi in Resources */,
+				4D1B11A1193FCC6A0035A98D /* NewsCycle-Bold.ttf in Resources */,
 				4DCA2CBE18D502C90016F5F6 /* Music in Resources */,
 				4D1B8D1A178B4F800033DD70 /* tool-tracks@2x.png in Resources */,
 				4D1B8D1B178B4F800033DD70 /* tool-tracks.png in Resources */,

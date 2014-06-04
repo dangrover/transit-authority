@@ -23,8 +23,8 @@
 
 - (id) init{
     if(self = [super init]){
-        _walkLabel = [[CCLabelTTF alloc] initWithString:@"WALKING" fontName:@"NewsCycle" fontSize:12];
-        _carLabel = [[CCLabelTTF alloc] initWithString:@"DRIVING" fontName:@"NewsCycle" fontSize:12];
+        _walkLabel = [[CCLabelTTF alloc] initWithString:@"WALKING" fontName:@"Raleway" fontSize:12];
+        _carLabel = [[CCLabelTTF alloc] initWithString:@"DRIVING" fontName:@"Raleway" fontSize:12];
         [self addChild:_walkLabel];
         [self addChild:_carLabel];
         _walkLabel.opacity = _carLabel.opacity = 175;
