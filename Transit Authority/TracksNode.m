@@ -290,6 +290,11 @@ void splineInterpolate(CCPointArray *points, int numVertices, ccVertex2F *vertic
     [bufferingLock unlock];
 }
 
+- (int)lineCount
+{
+    return _trainPaths.count;
+}
+
 - (CGPoint)coordForTrainAtPosition:(double)position
                             onLine:(int)line {
     return [[_trainPaths objectAtIndex:line] coordinatesAtPosition:position];

@@ -19,6 +19,7 @@
 @property(retain) NSMutableArray *trainPaths;
 @property(assign) NSObject<TracksNodeDelegate> *delegate;
 - (void) rebuffer;
+- (int)lineCount;
 - (CGPoint)coordForTrainAtPosition:(double)position
                             onLine:(int)line;
 @end
