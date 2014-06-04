@@ -86,38 +86,25 @@ void splineInterpolate(CCPointArray *points, int numVertices, ccVertex2F *vertic
 #define DIAGONAL_LAST 2
 
 // Calculate line segments making up the track and return the control points necessary to draw a rounded elbow.
-- (CCPointArray *) curvyLineFromPoint:(CGPoint)a
-                              toPoint:(CGPoint)b
-                                style:(int)style
+- (CGPoint) elbowBetweenPoint:(CGPoint)a
+                       andPoint:(CGPoint)b
+                          style:(int)style
 {
     // Point a and b are two ordered points, as in the diagrams above.
     // Let point f be the one on the flat line, and d the one on the diagonal.
     CGPoint f = (style == DIAGONAL_FIRST) ? a : b;
     CGPoint d = (style != DIAGONAL_FIRST) ? a : b;
     
-    CGPoint elbow;
     if (abs(f.x-d.x) < abs(f.y-d.y))
     {
         // Flat component of diagonal line component is longer
-        elbow = PointTowardsPoint(CGPointMake(d.x, f.y), d, abs(d.x-f.x));
+        return PointTowardsPoint(CGPointMake(d.x, f.y), d, abs(d.x-f.x));
     }
     else
     {
         // Flat line is longer
-        elbow = PointTowardsPoint(CGPointMake(f.x, d.y), d, abs(d.y-f.y));
+        return PointTowardsPoint(CGPointMake(f.x, d.y), d, abs(d.y-f.y));
     }
-    
-    // Put two control points on either side of the elbow, but not on the elbow.
-    // When we spline this it will make a nice curve.
-    CCPointArray *points = [CCPointArray arrayWithCapacity:6];
-    [points addControlPoint:PointTowardsPoint(elbow, a, 20)];
-    [points addControlPoint:PointTowardsPoint(elbow, a, 20)];
-    [points addControlPoint:PointTowardsPoint(elbow, a, 5)];
-    [points addControlPoint:PointTowardsPoint(elbow, b, 5)];
-    [points addControlPoint:PointTowardsPoint(elbow, b, 20)];
-    [points addControlPoint:PointTowardsPoint(elbow, b, 20)];
-    
-    return points;
 }
 
 - (void) rebuffer{
@@ -161,41 +148,47 @@ void splineInterpolate(CCPointArray *points, int numVertices, ccVertex2F *vertic
     // We draw thick lines by shifting the endpoints in the x or y directions.
     // A horizontal or vertical line has a shift coefficient of 1.
     // A line at a 45 degree angle has a shift of about 1.4.
-    float diagThickness = 1 / cos(3.1415/4);
+    /*float diagThickness = 1 / cos(3.1415/4);
     float aThickness = (style == DIAGONAL_FIRST) ? diagThickness : 1;
-    float bThickness = (style != DIAGONAL_FIRST) ? diagThickness : 1;
+    float bThickness = (style != DIAGONAL_FIRST) ? diagThickness : 1;*/
     
-    // Shift a->b in order to make two edges of a thick line.
+    // The line a->b goes from station A to station B.
+    // The lines as[0]->bs[0], etc. will be used to draw thick colored lines roughly parallel to a->b.
     int numEdges = _numLines*2 + 1;
     CGPoint a = self.start, b = self.end;
     CGPoint as[numEdges], bs[numEdges];
     ccVertex2F *elbows[numEdges];
     
+    // Calculate where the elbow should be.
+    CGPoint mainElbow = [self elbowBetweenPoint:a andPoint:b style:style];
+    float endAngleA = AngleBetweenPoints(a, mainElbow) + M_PI_2;
+    float endAngleB = AngleBetweenPoints(b, mainElbow) - M_PI_2;
+    
     int numVertices, numElbowVertices;
     for (int i = 0; i < numEdges; i++)
     {
-        // Position this edge in relation to the other edges.
-        if (abs(self.end.x-self.start.x) < abs(self.end.y-self.start.y))
-        {
-            // Vertical component is larger.
-            // Shift lines a2->b2 and a1->b1 apart horizontally.
-            as[i] = CGPointOffset(a, (lineWidth*aThickness)*(i-(float)_numLines)*.5, 0);
-            bs[i] = CGPointOffset(b, (lineWidth*bThickness)*(i-(float)_numLines)*.5, 0);
-        }
-        else
-        {
-            // Horizontal component is larger.
-            // Shift lines a2->b2 and a1->b1 apart vertically.
-            as[i] = CGPointOffset(a, 0, (lineWidth*aThickness)*(i-(float)_numLines)*.5);
-            bs[i] = CGPointOffset(b, 0, (lineWidth*bThickness)*(i-(float)_numLines)*.5);
-        }
+        // Offset as[i]->bs[i] line away from a->b by a multiple of lineWidth/2.
+        // Thus lines 0, 2, etc. are the edges of colored lines, and lines 1, 3, etc. are the centers of colored lines.
+        float offset = lineWidth*(i-1.0*_numLines)*.5;
+        as[i] = PointTowardsAngle(a, endAngleA, offset);
+        bs[i] = PointTowardsAngle(b, endAngleB, offset);
+
+        // Calculate where the elbow of as[i]->bs[i] edge should be.
+        CGPoint elbow = [self elbowBetweenPoint:as[i] andPoint:bs[i] style:style];
         
-        // Calculate where the elbow should be.
-        CCPointArray *elbowCtlPoints = [self curvyLineFromPoint:as[i] toPoint:bs[i] style:style];
-        // Interpolate the points to make a nice round elbow.
+        // Put two control points on either side of the elbow, but not on the elbow.
+        // When we spline this it will make a nice curve.
+        CCPointArray *elbowCtlPoints = [CCPointArray arrayWithCapacity:6];
+        [elbowCtlPoints addControlPoint:PointTowardsPoint(elbow, as[i], 20)];
+        [elbowCtlPoints addControlPoint:PointTowardsPoint(elbow, as[i], 20)];
+        [elbowCtlPoints addControlPoint:PointTowardsPoint(elbow, as[i], 5)];
+        [elbowCtlPoints addControlPoint:PointTowardsPoint(elbow, bs[i], 5)];
+        [elbowCtlPoints addControlPoint:PointTowardsPoint(elbow, bs[i], 20)];
+        [elbowCtlPoints addControlPoint:PointTowardsPoint(elbow, bs[i], 20)];
+
+        // Spline interpolate the points to make a nice round elbow.
         numElbowVertices = elbowCtlPoints.count * 10;
         numVertices = numElbowVertices*2 + 4;
-        
         elbows[i] = (ccVertex2F *)malloc(sizeof(ccVertex2F)*numElbowVertices);
         splineInterpolate(elbowCtlPoints, numElbowVertices, elbows[i]);
         

@@ -33,9 +33,19 @@ CGPoint PointTowardsPoint(CGPoint pointA, CGPoint pointB, float distance)
     return CGPointOffset(pointA, portion * (pointB.x - pointA.x), portion * (pointB.y - pointA.y));
 };
 
+float AngleBetweenPoints(CGPoint pointA, CGPoint pointB)
+{
+    return atan2(pointB.y - pointA.y, pointB.x - pointA.x);
+};
+
+CGPoint PointTowardsAngle(CGPoint pointA, float angle, float distance)
+{
+    return CGPointOffset(pointA, distance * cos(angle), distance * sin(angle));
+};
+
 CGPoint CGPointOffset(CGPoint thePoint, CGFloat x, CGFloat y){
     return CGPointMake(thePoint.x + x, thePoint.y + y);
-}
+};
 
 NSString *FormatCurrency(NSNumber *currency){
     if(!_currencyFormatter){

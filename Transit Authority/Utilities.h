@@ -17,6 +17,9 @@ CGFloat PointDistance3D(CGPoint point1,CGPoint point2,CGFloat z1,CGFloat z2);
 CGPoint CGPointOffset(CGPoint thePoint, CGFloat x, CGFloat y);
 CGPoint CGPointMidpoint(CGPoint a, CGPoint b);
 CGPoint PointTowardsPoint(CGPoint pointA, CGPoint pointB, float distance);
+float AngleBetweenPoints(CGPoint pointA, CGPoint pointB);
+CGPoint PointTowardsAngle(CGPoint pointA, float angle, float distance);
+
 
 NSString *FormatCurrency(NSNumber *currency);
 NSString *FormatTimeInterval(NSTimeInterval timeInterval);
