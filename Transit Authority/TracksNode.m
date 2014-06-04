@@ -145,13 +145,6 @@ void splineInterpolate(CCPointArray *points, int numVertices, ccVertex2F *vertic
         _colors = [NSArray arrayWithArray:colors];
     }
     
-    // We draw thick lines by shifting the endpoints in the x or y directions.
-    // A horizontal or vertical line has a shift coefficient of 1.
-    // A line at a 45 degree angle has a shift of about 1.4.
-    /*float diagThickness = 1 / cos(3.1415/4);
-    float aThickness = (style == DIAGONAL_FIRST) ? diagThickness : 1;
-    float bThickness = (style != DIAGONAL_FIRST) ? diagThickness : 1;*/
-    
     // The line a->b goes from station A to station B.
     // The lines as[0]->bs[0], etc. will be used to draw thick colored lines roughly parallel to a->b.
     int numEdges = _numLines*2 + 1;
@@ -159,8 +152,9 @@ void splineInterpolate(CCPointArray *points, int numVertices, ccVertex2F *vertic
     CGPoint as[numEdges], bs[numEdges];
     ccVertex2F *elbows[numEdges];
     
-    // Calculate where the elbow should be.
+    // Calculate where the elbow of a->b is.
     CGPoint mainElbow = [self elbowBetweenPoint:a andPoint:b style:style];
+    // We will use the elbow angle to draw the flat ends of the lines.
     float endAngleA = AngleBetweenPoints(a, mainElbow) + M_PI_2;
     float endAngleB = AngleBetweenPoints(b, mainElbow) - M_PI_2;
     
@@ -170,6 +164,7 @@ void splineInterpolate(CCPointArray *points, int numVertices, ccVertex2F *vertic
         // Offset as[i]->bs[i] line away from a->b by a multiple of lineWidth/2.
         // Thus lines 0, 2, etc. are the edges of colored lines, and lines 1, 3, etc. are the centers of colored lines.
         float offset = lineWidth*(i-1.0*_numLines)*.5;
+        // The flat ends of the line match the direction that the line comes in from the elbow.
         as[i] = PointTowardsAngle(a, endAngleA, offset);
         bs[i] = PointTowardsAngle(b, endAngleB, offset);
 
