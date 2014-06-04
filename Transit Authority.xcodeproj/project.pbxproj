@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0F3FBEBB18D5CA8000784352 /* tileset-elevation.png in Resources */ = {isa = PBXBuildFile; fileRef = 0F3FBEBA18D5CA8000784352 /* tileset-elevation.png */; };
+		0F4ED3C019280CD1007D85B4 /* TrainPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F4ED3BF19280CD1007D85B4 /* TrainPath.m */; };
 		4D1B8CF8178B43090033DD70 /* pause.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D1B8CF2178B43090033DD70 /* pause.png */; };
 		4D1B8CF9178B43090033DD70 /* fast-forward.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D1B8CF3178B43090033DD70 /* fast-forward.png */; };
 		4D1B8CFA178B43090033DD70 /* fast-forward@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D1B8CF4178B43090033DD70 /* fast-forward@2x.png */; };
@@ -305,6 +306,8 @@
 
 /* Begin PBXFileReference section */
 		0F3FBEBA18D5CA8000784352 /* tileset-elevation.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "tileset-elevation.png"; path = "Maps/tileset-elevation.png"; sourceTree = SOURCE_ROOT; };
+		0F4ED3BE19280CD1007D85B4 /* TrainPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrainPath.h; sourceTree = "<group>"; };
+		0F4ED3BF19280CD1007D85B4 /* TrainPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TrainPath.m; sourceTree = "<group>"; };
 		4D0715011773D1E5008D10E3 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		4D1B8CF2178B43090033DD70 /* pause.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = pause.png; path = Resources/pause.png; sourceTree = "<group>"; };
 		4D1B8CF3178B43090033DD70 /* fast-forward.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "fast-forward.png"; path = "Resources/fast-forward.png"; sourceTree = "<group>"; };
@@ -953,6 +956,8 @@
 		4D3929151792080C00373AAD /* Sprites */ = {
 			isa = PBXGroup;
 			children = (
+				0F4ED3BE19280CD1007D85B4 /* TrainPath.h */,
+				0F4ED3BF19280CD1007D85B4 /* TrainPath.m */,
 				4D232A00177A257100B513FE /* TracksNode.h */,
 				4D232A01177A257100B513FE /* TracksNode.m */,
 				4D3929161792082A00373AAD /* StationNode.h */,
@@ -2030,6 +2035,7 @@
 				4D3929181792082A00373AAD /* StationNode.m in Sources */,
 				4D39291C1792086A00373AAD /* StationInspector.m in Sources */,
 				4D2DF7551794B714008B7A29 /* CCLayerPanZoom.m in Sources */,
+				0F4ED3C019280CD1007D85B4 /* TrainPath.m in Sources */,
 				4DE702FE1794CD3B00AC228B /* StreetNode.m in Sources */,
 				4D7B91A217965D2800549C23 /* MainMenuViewController.m in Sources */,
 				4D2C7B6F179671F600AF64E4 /* InstructionsViewController.m in Sources */,

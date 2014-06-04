@@ -16,6 +16,7 @@
 
 @property(readonly) float length;
 
+- (id)initWithControlPoints:(NSArray *)controlPoints;
 - (CGPoint)coordinatesAtPosition:(float)position;
 
 @end
