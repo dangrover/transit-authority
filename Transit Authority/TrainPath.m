@@ -20,14 +20,24 @@
         
         // Add up the distance between consecutive points on the curve.
         float distance = 0;
-        for (int i = 0; i < _controlPoints.count-1; i++)
+        for (int i = 0; i < self.segmentCount; i++)
         {
-            distance += PointDistance([_controlPoints[i] CGPointValue], [_controlPoints[i+1] CGPointValue]);
+            distance += PointDistance([self controlPointAtIndex:i], [self controlPointAtIndex:i+1]);
         }
         _length = distance;
     }
     
     return self;
+}
+
+- (CGPoint)controlPointAtIndex:(int)index
+{
+    return [_controlPoints[index] CGPointValue];
+}
+
+- (int)segmentCount
+{
+    return _controlPoints.count - 1;
 }
 
 // Give the position to draw the train at, interpolating between the closest two points on the path.
@@ -43,10 +53,10 @@
     float distanceToNextPoint = 0;
     
     int i = 0;
-    while (i < _controlPoints.count-1)
+    while (i < self.segmentCount)
     {
         // Find the distance between from i to point i + 1
-        distanceToNextPoint = PointDistance([_controlPoints[i] CGPointValue], [_controlPoints[i+1] CGPointValue]);
+        distanceToNextPoint = PointDistance([self controlPointAtIndex:i], [self controlPointAtIndex:i+1]);
         
         // If it would push us past distanceTravelled, we're in the right spot.
         if (distanceToPointI + distanceToNextPoint >= distanceTravelled) break;
@@ -57,7 +67,26 @@
     }
     
     // Interpolate linearly between the two points.
-    return PointTowardsPoint([_controlPoints[i] CGPointValue], [_controlPoints[i+1] CGPointValue], distanceTravelled-distanceToPointI);
+    return PointTowardsPoint([self controlPointAtIndex:i], [self controlPointAtIndex:i+1], distanceTravelled-distanceToPointI);
+}
+
+// Return the shortest distance between a point and the path.
+- (float)distanceToPoint:(CGPoint)point
+{
+    float minDistance = 0;
+    
+    // Check the distance to the individual line segments.
+    for (int i = 0; i < self.segmentCount; i++)
+    {
+        float distance = PointLineSegmentDistance(point, [self controlPointAtIndex:i], [self controlPointAtIndex:i+1]);
+        // Take the minimum.
+        if (i == 0 || distance < minDistance)
+        {
+            minDistance = distance;
+        }
+    }
+    
+    return minDistance;
 }
 
 @end

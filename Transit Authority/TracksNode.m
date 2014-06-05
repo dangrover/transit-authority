@@ -14,7 +14,11 @@
 static CCGLProgram *_trackShader;
 static int _trackShaderColorLocation;
 
-#define LINE_CLICK_THRESHOLD 30
+#define LINE_CLICK_THRESHOLD 10
+
+#define INVALID_LINE_WIDTH 10
+#define LINE_WIDTH 20
+#define MAX_TRACK_WIDTH 30
 
 // Take a line of control points and return an interpolated spline line.
 // This function must always return the same amount of points however many times it's called.
@@ -124,14 +128,14 @@ void splineInterpolate(CCPointArray *points, int numVertices, ccVertex2F *vertic
 
     if (self.segment.lines.count == 0) // just tracks
     {
-        lineWidth = self.valid ? 18 : 10;
+        lineWidth = self.valid ? LINE_WIDTH : INVALID_LINE_WIDTH;
         
         _colors = [NSArray arrayWithObject: self.valid ? [UIColor colorWithRed:0 green:0 blue:0 alpha:0.3] : [UIColor colorWithRed:1 green:0 blue:0 alpha:0.3]];
     }
     else
     {
-        // When a track has multiple lines, they should be 20 points wide each, or no more than 30 total.
-        lineWidth = MIN(20,ceil(30.0f/self.segment.lines.count));
+        // When a track has multiple lines, the total width should be limited.
+        lineWidth = MIN(LINE_WIDTH,ceil(MAX_TRACK_WIDTH/self.segment.lines.count));
         
         // Convert the LineColors to UIColors:
         int i;
@@ -302,38 +306,16 @@ void splineInterpolate(CCPointArray *points, int numVertices, ccVertex2F *vertic
     }
 }
 
-- (CGRect) lineRect{
-    CGRect r = CGRectMake(MIN(self.start.x, self.end.x),
-                      MIN(self.start.y, self.end.y),
-                      fabs(self.start.x - self.end.x),
-                      fabs(self.start.y - self.end.y));
-    
-    if((r.size.width < LINE_CLICK_THRESHOLD) || (r.size.height < LINE_CLICK_THRESHOLD)){
-        r = CGRectInset(r, -1*LINE_CLICK_THRESHOLD, -1*LINE_CLICK_THRESHOLD);
-    }
-    return r;
-}
-
 - (BOOL) _touchIsOnLine:(UITouch *)touch{
-    CGPoint touchLoc = [self convertTouchToNodeSpace:touch];
-    if(!CGRectContainsPoint([self lineRect], touchLoc)){
-        return NO;
-    }else{
-        return YES;
-        //CGSize s = [self distanceFromLine:touchLoc];
-        //return ((s.width < LINE_CLICK_THRESHOLD) || (s.height < LINE_CLICK_THRESHOLD));
-    }
-}
-
-- (CGSize) distanceFromLine:(CGPoint)touchLoc{
-    float xCovered = self.end.x - self.start.x;
-    float yCovered = self.end.y - self.start.y;
-
-    float proportionAcross = (touchLoc.x - self.start.x) / xCovered;
-    float proportionDown = (touchLoc.y - self.start.y) / yCovered;
     
-    return CGSizeMake(fabsf((proportionDown * xCovered) + self.start.x - touchLoc.x),
-                      fabsf((proportionAcross * yCovered) + self.start.y - touchLoc.y));
+    // Accurate way of testing track touches. See if the touch comes close (within LINE_CLICK_THRESHOLD) to any train path.
+    
+    CGPoint touchLoc = [self convertTouchToNodeSpace:touch];
+    for (int i = 0; i < _trainPaths.count; i++)
+    {
+        if ([_trainPaths[i] distanceToPoint:touchLoc] < LINE_CLICK_THRESHOLD) return YES;
+    }
+    return NO;
 }
 
 @end

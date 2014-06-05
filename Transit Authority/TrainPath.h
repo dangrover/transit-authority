@@ -18,5 +18,6 @@
 
 - (id)initWithControlPoints:(NSArray *)controlPoints;
 - (CGPoint)coordinatesAtPosition:(float)position;
+- (float)distanceToPoint:(CGPoint)point;
 
 @end

@@ -19,7 +19,7 @@ CGPoint CGPointMidpoint(CGPoint a, CGPoint b);
 CGPoint PointTowardsPoint(CGPoint pointA, CGPoint pointB, float distance);
 float AngleBetweenPoints(CGPoint pointA, CGPoint pointB);
 CGPoint PointTowardsAngle(CGPoint pointA, float angle, float distance);
-
+float PointLineSegmentDistance(CGPoint p, CGPoint v, CGPoint w);
 
 NSString *FormatCurrency(NSNumber *currency);
 NSString *FormatTimeInterval(NSTimeInterval timeInterval);
