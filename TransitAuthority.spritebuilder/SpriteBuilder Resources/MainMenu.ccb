@@ -83,8 +83,6 @@
 						<string>MenuBackgroundMontage.ccb</string>
 					</dict>
 				</array>
-				<key>selected</key>
-				<true/>
 			</dict>
 			<dict>
 				<key>baseClass</key>
@@ -430,8 +428,8 @@
 								<string>Position</string>
 								<key>value</key>
 								<array>
-									<real>167.35496520996094</real>
-									<real>227</real>
+									<real>140.35496520996094</real>
+									<real>225</real>
 									<integer>0</integer>
 									<integer>0</integer>
 									<integer>0</integer>
@@ -478,7 +476,7 @@
 								<key>type</key>
 								<string>FontTTF</string>
 								<key>value</key>
-								<string>Raleway-Medium.ttf</string>
+								<string>Raleway-Light.ttf</string>
 							</dict>
 							<dict>
 								<key>name</key>
@@ -487,7 +485,7 @@
 								<string>FloatScale</string>
 								<key>value</key>
 								<array>
-									<real>50</real>
+									<real>42</real>
 									<integer>0</integer>
 								</array>
 							</dict>
@@ -693,7 +691,7 @@
 								<string>Position</string>
 								<key>value</key>
 								<array>
-									<real>130.35496520996094</real>
+									<real>142.35496520996094</real>
 									<real>279</real>
 									<integer>0</integer>
 									<integer>0</integer>
@@ -741,7 +739,7 @@
 								<key>type</key>
 								<string>FontTTF</string>
 								<key>value</key>
-								<string>Raleway-Medium.ttf</string>
+								<string>Raleway-ExtraLight.ttf</string>
 							</dict>
 							<dict>
 								<key>name</key>
@@ -750,7 +748,7 @@
 								<string>FloatScale</string>
 								<key>value</key>
 								<array>
-									<real>50</real>
+									<real>60</real>
 									<integer>0</integer>
 								</array>
 							</dict>
@@ -974,7 +972,7 @@
 						<key>memberVarAssignmentName</key>
 						<string></string>
 						<key>memberVarAssignmentType</key>
-						<integer>2</integer>
+						<integer>0</integer>
 						<key>properties</key>
 						<array>
 							<dict>
@@ -1290,6 +1288,8 @@
 								</array>
 							</dict>
 						</array>
+						<key>selected</key>
+						<true/>
 					</dict>
 					<dict>
 						<key>animatedProperties</key>
@@ -1308,7 +1308,7 @@
 						<key>memberVarAssignmentName</key>
 						<string></string>
 						<key>memberVarAssignmentType</key>
-						<integer>2</integer>
+						<integer>0</integer>
 						<key>properties</key>
 						<array>
 							<dict>
@@ -1642,7 +1642,7 @@
 						<key>memberVarAssignmentName</key>
 						<string></string>
 						<key>memberVarAssignmentType</key>
-						<integer>2</integer>
+						<integer>0</integer>
 						<key>properties</key>
 						<array>
 							<dict>
@@ -1976,7 +1976,7 @@
 						<key>memberVarAssignmentName</key>
 						<string></string>
 						<key>memberVarAssignmentType</key>
-						<integer>2</integer>
+						<integer>0</integer>
 						<key>properties</key>
 						<array>
 							<dict>
@@ -2323,8 +2323,8 @@
 								<string>Position</string>
 								<key>value</key>
 								<array>
-									<real>-99.563278198242188</real>
-									<real>183</real>
+									<real>-101.56327819824219</real>
+									<real>181</real>
 									<integer>0</integer>
 									<integer>0</integer>
 									<integer>0</integer>
@@ -2361,7 +2361,7 @@
 								<string>Text</string>
 								<key>value</key>
 								<array>
-									<string>New Game</string>
+									<string>NEW GAME</string>
 									<false/>
 								</array>
 							</dict>
@@ -2371,7 +2371,7 @@
 								<key>type</key>
 								<string>FontTTF</string>
 								<key>value</key>
-								<string>Raleway-Medium.ttf</string>
+								<string>Raleway-Regular.ttf</string>
 							</dict>
 							<dict>
 								<key>name</key>
@@ -2380,7 +2380,7 @@
 								<string>FloatScale</string>
 								<key>value</key>
 								<array>
-									<real>20</real>
+									<real>16</real>
 									<integer>0</integer>
 								</array>
 							</dict>
@@ -2528,8 +2528,8 @@
 								<string>Position</string>
 								<key>value</key>
 								<array>
-									<real>-97.563278198242188</real>
-									<real>133</real>
+									<real>-98.563278198242188</real>
+									<real>128</real>
 									<integer>0</integer>
 									<integer>0</integer>
 									<integer>0</integer>
@@ -2566,7 +2566,7 @@
 								<string>Text</string>
 								<key>value</key>
 								<array>
-									<string>Load Game</string>
+									<string>LOAD GAME</string>
 									<false/>
 								</array>
 							</dict>
@@ -2576,7 +2576,7 @@
 								<key>type</key>
 								<string>FontTTF</string>
 								<key>value</key>
-								<string>Raleway-Medium.ttf</string>
+								<string>Raleway-Regular.ttf</string>
 							</dict>
 							<dict>
 								<key>name</key>
@@ -2585,7 +2585,7 @@
 								<string>FloatScale</string>
 								<key>value</key>
 								<array>
-									<real>20</real>
+									<real>16</real>
 									<integer>0</integer>
 								</array>
 							</dict>
@@ -2733,8 +2733,8 @@
 								<string>Position</string>
 								<key>value</key>
 								<array>
-									<real>-128.56327819824219</real>
-									<real>81</real>
+									<real>-124.56327819824219</real>
+									<real>78</real>
 									<integer>0</integer>
 									<integer>0</integer>
 									<integer>0</integer>
@@ -2771,7 +2771,7 @@
 								<string>Text</string>
 								<key>value</key>
 								<array>
-									<string>Help</string>
+									<string>HELP</string>
 									<false/>
 								</array>
 							</dict>
@@ -2781,7 +2781,7 @@
 								<key>type</key>
 								<string>FontTTF</string>
 								<key>value</key>
-								<string>Raleway-Medium.ttf</string>
+								<string>Raleway-Regular.ttf</string>
 							</dict>
 							<dict>
 								<key>name</key>
@@ -2790,7 +2790,7 @@
 								<string>FloatScale</string>
 								<key>value</key>
 								<array>
-									<real>20</real>
+									<real>16</real>
 									<integer>0</integer>
 								</array>
 							</dict>
@@ -2938,8 +2938,8 @@
 								<string>Position</string>
 								<key>value</key>
 								<array>
-									<real>-104.56327819824219</real>
-									<real>28</real>
+									<real>-102.56327819824219</real>
+									<real>26</real>
 									<integer>0</integer>
 									<integer>0</integer>
 									<integer>0</integer>
@@ -2976,7 +2976,7 @@
 								<string>Text</string>
 								<key>value</key>
 								<array>
-									<string>Feedback</string>
+									<string>FEEDBACK</string>
 									<false/>
 								</array>
 							</dict>
@@ -2986,7 +2986,7 @@
 								<key>type</key>
 								<string>FontTTF</string>
 								<key>value</key>
-								<string>Raleway-Medium.ttf</string>
+								<string>Raleway-Regular.ttf</string>
 							</dict>
 							<dict>
 								<key>name</key>
@@ -2995,7 +2995,7 @@
 								<string>FloatScale</string>
 								<key>value</key>
 								<array>
-									<real>20</real>
+									<real>16</real>
 									<integer>0</integer>
 								</array>
 							</dict>
@@ -3350,7 +3350,24 @@
 			<key>callbackChannel</key>
 			<dict>
 				<key>keyframes</key>
-				<array/>
+				<array>
+					<dict>
+						<key>easing</key>
+						<dict>
+							<key>type</key>
+							<integer>0</integer>
+						</dict>
+						<key>time</key>
+						<real>0.0</real>
+						<key>type</key>
+						<integer>12</integer>
+						<key>value</key>
+						<array>
+							<string>opened</string>
+							<integer>2</integer>
+						</array>
+					</dict>
+				</array>
 				<key>type</key>
 				<integer>12</integer>
 			</dict>
@@ -3361,9 +3378,9 @@
 			<key>name</key>
 			<string>Loop</string>
 			<key>offset</key>
-			<real>0.12500762939453125</real>
+			<real>0.0</real>
 			<key>position</key>
-			<real>6.3666667938232422</real>
+			<real>0.0</real>
 			<key>resolution</key>
 			<real>30</real>
 			<key>scale</key>

@@ -813,7 +813,6 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
             stationSprite.stationUUID = s.UUID;
             
             [tiledMap addChild:stationSprite z:100];
-//            [[CCDirector sharedDirector].touchDispatcher addTargetedDelegate:stationSprite priority:4 swallowsTouches:YES];
             
             _stationSprites[s.UUID] = stationSprite;
             [s addObserver:self forKeyPath:@"totalPassengersWaiting" options:NSKeyValueObservingOptionInitial context:nil];

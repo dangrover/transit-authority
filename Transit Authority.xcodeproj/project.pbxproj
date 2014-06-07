@@ -74,8 +74,6 @@
 		4D298D48178C7F8F005964E3 /* FinancesViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4D298D46178C7F8F005964E3 /* FinancesViewController.xib */; };
 		4D298D4B178C844E005964E3 /* big-blue-back.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D298D49178C844E005964E3 /* big-blue-back.png */; };
 		4D298D4C178C844E005964E3 /* big-blue-back@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D298D4A178C844E005964E3 /* big-blue-back@2x.png */; };
-		4D2C7B6F179671F600AF64E4 /* InstructionsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D2C7B6D179671F600AF64E4 /* InstructionsViewController.m */; };
-		4D2C7B70179671F600AF64E4 /* InstructionsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4D2C7B6E179671F600AF64E4 /* InstructionsViewController.xib */; };
 		4D2C7B721796733800AF64E4 /* instructions.html in Resources */ = {isa = PBXBuildFile; fileRef = 4D2C7B711796733800AF64E4 /* instructions.html */; };
 		4D3929121791F29300373AAD /* TracksInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D3929101791F29300373AAD /* TracksInspector.m */; };
 		4D3929131791F29300373AAD /* TracksInspector.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4D3929111791F29300373AAD /* TracksInspector.xib */; };
@@ -355,7 +353,6 @@
 		4DC43C7C17A9875F00BF0F8C /* TrainNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DC43C7B17A9875F00BF0F8C /* TrainNode.m */; };
 		4DCA2CAB18D4D4350016F5F6 /* MainMenu.ccbi in Resources */ = {isa = PBXBuildFile; fileRef = 4DCA2CAA18D4D4350016F5F6 /* MainMenu.ccbi */; };
 		4DCA2CB618D4D8B90016F5F6 /* MainMenuController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DCA2CB518D4D8B90016F5F6 /* MainMenuController.m */; };
-		4DCA2CBE18D502C90016F5F6 /* Music in Resources */ = {isa = PBXBuildFile; fileRef = 4DCA2CBD18D502C90016F5F6 /* Music */; };
 		4DCA2CC418D649060016F5F6 /* GameScene.ccbi in Resources */ = {isa = PBXBuildFile; fileRef = 4DCA2CC318D649060016F5F6 /* GameScene.ccbi */; };
 		4DCBB8CE17E7C7CD005C3A5C /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DCBB8CD17E7C7CD005C3A5C /* AdSupport.framework */; };
 		4DCD3F03179768C30096587C /* FinanceRowCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4DCD3F02179768C30096587C /* FinanceRowCell.xib */; };
@@ -370,6 +367,7 @@
 		4DD590BC18D6634D00EECA46 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 4DD590B818D6634D00EECA46 /* README.md */; };
 		4DD590C118D6A27800EECA46 /* CCLayerPanZoom.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DD590BF18D6A27800EECA46 /* CCLayerPanZoom.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		4DD590C218D6A27800EECA46 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 4DD590C018D6A27800EECA46 /* README.md */; };
+		4DE1F7A71943866F006AADD0 /* theme-music.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 4DE1F7A61943866F006AADD0 /* theme-music.mp3 */; };
 		4DE702FE1794CD3B00AC228B /* StreetNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DE702FD1794CD3B00AC228B /* StreetNode.m */; };
 		4DF0E8521771024100D46A07 /* Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0E8511771024100D46A07 /* Utilities.m */; };
 		4DF0E86517714C2500D46A07 /* ToolButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0E86417714C2400D46A07 /* ToolButton.m */; };
@@ -477,9 +475,6 @@
 		4D298D46178C7F8F005964E3 /* FinancesViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FinancesViewController.xib; sourceTree = "<group>"; };
 		4D298D49178C844E005964E3 /* big-blue-back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "big-blue-back.png"; path = "Resources/big-blue-back.png"; sourceTree = "<group>"; };
 		4D298D4A178C844E005964E3 /* big-blue-back@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "big-blue-back@2x.png"; path = "Resources/big-blue-back@2x.png"; sourceTree = "<group>"; };
-		4D2C7B6C179671F600AF64E4 /* InstructionsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InstructionsViewController.h; sourceTree = "<group>"; };
-		4D2C7B6D179671F600AF64E4 /* InstructionsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InstructionsViewController.m; sourceTree = "<group>"; };
-		4D2C7B6E179671F600AF64E4 /* InstructionsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InstructionsViewController.xib; sourceTree = "<group>"; };
 		4D2C7B711796733800AF64E4 /* instructions.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = instructions.html; path = Resources/instructions.html; sourceTree = "<group>"; };
 		4D39290F1791F29300373AAD /* TracksInspector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TracksInspector.h; sourceTree = "<group>"; };
 		4D3929101791F29300373AAD /* TracksInspector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TracksInspector.m; sourceTree = "<group>"; };
@@ -1014,7 +1009,6 @@
 		4DCA2CAA18D4D4350016F5F6 /* MainMenu.ccbi */ = {isa = PBXFileReference; lastKnownFileType = file; name = MainMenu.ccbi; path = "TransitAuthority.spritebuilder/Source/Resources/Published-iOS/MainMenu.ccbi"; sourceTree = SOURCE_ROOT; };
 		4DCA2CB418D4D8B90016F5F6 /* MainMenuController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainMenuController.h; sourceTree = "<group>"; };
 		4DCA2CB518D4D8B90016F5F6 /* MainMenuController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainMenuController.m; sourceTree = "<group>"; };
-		4DCA2CBD18D502C90016F5F6 /* Music */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Music; path = "TransitAuthority.spritebuilder/Source/Resources/Published-iOS/Music"; sourceTree = SOURCE_ROOT; };
 		4DCA2CC318D649060016F5F6 /* GameScene.ccbi */ = {isa = PBXFileReference; lastKnownFileType = file; name = GameScene.ccbi; path = "TransitAuthority.spritebuilder/Source/Resources/Published-iOS/GameScene.ccbi"; sourceTree = SOURCE_ROOT; };
 		4DCBB8CD17E7C7CD005C3A5C /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		4DCD3F02179768C30096587C /* FinanceRowCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FinanceRowCell.xib; sourceTree = "<group>"; };
@@ -1033,6 +1027,7 @@
 		4DD590BE18D6A27800EECA46 /* CCLayerPanZoom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCLayerPanZoom.h; sourceTree = "<group>"; };
 		4DD590BF18D6A27800EECA46 /* CCLayerPanZoom.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCLayerPanZoom.m; sourceTree = "<group>"; };
 		4DD590C018D6A27800EECA46 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
+		4DE1F7A61943866F006AADD0 /* theme-music.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = "theme-music.mp3"; path = "../TransitAuthority.spritebuilder/Source/Resources/Published-iOS/Music/theme-music.mp3"; sourceTree = "<group>"; };
 		4DE702FC1794CD3A00AC228B /* StreetNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StreetNode.h; sourceTree = "<group>"; };
 		4DE702FD1794CD3B00AC228B /* StreetNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StreetNode.m; sourceTree = "<group>"; };
 		4DF0E8501771024100D46A07 /* Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utilities.h; sourceTree = "<group>"; };
@@ -1342,7 +1337,7 @@
 				4DB2B6CC18F222B100236F75 /* station-button.png */,
 				4DB2B6CD18F222B100236F75 /* tracks-button.png */,
 				4D3CD3E819180F57001268C6 /* old-subway-map.jpg */,
-				4DCA2CBD18D502C90016F5F6 /* Music */,
+				4DE1F7A61943866F006AADD0 /* theme-music.mp3 */,
 				4D6EDB5F17E3EEC80071065B /* closebox.png */,
 				4D6EDB6017E3EEC80071065B /* closebox@2x.png */,
 				4D1A637818E0126200BD179B /* dummypixel.png */,
@@ -2131,9 +2126,6 @@
 				4DCA2CAA18D4D4350016F5F6 /* MainMenu.ccbi */,
 				4DCA2CB418D4D8B90016F5F6 /* MainMenuController.h */,
 				4DCA2CB518D4D8B90016F5F6 /* MainMenuController.m */,
-				4D2C7B6C179671F600AF64E4 /* InstructionsViewController.h */,
-				4D2C7B6D179671F600AF64E4 /* InstructionsViewController.m */,
-				4D2C7B6E179671F600AF64E4 /* InstructionsViewController.xib */,
 			);
 			name = "Main Menu";
 			sourceTree = "<group>";
@@ -2275,6 +2267,7 @@
 				4D5A962617E0E5E7008175B8 /* build-station.wav in Resources */,
 				4D5A963717E17689008175B8 /* error.aiff in Resources */,
 				4DF0E8691771579C00D46A07 /* LineToolUI.xib in Resources */,
+				4DE1F7A71943866F006AADD0 /* theme-music.mp3 in Resources */,
 				4DA76FBF17B5858E0092F74E /* upgrade-accessible.png in Resources */,
 				4D2642BA17DE3F2C006D9652 /* tileset-land-hd.png in Resources */,
 				4DAFC3F31781E525001731CF /* GameControlsPhone.xib in Resources */,
@@ -2291,7 +2284,6 @@
 				4DB2B6CE18F222B100236F75 /* station-button.png in Resources */,
 				4D3CD4091919B897001268C6 /* MenuBackgroundMontage.ccbi in Resources */,
 				4D1B11A1193FCC6A0035A98D /* NewsCycle-Bold.ttf in Resources */,
-				4DCA2CBE18D502C90016F5F6 /* Music in Resources */,
 				4D1B8D1A178B4F800033DD70 /* tool-tracks@2x.png in Resources */,
 				4D1B8D1B178B4F800033DD70 /* tool-tracks.png in Resources */,
 				4DA76FBE17B5858E0092F74E /* upgrade-long-platform.png in Resources */,
@@ -2370,7 +2362,6 @@
 				4DD4819D1919DCB100BD540D /* save.png in Resources */,
 				4D7B91A717965DB400549C23 /* bad-logo.png in Resources */,
 				4D5A962417E0E34F008175B8 /* big-boy-blues.mp3 in Resources */,
-				4D2C7B70179671F600AF64E4 /* InstructionsViewController.xib in Resources */,
 				4D2C7B721796733800AF64E4 /* instructions.html in Resources */,
 				4D3CD3FE19184974001268C6 /* Raleway-Heavy.ttf in Resources */,
 				4DCD3F03179768C30096587C /* FinanceRowCell.xib in Resources */,
@@ -2639,7 +2630,6 @@
 				4DAB18B018CD1A80008CF267 /* UITouch+CC.m in Sources */,
 				4DAB186418CD1A80008CF267 /* cpSpaceDebug.c in Sources */,
 				4DAB185C18CD1A80008CF267 /* cpPolyShape.c in Sources */,
-				4D2C7B6F179671F600AF64E4 /* InstructionsViewController.m in Sources */,
 				4DAB18A118CD1A80008CF267 /* CCSpriteFrameCache.m in Sources */,
 				4DD590BB18D6634D00EECA46 /* HKTMXTiledMap.m in Sources */,
 				4DD590BA18D6634D00EECA46 /* HKTMXLayer.m in Sources */,

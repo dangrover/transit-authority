@@ -15,8 +15,12 @@
 
 @implementation MainMenuController
 
+- (void) opened{
+    NSLog(@"Opened");
+    [[OALSimpleAudio sharedInstance] playBg:@"theme-music.mp3" loop:YES];
+}
+
 - (void) newGame{
-    
     GameScenario *scenario = [[GameScenario alloc] initWithJSON:[[NSBundle mainBundle] pathForResource:@"boston" ofType:@"json"]];
     
     GameState *state = [[GameState alloc] initWithScenario:scenario];
