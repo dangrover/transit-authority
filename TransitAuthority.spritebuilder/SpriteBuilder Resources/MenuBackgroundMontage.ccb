@@ -622,8 +622,6 @@
 						</array>
 					</dict>
 				</array>
-				<key>selected</key>
-				<true/>
 				<key>seqExpanded</key>
 				<true/>
 			</dict>
@@ -658,10 +656,10 @@
 						<key>value</key>
 						<array>
 							<real>0.0</real>
-							<real>0.0</real>
+							<real>1</real>
+							<integer>1</integer>
 							<integer>0</integer>
-							<integer>0</integer>
-							<integer>0</integer>
+							<integer>2</integer>
 						</array>
 					</dict>
 					<dict>
@@ -708,19 +706,11 @@
 						<string>Color3</string>
 						<key>value</key>
 						<array>
-							<real>0.0</real>
-							<real>0.0</real>
-							<real>0.0</real>
 							<real>0.20000000298023224</real>
+							<real>0.20000000298023224</real>
+							<real>0.20000000298023224</real>
+							<real>1</real>
 						</array>
-					</dict>
-					<dict>
-						<key>name</key>
-						<string>startOpacity</string>
-						<key>type</key>
-						<string>Float</string>
-						<key>value</key>
-						<real>0.20000000298023224</real>
 					</dict>
 					<dict>
 						<key>name</key>
@@ -729,19 +719,22 @@
 						<string>Color3</string>
 						<key>value</key>
 						<array>
-							<real>0.0</real>
-							<real>0.0</real>
-							<real>0.0</real>
-							<real>0.60000002384185791</real>
+							<real>0.70196080207824707</real>
+							<real>0.70196080207824707</real>
+							<real>0.70196080207824707</real>
+							<real>1</real>
 						</array>
 					</dict>
 					<dict>
 						<key>name</key>
-						<string>endOpacity</string>
+						<string>blendFunc</string>
 						<key>type</key>
-						<string>Float</string>
+						<string>Blendmode</string>
 						<key>value</key>
-						<real>0.60000002384185791</real>
+						<array>
+							<integer>1</integer>
+							<integer>1</integer>
+						</array>
 					</dict>
 					<dict>
 						<key>name</key>
@@ -755,6 +748,8 @@
 						</array>
 					</dict>
 				</array>
+				<key>selected</key>
+				<true/>
 			</dict>
 		</array>
 		<key>customClass</key>
