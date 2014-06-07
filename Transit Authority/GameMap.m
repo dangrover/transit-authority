@@ -7,8 +7,9 @@
 //
 
 #import "GameMap.h"
-#import "HKTMXTiledMap.h"
+#import "CCTiledMap.h"
 #import "CCTMXXMLParser.h"
+#import "CCTiledMapLayer.h"
 
 #define TILE_GID_LAND 10
 #define TILE_GID_AIRPORT 75
@@ -18,11 +19,10 @@
 @property(strong, readwrite) NSString *originalPath;
 @property(strong, readwrite) MAP_CLASS *map;
 @property(assign, readwrite) CGPoint startPosition;
-
-@property(strong, readwrite) HKTMXLayer *landLayer;
-@property(strong, readwrite) HKTMXLayer *residentialPopulationLayer;
-@property(strong, readwrite) HKTMXLayer *commericalPopulationLayer;
-@property(strong, readwrite) HKTMXLayer *elevationLayer;
+@property(strong, readwrite) MAP_LAYER_CLASS *landLayer;
+@property(strong, readwrite) MAP_LAYER_CLASS *residentialPopulationLayer;
+@property(strong, readwrite) MAP_LAYER_CLASS *commericalPopulationLayer;
+@property(strong, readwrite) MAP_LAYER_CLASS *elevationLayer;
 @end
 
 @implementation GameMap{
@@ -31,7 +31,12 @@
 
 - (id) initWithMapAtPath:(NSString *)thePath{
     if(self = [super init]){
-        self.map = [[MAP_CLASS alloc] initWithTMXFile:thePath];
+        #ifdef UNIT_TESTS
+            self.map = [[MAP_CLASS alloc] initWithFile:thePath];
+        #else
+            self.map = [[MAP_CLASS alloc] initWithTMXFile:thePath];
+        #endif
+        
         self.originalPath = thePath;
         
         // find start location
@@ -70,11 +75,11 @@
     return self.map.mapSize;
 }
 
-- (CCTMXObjectGroup *) neighborhoodNames{
+- (CCTiledMapObjectGroup *) neighborhoodNames{
     return [self.map objectGroupNamed:@"Neighborhoods"];
 }
 
-- (CCTMXObjectGroup *) streets{
+- (CCTiledMapObjectGroup *) streets{
     return [self.map objectGroupNamed:@"Streets"];
 }
 

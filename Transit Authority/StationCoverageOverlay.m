@@ -9,6 +9,7 @@
 #import "StationCoverageOverlay.h"
 #import "CCLabelTTF.h"
 #import <QuartzCore/QuartzCore.h>
+#import "CCDirector.h"
 
 @implementation StationCoverageOverlay{
     unsigned _walkTiles;
@@ -22,8 +23,8 @@
 
 - (id) init{
     if(self = [super init]){
-        _walkLabel = [[CCLabelTTF alloc] initWithString:@"WALKING" fontName:@"HelveticaNeue-CondensedBold" fontSize:22];
-        _carLabel = [[CCLabelTTF alloc] initWithString:@"DRIVING" fontName:@"HelveticaNeue-CondensedBold" fontSize:22];
+        _walkLabel = [[CCLabelTTF alloc] initWithString:@"WALKING" fontName:@"Raleway" fontSize:12];
+        _carLabel = [[CCLabelTTF alloc] initWithString:@"DRIVING" fontName:@"Raleway" fontSize:12];
         [self addChild:_walkLabel];
         [self addChild:_carLabel];
         _walkLabel.opacity = _carLabel.opacity = 175;
@@ -38,7 +39,7 @@
 
 - (void) setWalkTiles:(unsigned int)walkTiles{
     _walkTiles = walkTiles;
-    _walkLabel.position = CGPointMake(0, 16*(_walkTiles-1.5));
+    _walkLabel.position = CGPointMake(0, 16/[CCDirector sharedDirector].contentScaleFactor*(_walkTiles-1.5));
     _needsRedraw = YES;
 }
 
@@ -48,7 +49,7 @@
 
 - (void) setCarTiles:(unsigned int)carTiles{
     _carTiles = carTiles;
-    _carLabel.position = CGPointMake(0, 16*(_carTiles-1.5));
+    _carLabel.position = CGPointMake(0, 16/[CCDirector sharedDirector].contentScaleFactor*(_carTiles-1.5));
 
     _needsRedraw = YES;
 }
@@ -76,11 +77,14 @@
     if(_needsRedraw){
         [self clear];
         if(_carTiles){
-            [self drawDot:CGPointMake(0, 0) radius:16*_carTiles color:ccc4f(0, 0, 0, 0.05 + (self.makeCarPartDarker ? PARKING_DARKNESS : 0))];
+            [self drawDot:CGPointMake(0, 0) radius:16/[CCDirector sharedDirector].contentScaleFactor*_carTiles
+                    color:[CCColor colorWithCcColor4f:ccc4f(0, 0, 0, 0.05 + (self.makeCarPartDarker ? PARKING_DARKNESS : 0))]];
+            
         }
         
         if(_walkTiles){
-            [self drawDot:CGPointMake(0, 0) radius:16*_walkTiles color:ccc4f(0, 0, 0, 0.25 - (self.makeCarPartDarker ? PARKING_DARKNESS : 0))];
+            [self drawDot:CGPointMake(0, 0) radius:16/[CCDirector sharedDirector].contentScaleFactor*_walkTiles
+                    color:[CCColor colorWithCcColor4f:ccc4f(0, 0, 0, 0.25 - (self.makeCarPartDarker ? PARKING_DARKNESS : 0))]];
         }
         
         _needsRedraw = NO;

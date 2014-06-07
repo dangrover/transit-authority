@@ -3,6 +3,7 @@
  *
  * Copyright (c) 2008-2010 Ricardo Quesada
  * Copyright (c) 2011 Zynga Inc.
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,24 +25,23 @@
  *
  */
 
-
 #import "CCNode.h"
 
-/** CCScene is a subclass of CCNode that is used only as an abstract concept.
-
- CCScene an CCNode are almost identical with the difference that CCScene has its
- anchor point (by default) at the center of the screen.
-
- For the moment CCScene has no other logic than that, but in future releases it might have
- additional logic.
-
- It is a good practice to use and CCScene as the parent of all your nodes.
-*/
-@interface CCScene : CCNode
-{
-}
-/** initializes a node.
- The node will be created as "autorelease".
+/** CCScene is a subclass of CCNode and must be the parent of all your nodes. 
+ 
+ - In previous versions of Cocos2D, CCLayer was used to group nodes placed in a CCScene.
+ - In V3, this is changed, so that a simple CCNode is used in stead.
+ - Touch handling is now pr. node, so no touch setup is needed. Just set userInteractionEnabled.
+ - To reduce the footprint of a scene, when not active, resources can be loaded in onEnter, and released in onExit.
+ 
  */
--(id) init;
+@interface CCScene : CCNode
+
+/// -----------------------------------------------------------------------
+/// @name Initializing a CCScene Object
+/// -----------------------------------------------------------------------
+
+/** Initialize the node. */
+- (id)init;
+
 @end

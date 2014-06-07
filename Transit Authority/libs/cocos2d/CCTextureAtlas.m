@@ -3,6 +3,7 @@
  *
  * Copyright (c) 2008-2010 Ricardo Quesada
  * Copyright (c) 2011 Zynga Inc.
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +28,7 @@
 // cocos2d
 #import "CCTextureAtlas.h"
 #import "ccMacros.h"
-#import "CCTexture2D.h"
+#import "CCTexture.h"
 #import "CCTextureCache.h"
 #import "CCGLProgram.h"
 #import "ccGLStateCache.h"
@@ -37,9 +38,10 @@
 #import "Support/NSThread+performBlock.h"
 #import "Support/OpenGL_Internal.h"
 
+#import "CCTexture_Private.h"
+
 @interface CCTextureAtlas ()
 -(void) setupIndices;
--(void) mapBuffers;
 
 #if CC_TEXTURE_ATLAS_USE_VAO
 -(void) setupVBOandVAO;
@@ -60,30 +62,29 @@
 
 +(id) textureAtlasWithFile:(NSString*) file capacity: (NSUInteger) n
 {
-	return [[[self alloc] initWithFile:file capacity:n] autorelease];
+	return [[self alloc] initWithFile:file capacity:n];
 }
 
-+(id) textureAtlasWithTexture:(CCTexture2D *)tex capacity:(NSUInteger)n
++(id) textureAtlasWithTexture:(CCTexture *)tex capacity:(NSUInteger)n
 {
-	return [[[self alloc] initWithTexture:tex capacity:n] autorelease];
+	return [[self alloc] initWithTexture:tex capacity:n];
 }
 
 -(id) initWithFile:(NSString*)file capacity:(NSUInteger)n
 {
 	// retained in property
-	CCTexture2D *tex = [[CCTextureCache sharedTextureCache] addImage:file];
+	CCTexture *tex = [[CCTextureCache sharedTextureCache] addImage:file];
 	if( tex )
 		return [self initWithTexture:tex capacity:n];
 
 	// else
 	{
 		CCLOG(@"cocos2d: Could not open file: %@", file);
-		[self release];
 		return nil;
 	}
 }
 
--(id) initWithTexture:(CCTexture2D*)tex capacity:(NSUInteger)n
+-(id) initWithTexture:(CCTexture*)tex capacity:(NSUInteger)n
 {
 	if( (self=[super init]) ) {
 
@@ -106,7 +107,6 @@
 			if( _indices )
 				free(_indices);
 
-			[self release];
 			return nil;
 		}
 
@@ -142,9 +142,7 @@
 	glDeleteVertexArrays(1, &_VAOname);
 #endif
 
-	[_texture release];
 
-	[super dealloc];
 }
 
 -(void) setupIndices
@@ -188,7 +186,6 @@
 		glGenBuffers(2, &_buffersVBO[0]);
 
 		glBindBuffer(GL_ARRAY_BUFFER, _buffersVBO[0]);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(_quads[0]) * _capacity, _quads, GL_DYNAMIC_DRAW);
 
 		// vertices
 		glEnableVertexAttribArray(kCCVertexAttrib_Position);
@@ -203,7 +200,6 @@
 		glVertexAttribPointer(kCCVertexAttrib_TexCoords, 2, GL_FLOAT, GL_FALSE, kQuadSize, (GLvoid*) offsetof( ccV3F_C4B_T2F, texCoords));
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _buffersVBO[1]);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(_indices[0]) * _capacity * 6, _indices, GL_STATIC_DRAW);
 
 		// Must unbind the VAO before changing the element buffer.
 		ccGLBindVAO(0);
@@ -223,27 +219,8 @@
 -(void) setupVBO
 {
 	glGenBuffers(2, &_buffersVBO[0]);
-	
-	[self mapBuffers];
 }
 #endif // ! // CC_TEXTURE_ATLAS_USE_VAO
-
-
--(void) mapBuffers
-{
-	// Avoid changing the element buffer for whatever VAO might be bound.
-	ccGLBindVAO(0);
-	
-	glBindBuffer(GL_ARRAY_BUFFER, _buffersVBO[0]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(_quads[0]) * _capacity, _quads, GL_DYNAMIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _buffersVBO[1]);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(_indices[0]) * _capacity * 6, _indices, GL_STATIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-	CHECK_GL_ERROR_DEBUG();
-}
 
 #pragma mark TextureAtlas - Update, Insert, Move & Remove
 
@@ -440,7 +417,6 @@
 
 	// Update Indices
 	[self setupIndices];
-	[self mapBuffers];
 
 	_dirty = YES;
 
@@ -496,6 +472,14 @@
 	//
 	// XXX: update is done in draw... perhaps it should be done in a timer
 	if (_dirty) {
+
+        ccGLBindVAO(0);
+        
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _buffersVBO[1]);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(_indices[0]) * _capacity * 6, _indices, GL_STATIC_DRAW);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        
+        
 		glBindBuffer(GL_ARRAY_BUFFER, _buffersVBO[0]);
 		// option 1: subdata
 //		glBufferSubData(GL_ARRAY_BUFFER, sizeof(_quads[0])*start, sizeof(_quads[0]) * n , &_quads[start] );

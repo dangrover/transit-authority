@@ -43,6 +43,7 @@
 typedef struct _hashUniformEntry
 {
 	GLvoid			*value;		// value
+    size_t          length;
 	NSUInteger		location;	// Key
 	UT_hash_handle  hh;			// hash entry
 } tHashUniformEntry;
@@ -73,12 +74,12 @@ typedef void (*GLLogFunction) (GLuint program,
 
 + (id)programWithVertexShaderByteArray:(const GLchar*)vShaderByteArray fragmentShaderByteArray:(const GLchar*)fShaderByteArray
 {
-	return [[[self alloc] initWithVertexShaderByteArray:vShaderByteArray fragmentShaderByteArray:fShaderByteArray] autorelease];
+	return [[self alloc] initWithVertexShaderByteArray:vShaderByteArray fragmentShaderByteArray:fShaderByteArray];
 }
 
 + (id)programWithVertexShaderFilename:(NSString *)vShaderFilename fragmentShaderFilename:(NSString *)fShaderFilename
 {
-	return [[[self alloc] initWithVertexShaderFilename:vShaderFilename fragmentShaderFilename:fShaderFilename] autorelease];
+	return [[self alloc] initWithVertexShaderFilename:vShaderFilename fragmentShaderFilename:fShaderFilename];
 }
 
 - (id)initWithVertexShaderByteArray:(const GLchar *)vShaderByteArray fragmentShaderByteArray:(const GLchar *)fShaderByteArray
@@ -276,10 +277,9 @@ typedef void (*GLLogFunction) (GLuint program,
 
 	char *logBytes = malloc(logLength);
 	logFunc(object, logLength, &charsWritten, logBytes);
-	NSString *log = [[[NSString alloc] initWithBytes:logBytes
+	NSString *log = [[NSString alloc] initWithBytes:logBytes
 											  length:logLength
-											encoding:NSUTF8StringEncoding]
-					  autorelease];
+											encoding:NSUTF8StringEncoding];
 	free(logBytes);
 	return log;
 }
@@ -325,16 +325,30 @@ typedef void (*GLLogFunction) (GLuint program,
 
 		// value
 		element->value = malloc( bytes );
+        element->length = bytes;
 		memcpy(element->value, data, bytes );
 		
 		HASH_ADD_INT(_hashForUniforms, location, element);
 	}
 	else
 	{
-		if( memcmp( element->value, data, bytes) == 0 )
-			updated = NO;
-		else
-			memcpy( element->value, data, bytes );
+        if (element->length != bytes)
+        {
+            element->value = realloc(element->value, bytes);
+            memcpy(element->value, data, bytes);
+            element->length = bytes;
+        }
+        else
+        {
+            if( memcmp( element->value, data, bytes) == 0 )
+            {
+                updated = NO;
+            }
+            else
+            {
+                memcpy( element->value, data, bytes );
+            }
+        }
 	}
 
 	return updated;
@@ -448,7 +462,7 @@ typedef void (*GLLogFunction) (GLuint program,
 		// This doesn't give the most accurate global time value.
 		// Cocos2D doesn't store a high precision time value, so this will have to do.
 		// Getting Mach time per frame per shader using time could be extremely expensive.
-		ccTime time = director.totalFrames*director.animationInterval;
+		CCTime time = director.totalFrames*director.animationInterval;
 		
 		[self setUniformLocation:_uniforms[kCCUniformTime] withF1:time/10.0 f2:time f3:time*2 f4:time*4];
 		[self setUniformLocation:_uniforms[kCCUniformSinTime] withF1:sinf(time/8.0) f2:sinf(time/4.0) f3:sinf(time/2.0) f4:sinf(time)];
@@ -458,12 +472,6 @@ typedef void (*GLLogFunction) (GLuint program,
 	if(_flags.usesRandom)
 		[self setUniformLocation:_uniforms[kCCUniformRandom01] withF1:CCRANDOM_0_1() f2:CCRANDOM_0_1() f3:CCRANDOM_0_1() f4:CCRANDOM_0_1()];
 }
-
--(void)setUniformForModelViewProjectionMatrix;
-{
-	[self setUniformsForBuiltins];
-}
-
 
 #pragma mark -
 
@@ -487,6 +495,5 @@ typedef void (*GLLogFunction) (GLuint program,
 		free(current_element);
 	}
 
-	[super dealloc];
 }
 @end

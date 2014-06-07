@@ -3,6 +3,7 @@
  *
  * Copyright (c) 2008-2010 Ricardo Quesada
  * Copyright (c) 2011 Zynga Inc.
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,58 +26,15 @@
 
 #import "ccMacros.h"
 #import "ccTypes.h"
+#import "CCColor.h"
 
 
-@class CCTexture2D;
+@class CCTexture;
 @class CCDirector;
-
-#pragma mark - CCRGBAProtocol
-
-/// CC RGBA protocol
-@protocol CCRGBAProtocol <NSObject>
-/** sets and returns the color (tint)
- @since v0.8
- */
-@property (nonatomic) ccColor3B color;
-/** returns the displayed color */
-@property (nonatomic, readonly) ccColor3B displayedColor;
-/** whether or not color should be propagated to its children */
-@property (nonatomic, getter = isCascadeColorEnabled) BOOL cascadeColorEnabled;
-
-/** recursive method that updates display color */
-- (void)updateDisplayedColor:(ccColor3B)color;
-
-/** sets and returns the opacity.
- @warning If the the texture has premultiplied alpha then, the R, G and B channels will be modified.
- Values goes from 0 to 255, where 255 means fully opaque.
- */
-@property (nonatomic) GLubyte opacity;
-/** returns the displayed opacity */
-@property (nonatomic, readonly) GLubyte displayedOpacity;
-/** whether or not opacity should be propagated to its children */
-@property (nonatomic, getter = isCascadeOpacityEnabled) BOOL cascadeOpacityEnabled;
-
-/** recursive method that updates the displayed opacity */
-- (void)updateDisplayedOpacity:(GLubyte)opacity;
-
-@optional
-/** sets the premultipliedAlphaOpacity property.
- If set to NO then opacity will be applied as: glColor(R,G,B,opacity);
- If set to YES then opacity will be applied as: glColor(opacity, opacity, opacity, opacity );
- Textures with premultiplied alpha will have this property by default on YES. Otherwise the default value is NO
- @since v0.8
- */
--(void) setOpacityModifyRGB:(BOOL)boolean;
-/** returns whether or not the opacity will be applied using glColor(R,G,B,opacity) or glColor(opacity, opacity, opacity, opacity);
- @since v0.8
- */
- -(BOOL) doesOpacityModifyRGB;
-@end
 
 #pragma mark - CCBlendProtocol
 /**
  You can specify the blending function.
- @since v0.99.0
  */
 @protocol CCBlendProtocol <NSObject>
 /** set the source blending function for the texture */
@@ -95,13 +53,12 @@
  else
 	src=GL_SRC_ALPHA dst= GL_ONE_MINUS_SRC_ALPHA
  But you can change the blending function at any time.
- @since v0.8.0
  */
 @protocol CCTextureProtocol <CCBlendProtocol>
 /** returns the used texture */
--(CCTexture2D*) texture;
+-(CCTexture*) texture;
 /** sets a new texture. it will be retained */
--(void) setTexture:(CCTexture2D*)texture;
+-(void) setTexture:(CCTexture*)texture;
 @end
 
 #pragma mark - CCLabelProtocol
@@ -115,8 +72,6 @@
 -(NSString*) string;
 @optional
 /** sets a new label using a CString.
- It is faster than setString since it doesn't require to alloc/retain/release an NString object.
- @since v0.99.0
  */
 -(void) setCString:(char*)label;
 @end

@@ -21,7 +21,7 @@
     
     unsigned _count;
     unsigned _capacity;
-    CCProgressTimer *_progressTimer;
+    CCProgressNode *_progressTimer;
 }
 
 - (id) init{
@@ -30,17 +30,17 @@
                                                     fontName:@"Helvetica-Bold"
                                                     fontSize:11.0];
         
-        _emptyProgress = [[CCSprite alloc] initWithFile:@"progress-indicator-empty.png"];
-        _fullProgress = [[CCSprite alloc] initWithFile:@"progress-indicator-full.png"];
+        _emptyProgress = [[CCSprite alloc] initWithImageNamed:@"progress-indicator-empty.png"];
+        _fullProgress = [[CCSprite alloc] initWithImageNamed:@"progress-indicator-full.png"];
         
-        _progressTimer = [[CCProgressTimer alloc] initWithSprite:_fullProgress];
-        _progressTimer.type = kCCProgressTimerTypeRadial;
+        _progressTimer = [[CCProgressNode alloc] initWithSprite:_fullProgress];
+        _progressTimer.type = CCProgressNodeTypeRadial;
        
         
         _countLabel.anchorPoint = _emptyProgress.anchorPoint = _progressTimer.anchorPoint = CGPointMake(0.5, 0.5);
        
-        [_countLabel enableShadowWithOffset:CGSizeMake(0, -1) opacity:1 blur:0 updateImage:NO];
-        [_countLabel setFontFillColor:ccWHITE updateImage:NO];
+      //  [_countLabel enableShadowWithOffset:CGSizeMake(0, -1) opacity:1 blur:0 updateImage:NO];
+        //[_countLabel setFontFillColor:ccWHITE updateImage:NO];
         
         [self addChild:_emptyProgress];
         [self addChild:_progressTimer];
@@ -91,8 +91,9 @@
     _progressTimer.percentage = (float)_count/(float)_capacity * 100.0f;
 }
 
-- (CCTexture2D *) _textureForColor:(LineColor)c{
-    return [[CCTextureCache sharedTextureCache] addImage: [NSString stringWithFormat:@"train-pin-%d.png",c]];
+- (CCTexture *) _textureForColor:(LineColor)c{
+    return [CCTexture textureWithFile:[NSString stringWithFormat:@"train-pin-%d.png",c]];
+    //return [[CCTextureCache sharedTextureCache] addImage: [NSString stringWithFormat:@"train-pin-%d.png",c]];
 }
 
 @end

@@ -10,18 +10,15 @@
 #import "cocos2d.h"
 #import "GameState.h"
 
-@interface AppController : NSObject <UIApplicationDelegate, CCDirectorDelegate>
+@interface AppController : CCAppDelegate <UIApplicationDelegate, CCDirectorDelegate>
 {
-	UIWindow *window_;
-	UINavigationController *navController_;
+	//UIWindow *window_;
+//	UINavigationController *navController_;
     
     GameState *savedState_;
-
-	CCDirectorIOS	*director_;							// weak ref
 }
 
 @property (nonatomic, retain) UIWindow *window;
-@property (readonly) UINavigationController *navController;
 @property (readonly) CCDirectorIOS *director;
 
 - (void) exitToMainMenu;

@@ -11,13 +11,63 @@
 #import "GameScenario.h"
 #import "GameState.h"
 #import "MainGameScene.h"
-#import "MainMenuViewController.h"
-#import "TouchCanceler.h"
+#import "cocos2d.h"
+#import "CCBReader.h"
+#import "MainMenuController.h"
+
+@implementation AppController{
+    
+    MainMenuController *mmControler;
+}
+
+-(BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions{
+	
+	// Setup Cocos2D with reasonable defaults for everything.
+	// There are a number of simple options you can change.
+	// If you want more flexibility, you can configure Cocos2D yourself instead of calling setupCocos2dWithOptions:.
+	[self setupCocos2dWithOptions:@{
+                                    // Show the FPS and draw call label.
+                                    CCSetupShowDebugStats: @(NO),
+                                    
+                                    CCSetupDepthFormat: @(GL_DEPTH24_STENCIL8_OES),
+                                    CCSetupPreserveBackbuffer: @(YES)
+                                    // More examples of options you might want to fiddle with:
+                                    // (See CCAppDelegate.h for more information)
+                                    
+                                    // Use a 16 bit color buffer:
+                                    //		CCSetupPixelFormat: kEAGLColorFormatRGB565,
+                                    // Use a simplified coordinate system that is shared across devices.
+                                    //		CCSetupScreenMode: CCScreenModeFixed,
+                                    // Run in portrait mode.
+                                    //		CCSetupScreenOrientation: CCScreenOrientationPortrait,
+                                    // Run at a reduced framerate.
+                                    //		CCSetupAnimationInterval: @(1.0/30.0),
+                                    // Run the fixed timestep extra fast.
+                                    //		CCSetupFixedUpdateInterval: @(1.0/180.0),
+                                    // Make iPad's act like they run at a 2x content scale. (iPad retina 4x)
+                                    //		CCSetupTabletScale2X: @(YES),
+                                    }];
+	
+    
+    //[TestFlight setDeviceIdentifier:[[[UIDevice currentDevice] identifierForVendor] UUIDString]];
+   
+    [TestFlight takeOff:@"36d93e59-b263-4c26-a1e8-1fe37b7e934e"];
+    
+    [[UIApplication sharedApplication] setStatusBarHidden:YES];
+	return YES;
+}
 
 
-@implementation AppController
-@synthesize window=window_, navController=navController_, director=director_;
 
+- (CCScene *) startScene{
+    mmControler = [[MainMenuController alloc] init];
+    CCScene *scene = [CCBReader loadAsScene:@"MainMenu.ccbi" owner:mmControler];
+    
+    return scene;
+}
+
+
+/*
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
 	// Create the main window
@@ -68,13 +118,15 @@
     
     [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationNone];
 	
-    TouchCanceler *canceler = [[TouchCanceler alloc] init];
-    [director_.touchDispatcher addTargetedDelegate:canceler priority:0 swallowsTouches:YES];
+  //  TouchCanceler *canceler = [[TouchCanceler alloc] init];
+    //[director_.touchDispatcher addTargetedDelegate:canceler priority:0 swallowsTouches:YES];
     
     // testflight
     [TestFlight setDeviceIdentifier:[[[UIDevice currentDevice] identifierForVendor] UUIDString]];
     [TestFlight takeOff:@"36d93e59-b263-4c26-a1e8-1fe37b7e934e"];
     
+<<<<<<< HEAD
+=======
     // If we loaded a serialized game on launch, open that game now that cocos2d is ready.
     if (savedState_)
     {
@@ -94,54 +146,14 @@
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation{
     NSLog(@"should autorotate to %d? %d",interfaceOrientation, UIInterfaceOrientationIsLandscape(interfaceOrientation));
+>>>>>>> master
     
-	return UIInterfaceOrientationIsLandscape(interfaceOrientation);
+    
+	return YES;
 }
 
+*/
 
-// getting a call, pause the game
--(void) applicationWillResignActive:(UIApplication *)application
-{
-	if( [navController_ visibleViewController] == director_ )
-		[director_ pause];
-}
-
-// call got rejected
--(void) applicationDidBecomeActive:(UIApplication *)application
-{
-	if( [navController_ visibleViewController] == director_ )
-		[director_ resume];
-}
-
--(void) applicationDidEnterBackground:(UIApplication*)application
-{
-	if( [navController_ visibleViewController] == director_ )
-		[director_ stopAnimation];
-}
-
--(void) applicationWillEnterForeground:(UIApplication*)application
-{
-	if( [navController_ visibleViewController] == director_ )
-		[director_ startAnimation];
-}
-
-// application will be killed
-- (void)applicationWillTerminate:(UIApplication *)application
-{
-	CC_DIRECTOR_END();
-}
-
-// purge memory
-- (void)applicationDidReceiveMemoryWarning:(UIApplication *)application
-{
-	[[CCDirector sharedDirector] purgeCachedData];
-}
-
-// next delta time will be zero
--(void) applicationSignificantTimeChange:(UIApplication *)application
-{
-	[[CCDirector sharedDirector] setNextDeltaTimeZero:YES];
-}
 
 #pragma mark - Application State
 
@@ -182,7 +194,7 @@
     @finally {
         if (gameState)
         {
-            savedState_ = gameState;
+       //     savedState_ = gameState;
             NSLog(@"Loaded: %@", gameState);
         }
         else
@@ -193,12 +205,12 @@
 
 - (void) exitToMainMenu{
    
-    for(UIView *v in director_.view.subviews){
-        [v removeFromSuperview];
-    }
+    //for(UIView *v in director_.view.subviews){
+    //    [v removeFromSuperview];
+   // }
     
-    MainMenuViewController *mm = [[MainMenuViewController alloc] initWithNibName:nil bundle:nil];
-    [navController_ pushViewController:mm animated:NO];
+ //   MainMenuViewController *mm = [[MainMenuViewController alloc] initWithNibName:nil bundle:nil];
+   // [navController_ pushViewController:mm animated:NO];
     
 }
 @end

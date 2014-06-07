@@ -2,11 +2,10 @@
  * cocos2d for iPhone: http://www.cocos2d-iphone.org
  *
  * Copyright (C) 2009 Matt Oswald
- *
  * Copyright (c) 2009-2010 Ricardo Quesada
  * Copyright (c) 2011 Zynga Inc.
- *
  * Copyright (c) 2011 Marco Tillemans
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,10 +32,8 @@
 #import "CCTextureAtlas.h"
 #import "ccConfig.h"
 #import "ccMacros.h"
-#import "CCGrid.h"
 #import "Support/CGPointExtension.h"
-#import "CCParticleSystem.h"
-#import "CCParticleSystem.h"
+#import "CCParticleSystemBase.h"
 #import "CCShaderCache.h"
 #import "CCGLProgram.h"
 #import "ccGLStateCache.h"
@@ -46,6 +43,11 @@
 #import "Support/CCFileUtils.h"
 
 #import "kazmath/GL/matrix.h"
+
+#import "CCNode_Private.h"
+#import "CCParticleSystemBase_Private.h"
+
+#import "CCTexture_Private.h"
 
 #define kCCParticleDefaultCapacity 500
 
@@ -69,14 +71,14 @@
 /*
  * creation with CCTexture2D
  */
-+(id)batchNodeWithTexture:(CCTexture2D *)tex
++(id)batchNodeWithTexture:(CCTexture *)tex
 {
-	return [[[self alloc] initWithTexture:tex capacity:kCCParticleDefaultCapacity] autorelease];
+	return [[self alloc] initWithTexture:tex capacity:kCCParticleDefaultCapacity];
 }
 
-+(id)batchNodeWithTexture:(CCTexture2D *)tex capacity:(NSUInteger) capacity
-{
-	return [[[self alloc] initWithTexture:tex capacity:capacity] autorelease];
++(id)batchNodeWithTexture:(CCTexture *)tex capacity:(NSUInteger) capacity
+{ 
+	return [[self alloc] initWithTexture:tex capacity:capacity];
 }
 
 /*
@@ -84,25 +86,25 @@
  */
 +(id)batchNodeWithFile:(NSString*)fileImage capacity:(NSUInteger)capacity
 {
-	return [[[self alloc] initWithFile:fileImage capacity:capacity] autorelease];
+	return [[self alloc] initWithFile:fileImage capacity:capacity];
 }
 
 +(id)batchNodeWithFile:(NSString*) imageFile
 {
-	return [[[self alloc] initWithFile:imageFile capacity:kCCParticleDefaultCapacity] autorelease];
+	return [[self alloc] initWithFile:imageFile capacity:kCCParticleDefaultCapacity];
 }
 
 /*
  * init with CCTexture2D
  */
--(id)initWithTexture:(CCTexture2D *)tex capacity:(NSUInteger)capacity
+-(id)initWithTexture:(CCTexture *)tex capacity:(NSUInteger)capacity
 {
 	if (self = [super init])
 	{
 		_textureAtlas = [[CCTextureAtlas alloc] initWithTexture:tex capacity:capacity];
 
 		// no lazy alloc in this node
-		_children = [[CCArray alloc] initWithCapacity:capacity];
+		_children = [[NSMutableArray alloc] initWithCapacity:capacity];
 
 		_blendFunc.src = CC_BLEND_SRC;
 		_blendFunc.dst = CC_BLEND_DST;
@@ -118,20 +120,15 @@
  */
 -(id)initWithFile:(NSString *)fileImage capacity:(NSUInteger)capacity
 {
-	CCTexture2D *tex = [[CCTextureCache sharedTextureCache] addImage:fileImage];
+	CCTexture *tex = [[CCTextureCache sharedTextureCache] addImage:fileImage];
 	return [self initWithTexture:tex capacity:capacity];
 }
 
 -(NSString*) description
 {
-	return [NSString stringWithFormat:@"<%@ = %p | Tag = %ld>", [self class], self, (long)_tag ];
+	return [NSString stringWithFormat:@"<%@ = %p | Tag = %@>", [self class], self, _name ];
 }
 
--(void)dealloc
-{
-	[_textureAtlas release];
-	[super dealloc];
-}
 
 #pragma mark CCParticleBatchNode - composition
 
@@ -151,26 +148,18 @@
 
 	kmGLPushMatrix();
 
-	if ( _grid && _grid.active) {
-		[_grid beforeDraw];
-		[self transformAncestors];
-	}
-
 	[self transform];
 
 	[self draw];
-
-	if ( _grid && _grid.active)
-		[_grid afterDraw:self];
 
 	kmGLPopMatrix();
 }
 
 // override addChild:
--(void) addChild:(CCParticleSystem*)child z:(NSInteger)z tag:(NSInteger) aTag
+-(void) addChild:(CCParticleSystemBase*)child z:(NSInteger)z tag:(NSInteger) aTag
 {
 	NSAssert( child != nil, @"Argument must be non-nil");
-	NSAssert( [child isKindOfClass:[CCParticleSystem class]], @"CCParticleBatchNode only supports CCQuadParticleSystems as children");
+	NSAssert( [child isKindOfClass:[CCParticleSystemBase class]], @"CCParticleBatchNode only supports CCQuadParticleSystems as children");
 	NSAssert( child.texture.name == _textureAtlas.texture.name, @"CCParticleSystem is not using the same texture id");
 
 	// If this is the 1st children, then copy blending function
@@ -200,25 +189,25 @@
 // XXX research whether lazy sorting + freeing current quads and calloc a new block with size of capacity would be faster
 // XXX or possibly using vertexZ for reordering, that would be fastest
 // this helper is almost equivalent to CCNode's addChild, but doesn't make use of the lazy sorting
--(NSUInteger) addChildHelper: (CCNode*) child z:(NSInteger)z tag:(NSInteger) aTag
+-(NSUInteger) addChildHelper: (CCNode*) child z:(NSInteger)z name:(NSString*) name
 {
 	NSAssert( child != nil, @"Argument must be non-nil");
 	NSAssert( child.parent == nil, @"child already added. It can't be added again");
 
 	if( ! _children )
-		_children = [[CCArray alloc] initWithCapacity:4];
+		_children = [[NSMutableArray alloc] initWithCapacity:4];
 
 	//don't use a lazy insert
 	NSUInteger pos = [self searchNewPositionInChildrenForZ:z];
 
 	[_children insertObject:child atIndex:pos];
 
-	child.tag = aTag;
+	child.name = name;
 	[child _setZOrder:z];
 
 	[child setParent: self];
 
-	if( _isRunning ) {
+	if( _isInActiveScene ) {
 		[child onEnter];
 		[child onEnterTransitionDidFinish];
 	}
@@ -226,7 +215,7 @@
 }
 
 // Reorder will be done in this function, no "lazy" reorder to particles
--(void) reorderChild:(CCParticleSystem*)child z:(NSInteger)z
+-(void) reorderChild:(CCParticleSystemBase*)child z:(NSInteger)z
 {
 	NSAssert( child != nil, @"Child must be non-nil");
 	NSAssert( [_children containsObject:child], @"Child doesn't belong to batch" );
@@ -237,17 +226,16 @@
 	// no reordering if only 1 child
 	if( [_children count] > 1)
 	{
-		NSUInteger newIndex, oldIndex;
+		NSUInteger newIndex = 0;
+        NSUInteger oldIndex = 0;
 
 		[self getCurrentIndex:&oldIndex newIndex:&newIndex forChild:child z:z];
 
 		if( oldIndex != newIndex ) {
 
 			// reorder _children array
-			[child retain];
 			[_children removeObjectAtIndex:oldIndex];
 			[_children insertObject:child atIndex:newIndex];
-			[child release];
 
 			// save old altasIndex
 			NSUInteger oldAtlasIndex = child.atlasIndex;
@@ -258,7 +246,7 @@
 			// Find new AtlasIndex
 			NSUInteger newAtlasIndex = 0;
 			for( NSUInteger i=0;i < [_children count];i++) {
-				CCParticleSystem *node = [_children objectAtIndex:i];
+				CCParticleSystemBase *node = [_children objectAtIndex:i];
 				if( node == child ) {
 					newAtlasIndex = [child atlasIndex];
 					break;
@@ -330,7 +318,7 @@
 }
 
 // override removeChild:
--(void)removeChild: (CCParticleSystem*) child cleanup:(BOOL)doCleanup
+-(void)removeChild: (CCParticleSystemBase*) child cleanup:(BOOL)doCleanup
 {
 	// explicit nil handling
 	if (child == nil)
@@ -354,7 +342,7 @@
 
 -(void)removeChildAtIndex:(NSUInteger)index cleanup:(BOOL) doCleanup
 {
-	[self removeChild:(CCParticleSystem *)[_children objectAtIndex:index] cleanup:doCleanup];
+	[self removeChild:(CCParticleSystemBase *)[_children objectAtIndex:index] cleanup:doCleanup];
 }
 
 -(void)removeAllChildrenWithCleanup:(BOOL)doCleanup
@@ -408,7 +396,7 @@
 #pragma mark CCParticleBatchNode - add / remove / reorder helper methods
 
 // add child helper
--(void) insertChild:(CCParticleSystem*) pSystem inAtlasAtIndex:(NSUInteger)index
+-(void) insertChild:(CCParticleSystemBase*) pSystem inAtlasAtIndex:(NSUInteger)index
 {
 	pSystem.atlasIndex = index;
 
@@ -433,10 +421,9 @@
 //rebuild atlas indexes
 -(void) updateAllAtlasIndexes
 {
-	CCParticleSystem *child;
 	NSUInteger index = 0;
 
-	CCARRAY_FOREACH(_children,child)
+    for (CCParticleSystemBase *child in _children)
 	{
 		child.atlasIndex = index;
 		index += child.totalParticles;
@@ -453,7 +440,7 @@
 	}
 }
 
--(void) setTexture:(CCTexture2D*)texture
+-(void) setTexture:(CCTexture*)texture
 {
 	_textureAtlas.texture = texture;
 
@@ -465,7 +452,7 @@
 	}
 }
 
--(CCTexture2D*) texture
+-(CCTexture*) texture
 {
 	return _textureAtlas.texture;
 }

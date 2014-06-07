@@ -10,13 +10,16 @@
 #import "Utilities.h"
 #import "UIColor+Cocos.h"
 
+#import "CCDrawingPrimitives.h"
+
 #define LINE_CLICK_THRESHOLD 30
 
 @implementation TracksNode
 
 - (void)draw {
     
-    ccDrawInit();
+ //   ccDrawInit();
+    
     
     CGFloat pixelDistance = PointDistance(self.start, self.end);
   
@@ -33,7 +36,7 @@
         
         glLineWidth(lineWidth * CC_CONTENT_SCALE_FACTOR());
         ccDrawLine(self.start, self.end);
-    
+        
     }else{
         // multi lines
         int w = MIN(20,ceil(50.0f/self.segment.lines.count));
@@ -69,20 +72,24 @@
         }
     }
     
-    ccDrawFree();
+   // ccDrawLine();
 }
 
 
-- (BOOL)ccTouchBegan:(UITouch *)touch withEvent:(UIEvent *)event{
-    return [self _touchIsOnLine:touch];
+- (void) touchBegan:(UITouch *)touch withEvent:(UIEvent *)event{
+//    return [self _touchIsOnLine:touch];
 }
 
-- (void)ccTouchMoved:(UITouch *)touch withEvent:(UIEvent *)event{
+- (BOOL)hitTestWithWorldPos:(CGPoint)pos{
+    return [self _pointIsOnLine:[self convertToNodeSpace:pos]];
+}
+
+- (void) touchMoved:(UITouch *)touch withEvent:(UIEvent *)event{
 
 }
 
-- (void)ccTouchEnded:(UITouch *)touch withEvent:(UIEvent *)event{
-    if([self _touchIsOnLine:touch]){
+- (void) touchEnded:(UITouch *)touch withEvent:(UIEvent *)event{
+    if([self _pointIsOnLine:[touch locationInNode:self]]){
         [self.delegate tracks:self gotClicked:[touch locationInView:[CCDirector sharedDirector].view]];
     }
 }
@@ -99,8 +106,9 @@
     return r;
 }
 
-- (BOOL) _touchIsOnLine:(UITouch *)touch{
-    CGPoint touchLoc = [self convertTouchToNodeSpace:touch];
+- (BOOL) _pointIsOnLine:(CGPoint)touchLoc{
+    
+   // CGPoint touchLoc = [self convertToNodeSpace:touchLocGlobal];//[touch locationInNode:self];
     if(!CGRectContainsPoint([self lineRect], touchLoc)){
         return NO;
     }else{

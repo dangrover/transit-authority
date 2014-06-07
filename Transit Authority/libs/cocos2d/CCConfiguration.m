@@ -3,6 +3,7 @@
  *
  * Copyright (c) 2010 Ricardo Quesada
  * Copyright (c) 2011 Zynga Inc.
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -76,12 +77,7 @@ static char * glExtensions;
 #elif defined(__CC_PLATFORM_MAC)
 - (NSString*)getMacVersion
 {
-    SInt32 versionMajor, versionMinor, versionBugFix;
-	Gestalt(gestaltSystemVersionMajor, &versionMajor);
-	Gestalt(gestaltSystemVersionMinor, &versionMinor);
-	Gestalt(gestaltSystemVersionBugFix, &versionBugFix);
-
-	return [NSString stringWithFormat:@"%d.%d.%d", versionMajor, versionMinor, versionBugFix];
+    return([[NSProcessInfo processInfo] operatingSystemVersionString]);
 }
 #endif // __CC_PLATFORM_MAC
 
@@ -130,27 +126,39 @@ static char * glExtensions;
 {
 	NSInteger ret=-1;
 	
-#ifdef __CC_PLATFORM_IOS
+#if defined(APPORTABLE)
+    if( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+	{
+		ret = ([UIScreen mainScreen].scale > 1) ? CCDeviceiPadRetinaDisplay : CCDeviceiPad;
+	}
+	else if( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone )
+	{
+		if( [UIScreen mainScreen].scale > 1 ) {
+			ret = CCDeviceiPhoneRetinaDisplay;
+		} else
+			ret = CCDeviceiPhone;
+	}
+#elif defined(__CC_PLATFORM_IOS)
 	
 	if( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
 	{
-		ret = (CC_CONTENT_SCALE_FACTOR() == 2) ? kCCDeviceiPadRetinaDisplay : kCCDeviceiPad;
+		ret = ([UIScreen mainScreen].scale == 2) ? CCDeviceiPadRetinaDisplay : CCDeviceiPad;
 	}
 	else if( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone )
 	{
 		// From http://stackoverflow.com/a/12535566
 		BOOL isiPhone5 = CGSizeEqualToSize([[UIScreen mainScreen] preferredMode].size,CGSizeMake(640, 1136));
 		
-		if( CC_CONTENT_SCALE_FACTOR() == 2 ) {
-			ret = isiPhone5 ? kCCDeviceiPhone5RetinaDisplay : kCCDeviceiPhoneRetinaDisplay;
+		if( [UIScreen mainScreen].scale == 2 ) {
+			ret = isiPhone5 ? CCDeviceiPhone5RetinaDisplay : CCDeviceiPhoneRetinaDisplay;
 		} else
-			ret = isiPhone5 ? kCCDeviceiPhone5 : kCCDeviceiPhone;
+			ret = isiPhone5 ? CCDeviceiPhone5 : CCDeviceiPhone;
 	}
 	
 #elif defined(__CC_PLATFORM_MAC)
 	
 	// XXX: Add here support for Mac Retina Display
-	ret = kCCDeviceMac;
+	ret = CCDeviceMac;
 	
 #endif // __CC_PLATFORM_MAC
 	
@@ -170,7 +178,7 @@ static char * glExtensions;
 		NSAssert( glExtensions, @"OpenGL not initialized!");
 
 #ifdef __CC_PLATFORM_IOS
-		if( _OSVersion >= kCCiOSVersion_4_0 )
+		if( _OSVersion >= CCSystemVersion_iOS_4_0 )
 			glGetIntegerv(GL_MAX_SAMPLES_APPLE, &_maxSamplesAllowed);
 		else
 			_maxSamplesAllowed = 0;
@@ -296,6 +304,7 @@ static char * glExtensions;
 		  );
 
 	printf("cocos2d: OS version: %s (0x%08x)\n", [OSVer UTF8String], _OSVersion);
+	printf("cocos2d: %ld bit runtime\n", 8*sizeof(long));
 	
 	printf("cocos2d: GL_VENDOR:   %s\n", glGetString(GL_VENDOR) );
 	printf("cocos2d: GL_RENDERER: %s\n", glGetString ( GL_RENDERER   ) );

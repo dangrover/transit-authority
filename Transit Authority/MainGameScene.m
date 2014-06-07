@@ -8,7 +8,7 @@
 
 #import "cocos2d.h"
 #import "MainGameScene.h"
-#import "CCTMXTiledMap.h"
+#import "CCTiledMap.h"
 #import "UIColor+Cocos.h"
 #import "CCTMXTiledMap+Extras.h"
 #import "Utilities.h"
@@ -23,7 +23,6 @@
 #import "TracksInspector.h"
 #import "StationInspector.h"
 #import "StationNode.h"
-#import "CCLayerPanZoom.h"
 #import "TrainNode.h"
 #import "StreetNode.h"
 #import "GoalsViewController.h"
@@ -31,26 +30,26 @@
 #import "TAModal.h"
 #import "POIPlaceholderNode.h"
 #import "PointOfInterest.h"
+#import "CCLayerPanZoom.h"
+#import "CCScrollView.h"
+#import "CCBReader.h"
+#import "CCButton.h"
 
 #define TRAIN_UPDATE_INTERVAL 0.5
 #define EVENT_LOOP_INTERVAL (1.0/60.0)
 #define STAT_UPDATE_INTERVAL 6
 #define UI_CORNER_RADIUS 8
 
-
-typedef enum{
-    UIModeNone,
-    UIModePlaceStation,
-    UIModePlaceTracks,
-    UIModeManageLines,
-    UIModeData,
-    UIModeMore,
-} UIMode;
+#define UI_FADE_DURATION 0.1
 
 @interface MainGameScene()<FinancesViewDelegate, CCLayerPanZoomClickDelegate, PopoverViewDelegate, StationNodeDelegate, TracksNodeDelegate, GoalsDelegate>
 
 @property(strong, nonatomic, readwrite) GameState *gameState;
 @property(strong, nonatomic, readwrite) HeatMapNode *heatMap;
+
+@property(strong, nonatomic, readwrite) GameTool *currentTool;
+
+//@property(strong) CCScrollView *scrollView;
 @end
 
 ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
@@ -80,8 +79,6 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     {0, 0, 255, 50}, // 11pm
 };
 
-
-
 @implementation MainGameScene{
     @public
     
@@ -90,9 +87,10 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     BOOL _namesLayerOn;
     BOOL _populationLayerOn;
     
+    BOOL _touchesHandledByTool;
+    
     NSDateFormatter *_dateFormatter;
-    UIMode uiMode;
-    GameTool *currentTool;
+ 
     
     float currentSpeed;
     
@@ -123,13 +121,54 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     
     AVQueuePlayer *_musicPlayer;
     
-    CCLayerColor *_dayNightOverlay;
+    CCNodeColor *_dayNightOverlay;
     
     TAModal *_myModalViewController;
+    
+    CCLabelTTF *cityNameLabel;
+    CCLabelTTF *dateLabel;
+    CCScrollView *scrollView;
+//    CCLabelTTF *moneyLabel;
+    CCButton *cashButton;
+    
+    CCNode *topNode;
+    CCNode *_moreMenuNode;
+    CCNode *_buildSubmenuNode;
+    
+    LinesTool *linesTool;
+    UIView *_linesTopView;
+    
+    CCNode *buildButtonGroup;
+    CCButton *buildButton;
+    CCNode *menuButtonGroup;
+    CCButton *menuButton;
+    CCSprite *speedIcon;
+    
+    CCButton *goalsButton;
+    
+    CCButton *manageButton;
+    
+    CCNode *manageButtonGroup;
+    
+    CCButton *stationButton;
+    CCButton *tracksButton;
+    
+    CCNode *dataButtonGroup;
+    CCButton *dataButton;
+    UIView *_dataTopView;
+    DataTool *dataTool;
+    
+    CCNode *backgroundPlaceholderNode;
 }
 
 - (id) initWithGameState:(GameState *)theState{
     if(self = [super init]){
+        
+        topNode = [CCBReader load:@"GameScene" owner:self];
+        [self addChild:topNode];
+        
+        [backgroundPlaceholderNode removeFromParentAndCleanup:YES];
+        
         self.gameState = theState;
         currentSpeed = 0;
         
@@ -141,7 +180,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
         _unbuiltPOISprites = [NSMutableDictionary dictionary];
         
         _dateFormatter = [[NSDateFormatter alloc] init];
-        _dateFormatter.dateFormat = @"h:mma, LLL d";
+        _dateFormatter.dateFormat = @"LLL d, h:mma";
         _dateFormatter.AMSymbol = @"am";
         _dateFormatter.PMSymbol = @"pm";
         _dateFormatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
@@ -149,8 +188,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
         // load the map
         tiledMap = theState.map.map;
         
-        audioEngine = [[SimpleAudioEngine alloc] init];
-        [audioEngine preloadEffect:SoundEffect_BuildStation];
+        [[OALSimpleAudio sharedInstance] preloadEffect:SoundEffect_BuildStation];
     }
 
     return self;
@@ -162,66 +200,33 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 
 -(void) onEnter{
    
+    self.userInteractionEnabled = YES;
+    
     _panZoomLayer = [[CCLayerPanZoom alloc] init];
-   
-    
     _panZoomLayer.mode = kCCLayerPanZoomModeSheet;
-    _panZoomLayer.minScale = 1.0f/2.0f;
-    _panZoomLayer.maxScale = 1;
-   // _panZoomLayer.panBoundsRect = CGRectMake(0,0,mapSize.width, mapSize.height);
-    
-    _panZoomLayer.delegate = self;
+    _panZoomLayer.minScale = 1.0f/5.0f;
+    _panZoomLayer.maxScale = 1.0f/2.0f;
     _panZoomLayer.rubberEffectRatio = 0;
+    _panZoomLayer.userInteractionEnabled = YES;
+    _panZoomLayer.delegate = self;
+    
     
     CGPoint startPos = [self.gameState.map.landLayer positionAt:self.gameState.map.startPosition];
-    
+  
     tiledMap.position = CGPointMake(-1*(startPos.x - (self.boundingBox.size.width/2)),
                                     -1*(startPos.y - (self.boundingBox.size.height/2)));
     
-   
-    
-    
+
     [_panZoomLayer addChild:tiledMap];
-    //NSLog(@"self bonding = %@",NSStringFromCGRect(self.boundingBox));
-    //_panZoomLayer.position = CGPointMake(self.boundingBox.size.width/2, self.boundingBox.size.height/2);
-    [self addChild:_panZoomLayer];
-    _panZoomLayer.scale = _panZoomLayer.maxScale;
+    _panZoomLayer.position = CGPointMake(self.boundingBox.size.width/2, self.boundingBox.size.height/2);
     
-   
+    [self addChild:_panZoomLayer z:-100];
+    _panZoomLayer.scale = _panZoomLayer.minScale;
+    
     [self _makeStreetSprites];
     [self _makeNeighborhoodNameSprites];
+
     
-    
-    UIView *glView = [[CCDirector sharedDirector] view];
-    [[UINib nibWithNibName:@"GameControlsPhone" bundle:nil] instantiateWithOwner:self options:nil];
-    
-    gameControlsLeft.frame = CGRectMake(-1 * UI_CORNER_RADIUS,
-                                        glView.frame.size.height - gameControlsLeft.frame.size.height + UI_CORNER_RADIUS,
-                                        gameControlsLeft.frame.size.width,
-                                        gameControlsLeft.frame.size.height);
-    
-    gameControlsCenter.frame = CGRectMake((glView.frame.size.width/2.0) - (gameControlsCenter.frame.size.width/2.0),
-                                          glView.frame.size.height - gameControlsCenter.frame.size.height + UI_CORNER_RADIUS,
-                                          gameControlsCenter.frame.size.width,
-                                          gameControlsCenter.frame.size.height);
-    
-    gameControlsRight.frame = CGRectMake(glView.frame.size.width - gameControlsRight.frame.size.width + UI_CORNER_RADIUS,
-                                         glView.frame.size.height - gameControlsRight.frame.size.height + UI_CORNER_RADIUS,
-                                         gameControlsRight.frame.size.width,
-                                         gameControlsRight.frame.size.height);
-    
-    NSArray *toStyle = @[gameControlsLeft,toolsBackground, gameControlsRight, toolHelpOverlay];
-    for(UIView *v in toStyle){
-        [self _styleOverlay:v];
-    }
-    
-    
-    [glView addSubview:gameControlsLeft];
-    [glView addSubview:gameControlsCenter];
-    [glView addSubview:gameControlsRight];
-    
-   // [glView addSubview:cameraSliders];
-    //cameraSliders.frame = CGRectMake(0, 0, 200, 200);
     
     NSArray *gameStatePropsToObserve = @[@"currentCash", @"currentDate", @"cityName", @"assignedTrains", @"stations", @"tracks", @"poisWithoutStations"];
     for(NSString *p in gameStatePropsToObserve){
@@ -229,9 +234,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     }
     
     
-    
-    [self setMode:UIModeNone];
-    [self regularSpeed:nil];
+    [self setSpeed:1];
     [self _updateGoalDisplay];
     
     // Music
@@ -247,31 +250,29 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     [_musicPlayer play];
     #endif
     
-    
-    
-    CGSize screenSize = [[UIScreen mainScreen] bounds].size;
-    
+    CGSize screenSize = [CCDirector sharedDirector].viewSizeInPixels;
     self.heatMap = [[HeatMapNode alloc] initWithMap:self.gameState.map
-                                   viewportSize:CGSizeMake(2*ceil(screenSize.height/tiledMap.tileSize.width),
-                                                           2*ceil(screenSize.width/tiledMap.tileSize.width))
+                                   viewportSize:CGSizeMake(2*ceil(screenSize.width/tiledMap.tileSize.width),
+                                                           2*ceil(screenSize.height/tiledMap.tileSize.width))
                                      bufferSize:CGSizeMake(26, 26)];
+    
     [tiledMap addChild:self.heatMap z:90];
     
     self.heatMap.currentPosition = self.gameState.map.startPosition;
     [self.heatMap refresh];
     
     [self setNamesVisible:YES];
-    //[self setPopulationVisible:NO];
     self.showPopulationHeatmap = NO;
     
     // Don't show any of the real layers in the map for density,
     // because we're rendering it in the heatmap.
     self.gameState.map.residentialPopulationLayer.visible = self.gameState.map.commericalPopulationLayer.visible = NO;
     
+    _dayNightOverlay = [CCNodeColor nodeWithColor:[CCColor clearColor]];
+
     // Hide elevation layer:
     self.gameState.map.elevationLayer.visible = NO;
-    
-    _dayNightOverlay = [CCLayerColor layerWithColor:(ccColor4B){0,0,0,0}];
+
     _dayNightOverlay.opacity = 0;
     [self addChild:_dayNightOverlay];
     
@@ -284,12 +285,49 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     [nc addObserver:self selector:@selector(goalCompleted:) name:GameStateNotification_AccomplishedGoal    object:self.gameState];
     [nc addObserver:self selector:@selector(_updateGoalDisplay) name:GameStateNotification_CheckedGoals object:self.gameState];
     
+    
+    [self schedule:@selector(clockTick) interval:REAL_SECONDS_PER_TICK];
+    
+    [self _changeZooms];
+    
     [super onEnter];
 }
 
-- (void) onEnterTransitionDidFinish{
-    [self schedule:@selector(clockTick)];
-    [super onEnterTransitionDidFinish];
+- (void)touchBegan:(UITouch *)touch withEvent:(UIEvent *)event{
+    
+    if([self.currentTool touchBegan:touch withEvent:event]){
+        _touchesHandledByTool = YES;
+    }else{
+        [super touchBegan:touch withEvent:event];
+    }
+}
+
+- (void)touchMoved:(UITouch *)touch withEvent:(UIEvent *)event{
+    if(_touchesHandledByTool){
+        [self.currentTool touchMoved:touch withEvent:event];
+    }else{
+        [super touchMoved:touch withEvent:event];
+    }
+}
+
+- (void)touchEnded:(UITouch *)touch withEvent:(UIEvent *)event{
+    if(_touchesHandledByTool){
+        [self.currentTool touchEnded:touch withEvent:event];
+    }else{
+        [super touchEnded:touch withEvent:event];
+    }
+    
+    _touchesHandledByTool = NO;
+}
+
+- (void)touchCancelled:(UITouch *)touch withEvent:(UIEvent *)event{
+    if(_touchesHandledByTool){
+        [self.currentTool touchCancelled:touch withEvent:event];
+    }else{
+        [super touchCancelled:touch withEvent:event];
+    }
+    
+    _touchesHandledByTool = NO;
 }
 
 - (void) setAllowPanning:(BOOL)allowPanning{
@@ -297,7 +335,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 }
 
 - (void) layerPanZoom:(CCLayerPanZoom *)sender updatedPosition:(CGPoint)pos scale:(CGFloat)scale{
-    //NSLog(@"POSITION IS NOW %@", NSStringFromCGPoint(pos));
+    //NSLog(@"PAN ZOOM LAYER MOVED. POSITION IS NOW %@", NSStringFromCGPoint(pos));
     
     CGPoint centerOfScreenInWorldSpace = [self convertToWorldSpace:CGPointMake(self.boundingBox.size.width/2,self.boundingBox.size.height/2)];
     
@@ -305,8 +343,15 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     
     //NSLog(@"Current pos = %@", NSStringFromCGPoint(_heatMap.currentPosition));
     
-    [_heatMap refresh];
+    [self.heatMap refresh];
     [self _changeZooms];
+}
+
+- (void) layerPanZoom: (CCLayerPanZoom *) sender
+       clickedAtPoint: (CGPoint) aPoint
+             tapCount: (NSUInteger) tapCount{
+    // Not used
+    
 }
 
 - (void) _changeZooms{
@@ -320,19 +365,21 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
         n.scale = [self scaleConsideringZoom:1 useContentScale:NO];
     }
     for(POIPlaceholderNode *n in _unbuiltPOISprites.allValues){
-        n.scale = [self scaleConsideringZoom:1 useContentScale:NO];
+        n.scale = [self scaleConsideringZoom:1 useContentScale:NO]/2.0f;
     }
     
     [self.gameState.map.landLayer updateScale:_panZoomLayer.scale];
+    [self.heatMap refresh];
+    
 }
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context{
     if([keyPath isEqual:@"currentCash"]){
-        [cashButton setTitle:FormatCurrency(@(self.gameState.currentCash))
-                    forState:UIControlStateNormal];
+        cashButton.title = FormatCurrency(@(self.gameState.currentCash));
     }
     else if([keyPath isEqual:@"currentDate"]){
         // update displayed date
-        dateLabel.text = [_dateFormatter stringFromDate:[NSDate dateWithTimeIntervalSince1970:self.gameState.currentDate]];
+        dateLabel.string = [[_dateFormatter stringFromDate:[NSDate dateWithTimeIntervalSince1970:self.gameState.currentDate]] uppercaseString];
+        
         
         struct tm info = self.gameState.currentDateComponents;
         
@@ -345,12 +392,13 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
             secondColor.b*progressThroughHour + firstColor.b*(1.0f-progressThroughHour),
             secondColor.a*progressThroughHour + firstColor.a*(1.0f-progressThroughHour)};
         
-        _dayNightOverlay.color = (ccColor3B){mix.r, mix.g, mix.b};
-        _dayNightOverlay.opacity = mix.a;
+        _dayNightOverlay.color = [CCColor colorWithRed:mix.r green:mix.g blue:mix.b alpha:mix.a];
+        //_dayNightOverlay.opacity = mix.a;
+        
         //NSLog(@"setting color for hour %d", hour);
         
     }else if([keyPath isEqual:@"cityName"]){
-        cityNameLabel.text = self.gameState.originalScenario.cityName;
+        cityNameLabel.string = self.gameState.originalScenario.cityName;
     }else if([keyPath isEqual:@"assignedTrains"]){
         [self _createAndRemoveTrainSprites];
         [self _updateTrainSpritePositions];
@@ -421,13 +469,36 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 }
 
 - (double) scaleConsideringZoom:(double)correctScale useContentScale:(BOOL)useContentScale{
-    // Put a slight damper on the extent to which things get smaller as we zoom out.
-    // Also, account for screen resolution.
-    if(useContentScale){
-        return correctScale / _panZoomLayer.scale * CC_CONTENT_SCALE_FACTOR();
-    }else{
-        return correctScale / _panZoomLayer.scale;
+    return correctScale / _panZoomLayer.scale;
+}
+
+- (void) newSpeed{
+    if(currentSpeed == 0){
+        currentSpeed = 1;
+    }else if(currentSpeed == 1){
+        currentSpeed = 4;
+    }else if(currentSpeed == 4){
+        currentSpeed = 0;
     }
+    [self _updateSpeedIcon];
+}
+
+- (void) _updateSpeedIcon{
+    
+    NSString *iconName = nil;
+    if(currentSpeed == 0){
+        iconName = @"pause.png";
+    }else if(currentSpeed == 1){
+        iconName = @"play.png";
+    }else if(currentSpeed == 4){
+        iconName = @"fast-forward.png";
+    }else{
+        NSLog(@"UNKNOWN SPEED");
+        return;
+    }
+    
+    CCTexture *tex = [CCTexture textureWithFile:iconName];
+    speedIcon.texture = tex;
 }
 
 - (void) setSpeed:(float)speedMultiplier{
@@ -446,144 +517,199 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
        
     [self _updateTrainSpritePositions];
 }
-       
-- (void) setMode:(UIMode)newMode{
-    [self _killCurrentTool];
+
+
+- (void) setCurrentTool:(GameTool *)aCurrentTool{
+    _currentTool = aCurrentTool;
+    _currentTool.parent = self;
+    [_currentTool started];
+}
+
+- (void) buildButtonPressed{
     
-    if(newMode == UIModeNone){
-        [self setAllowPanning:YES];
-    }
-    else if (newMode == UIModePlaceStation){
-        NSLog(@"station mode");
-        PlaceStationTool *placeStation = [[PlaceStationTool alloc] init];
-        [self _setCurrentTool:placeStation fromButton:stationButton];
+    NSLog(@"Build");
+    
+    if(!_buildSubmenuNode){
+        buildButton.selected = YES;
+        _buildSubmenuNode = [CCBReader load:@"BuildSubmenu" owner:self];
+    
+        _buildSubmenuNode.positionType = buildButtonGroup.positionType;
+        _buildSubmenuNode.position = CGPointMake(buildButtonGroup.position.x + buildButtonGroup.contentSize.width + 1,
+                                                 buildButtonGroup.position.y);
         
-    }else if (newMode == UIModePlaceTracks){
-        NSLog(@"tracks mode");
-        PlaceTracksTool *placeTracks = [[PlaceTracksTool alloc] init];
-        [self _setCurrentTool:placeTracks fromButton:tracksButton];
-    }
-    else if(newMode == UIModeData){
-        [self _setCurrentTool:[[DataTool alloc] init] fromButton:dataToolButton];
-    }
-    else if(newMode == UIModeManageLines){
-        [self _setCurrentTool:[[LinesTool alloc] init] fromButton:linesButton];
-    }else if(newMode == UIModeMore){
-        [self _setCurrentTool:[[MoreTool alloc] init] fromButton:moreButton];
-    }
-    
-    uiMode = newMode;
-}
-
-- (void) _setCurrentTool:(GameTool *)newTool fromButton:(UIButton *)theButton{
-    currentTool = newTool;
-    newTool.parent = self;
-    [[[CCDirector sharedDirector] touchDispatcher] addTargetedDelegate:currentTool priority:3 swallowsTouches:YES];
-    theButton.selected = YES;
-    
-    [currentTool started];
-    
-    UIView *glView = [[CCDirector sharedDirector] view];
-    UIView *newView = nil;
-
-    if(newTool.showsHelpText){
-        toolHelpLabel.text = newTool.helpText;
+        [topNode addChild:_buildSubmenuNode];
+        _buildSubmenuNode.cascadeOpacityEnabled = YES;
+        _buildSubmenuNode.opacity = 0;
+        [_buildSubmenuNode runAction:[CCActionFadeIn actionWithDuration:UI_FADE_DURATION]];
         
-        toolHelpOverlay.frame = CGRectMake(gameControlsCenter.frame.origin.x + UI_CORNER_RADIUS,
-                                           gameControlsCenter.frame.origin.y - (UI_CORNER_RADIUS*2),
-                                           gameControlsCenter.frame.size.width - (UI_CORNER_RADIUS*2),
-                                           gameControlsCenter.frame.size.height - (UI_CORNER_RADIUS*3) - 3);
-        newView = toolHelpOverlay;
+    }else{
+        self.currentTool = nil;
+        buildButton.selected = NO;
+        [_buildSubmenuNode runAction:[CCActionSequence actions:[CCActionFadeOut actionWithDuration:UI_FADE_DURATION],[CCActionCallBlock actionWithBlock:^{
+                [_buildSubmenuNode removeFromParentAndCleanup:YES];
+                _buildSubmenuNode = nil;
+        }], nil]];
+    }
+}
+
+- (void) manageButtonPressed{
+  
+    if(!linesTool){
+        manageButton.selected = YES;
+        linesTool = [[LinesTool alloc] init];
+        linesTool.parent = self;
         
-    }else if(newTool.viewController){
-        newTool.viewController.view.frame = CGRectMake(gameControlsCenter.frame.origin.x + UI_CORNER_RADIUS,
-                                                 gameControlsCenter.frame.origin.y - newTool.viewController.view.frame.size.height + UI_CORNER_RADIUS*2 - 2,
-                                                 gameControlsCenter.frame.size.width - (UI_CORNER_RADIUS*2),
-                                                 newTool.viewController.view.frame.size.height);
-        newView = newTool.viewController.view;
+        _linesTopView = linesTool.viewController.view;
+        UIView *gameView = [[CCDirector sharedDirector] view];
+        
+        _linesTopView.frame = CGRectMake(manageButtonGroup.position.x + manageButtonGroup.contentSize.width + 1,
+                                         manageButtonGroup.position.y,
+                                         240,
+                                         gameView.frame.size.height - manageButtonGroup.position.y);
+        _linesTopView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
+        _linesTopView.alpha = 0;
+        [gameView addSubview:_linesTopView];
+        [UIView animateWithDuration:UI_FADE_DURATION animations:^{
+            _linesTopView.alpha = 1;
+        } completion:^(BOOL finished) {}];
+        
+    }else{
+        manageButton.selected = NO;
+        
+        [UIView animateWithDuration:UI_FADE_DURATION animations:^{
+            _linesTopView.alpha = 0;
+        } completion:^(BOOL finished) {
+            [_linesTopView removeFromSuperview];
+        }];
+        
+        _linesTopView = nil;
+        linesTool.parent = nil;
+        linesTool = nil;
+    }
+}
+
+- (void) dataButtonPressed{
+    if(!dataTool){
+        dataButton.selected = YES;
+        
+        dataTool = [[DataTool alloc] init];
+        dataTool.parent = self;
+        
+        _dataTopView = dataTool.navController.view;
+        UIView *gameView = [[CCDirector sharedDirector] view];
+        
+        _dataTopView.frame = CGRectMake(manageButtonGroup.position.x + manageButtonGroup.contentSize.width + 1,
+                                         manageButtonGroup.position.y,
+                                         240,
+                                         gameView.frame.size.height - manageButtonGroup.position.y);
+        
+        _dataTopView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
+        _dataTopView.alpha = 0;
+        
+        [dataTool started];
+        [gameView addSubview:_dataTopView];
+        
+        [UIView animateWithDuration:UI_FADE_DURATION
+                         animations:^{
+                             _dataTopView.alpha = 1;
+                         }
+                         completion:^(BOOL finished){}];
+        
+    }else{
+        dataButton.selected = NO;
+        
+        [dataTool finished];
+        [UIView animateWithDuration:UI_FADE_DURATION animations:^{
+            _dataTopView.alpha = 0;
+        } completion:^(BOOL finished) {
+            [_dataTopView removeFromSuperview];
+        }];
+        
+        _dataTopView = nil;
+        dataTool.parent = nil;
+        dataTool = nil;
+    }
+}
+
+- (void) moreButtonPressed{
+
+    NSLog(@"Menu");
+    
+    if(!_moreMenuNode){
+        _moreMenuNode = [CCBReader load:@"MoreSubmenu"];
+    
+        menuButton.selected = YES;
+        _moreMenuNode.positionType = menuButtonGroup.positionType;
+        _moreMenuNode.position = CGPointMake(menuButtonGroup.position.x  + menuButtonGroup.contentSize.width + 1,
+                                             menuButtonGroup.position.y - 1);
+        
+        [topNode addChild:_moreMenuNode];
+        _moreMenuNode.cascadeOpacityEnabled = YES;
+        _moreMenuNode.opacity = 0;
+        [_moreMenuNode runAction:[CCActionFadeIn actionWithDuration:UI_FADE_DURATION]];
+        
+    }else{
+        menuButton.selected = NO;
+        
+        [_moreMenuNode runAction:[CCActionSequence actions:[CCActionFadeOut actionWithDuration:UI_FADE_DURATION],[CCActionCallBlock actionWithBlock:^{
+            [_moreMenuNode removeFromParentAndCleanup:YES];
+            _moreMenuNode = nil;
+        }], nil]];
+    }
+}
+
+- (void) saveGame{
+    NSLog(@"Save game");
+}
+
+- (void) share{
+    NSLog(@"Share");
+}
+
+- (void) showSettings{
+    NSLog(@"Settings");
+}
+
+- (void) exitGame{
+    NSLog(@"Exit game");
+}
+
+#pragma mark -
+
+- (void) buildTracks{
+    
+    if(!tracksButton.selected){
+        tracksButton.selected = YES;
+        stationButton.selected = NO;
+        
+        self.currentTool = [[PlaceTracksTool alloc] init];
+    }else{
+        tracksButton.selected = NO;
+        self.currentTool = nil;
     }
     
-    [self _styleOverlay:newView];
-    [glView addSubview:newView];
-    
-    [self setAllowPanning:newTool.allowsPanning];
 }
 
-- (void) _styleOverlay:(UIView *)overlayView{
-    overlayView.layer.cornerRadius = UI_CORNER_RADIUS;
-    overlayView.layer.borderColor = [[UIColor grayColor] CGColor];
-    overlayView.layer.borderWidth = 0.5;
-    overlayView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.9];
-    overlayView.layer.shadowColor = [[UIColor blackColor] CGColor];
-    overlayView.layer.shadowOffset = CGSizeMake(0, -1);
-    overlayView.layer.shadowOpacity = 0.3;
-    overlayView.layer.shadowRadius = 1;
-}
-
-- (void) _killCurrentTool{
-    
-    [toolHelpOverlay removeFromSuperview];
-    
-    if(currentTool){
-        [currentTool.viewController.view removeFromSuperview];
-        [currentTool finished];
-        [[[CCDirector sharedDirector] touchDispatcher] removeDelegate:currentTool];
+- (void) buildStations{
+    if(!stationButton.selected){
+        tracksButton.selected = NO;
+        stationButton.selected = YES;
         
-        currentTool = nil;
+        self.currentTool = [[PlaceStationTool alloc] init];
+    }else{
+        stationButton.selected = NO;
+        self.currentTool = nil;
     }
-    
-    stationButton.selected = tracksButton.selected =  linesButton.selected = dataToolButton.selected = moreButton.selected = NO;
 }
 
-
-- (void) stationPressed:(id)sender{
-    [self setMode:(uiMode == UIModePlaceStation) ? UIModeNone : UIModePlaceStation];
-}
-
-- (void) tracksPressed:(id)sender{
-    [self setMode:(uiMode == UIModePlaceTracks) ? UIModeNone : UIModePlaceTracks];
-}
-
-- (IBAction) linesPressed:(id)sender{
-    [self setMode:(uiMode == UIModeManageLines) ? UIModeNone : UIModeManageLines];
-}
-
-- (IBAction) morePressed:(id)sender{
-    [self setMode:(uiMode == UIModeMore) ? UIModeNone : UIModeMore];
-}
-
-- (IBAction) dataPressed:(id)sender{
-    [self setMode:(uiMode == UIModeData) ? UIModeNone : UIModeData];
-}
-
-
-- (IBAction) pause:(id)sender{
-    pauseButton.selected = YES;
-    playButton.selected = ffButton.selected = NO;
-    [self setSpeed:0];
-}
-
-- (IBAction) regularSpeed:(id)sender{
-    playButton.selected = YES;
-    pauseButton.selected = ffButton.selected = NO;
-    [self setSpeed:1];
-}
-
-- (IBAction) fastSpeed:(id)sender{
-    ffButton.selected = YES;
-    pauseButton.selected = playButton.selected = NO;
-    [self setSpeed:6];
-}
-
-
-- (IBAction) showFinances:(id)sender{
+- (IBAction) showFinances{
     financesVC = [[FinancesViewController alloc] initWithGameState:self.gameState];
     financesVC.delegate = self;
 
     [self _showModal:financesVC];
 }
 
-- (IBAction) showGoals:(id)sender{
+- (IBAction) showGoals{
     goalsVC = [[GoalsViewController alloc] initWithGameState:self.gameState];
     goalsVC.delegate = self;
  
@@ -642,15 +768,18 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 - (void) _updateGoalDisplay{
     ScenarioGoal *g = [self.gameState easiestUnmetGoal];
     
+    goalsButton.label.string = [g formatResult:g.lastEvaluationResult descriptionLevel:GoalFormat_StatusBar];
+    
     dispatch_async(dispatch_get_main_queue(), ^{
-        [goalsButton setTitle:[g formatResult:g.lastEvaluationResult descriptionLevel:GoalFormat_StatusBar]
-                     forState:UIControlStateNormal];
-        goalsProgressBar.frame = CGRectMake(goalsProgressBar.frame.origin.x,
+     //   goalsButton.title = [g formatResult:g.lastEvaluationResult descriptionLevel:GoalFormat_StatusBar];
+        
+      /*  goalsProgressBar.frame = CGRectMake(goalsProgressBar.frame.origin.x,
                                             goalsProgressBar.frame.origin.y,
                                             g.lastEvaluationResult.progress*goalsButton.frame.size.width,
                                             goalsProgressBar.frame.size.height);
         [goalsProgressBar setNeedsDisplay];
-        [goalsProgressBar.superview setNeedsDisplay];
+        [goalsProgressBar.superview setNeedsDisplay];*/
+        
     });
 }
 
@@ -684,7 +813,6 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
             stationSprite.stationUUID = s.UUID;
             
             [tiledMap addChild:stationSprite z:100];
-            [[CCDirector sharedDirector].touchDispatcher addTargetedDelegate:stationSprite priority:4 swallowsTouches:YES];
             
             _stationSprites[s.UUID] = stationSprite;
             [s addObserver:self forKeyPath:@"totalPassengersWaiting" options:NSKeyValueObservingOptionInitial context:nil];
@@ -708,6 +836,8 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
         if(![_trackSprites objectForKey:segment.UUID]){
             //NSLog(@"Making sprite for track with ID %@",segment.UUID);
             TracksNode *node = [[TracksNode alloc] init];
+            node.userInteractionEnabled = YES;
+         //   node.claimsUserInteraction = YES;
             node.start = [((StationNode *)_stationSprites[segment.startStation.UUID]) position];
             node.end = [((StationNode *)_stationSprites[segment.endStation.UUID]) position];
             //NSLog(@"making track sprite for segment %@",segment);
@@ -715,7 +845,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
             node.valid = YES;
             node.delegate = self;
             _trackSprites[segment.UUID] = node;
-            [[CCDirector sharedDirector].touchDispatcher addTargetedDelegate:node priority:5 swallowsTouches:YES];
+        //    [[CCDirector sharedDirector].touchDispatcher addTargetedDelegate:node priority:5 swallowsTouches:YES];
             [tiledMap addChild:node z:99];
         }
     }
@@ -750,15 +880,16 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
         NSString *name = obj[@"name"];
         if(!name) continue;
         
-        CCLabelTTF *neighborhood = [[CCLabelTTF alloc] initWithString:name fontName:@"Helvetica-Bold" fontSize:18];
+        CCLabelTTF *neighborhood = [[CCLabelTTF alloc] initWithString:name fontName:@"Palatino-Bold" fontSize:12];
         if([obj[@"type"] isEqual:@"region"]){
-            neighborhood.color = [[UIColor colorWithRed:0 green:0 blue:0 alpha:0] c3b];
+            neighborhood.color = [CCColor colorWithUIColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0]];
+            neighborhood.string = [name uppercaseString];
         }else if([obj[@"type"] isEqual:@"water"]){
-            neighborhood.color = [[UIColor colorWithRed:1 green:1 blue:1 alpha:1] c3b];
-            neighborhood.fontName = @"Helvetica-Oblique";
+            neighborhood.color = [CCColor colorWithUIColor:[UIColor colorWithRed:1 green:1 blue:1 alpha:1]];
+            neighborhood.fontName = @"Palatino-Italic";
         }
         neighborhood.position = centered;
-        neighborhood.opacity = 100;
+        neighborhood.opacity = 0.5;
         neighborhood.scale = [self scaleConsideringZoom:1 useContentScale:NO];
         [tiledMap addChild:neighborhood z:100];
         [_nameSprites addObject:neighborhood];
@@ -769,7 +900,8 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     for(NSDictionary *obj in self.gameState.map.streets.objects){
         if(![obj[@"type"] isEqual:@"street"]) continue;
         
-        CGPoint pos = CGPointMake([obj[@"x"] intValue], [obj[@"y"] intValue]);
+        CGPoint pos = CGPointMake([obj[@"x"] intValue] * tiledMap.scale,
+                                  [obj[@"y"] intValue] * tiledMap.scale);
         
         StreetType type;
         NSString *subtype = obj[@"street-type"];
@@ -928,7 +1060,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 - (void) goalCompleted:(NSNotification *)notification{
     ScenarioGoal *goal = notification.userInfo[@"goal"];
     
-    [audioEngine playEffect:SoundEffect_CompleteGoal];
+    [[OALSimpleAudio sharedInstance] playEffect:SoundEffect_CompleteGoal];
     
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Goal Completed"
                                                     message:[NSString stringWithFormat:@"You completed the goal '%@!'",goal.caption]
@@ -940,21 +1072,21 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 }
 
 - (void) bondIssued{
-    [audioEngine playEffect:SoundEffect_CashRegister];
+    [[OALSimpleAudio sharedInstance] playEffect:SoundEffect_CashRegister];
 }
 
 - (void) hourChime{
     unsigned hour = self.gameState.currentDateComponents.tm_hour;
     
     if(hour == (GAME_START_NIGHT_HOUR+1)){
-        [audioEngine playEffect:SoundEffect_Owl];
+        [[OALSimpleAudio sharedInstance] playEffect:SoundEffect_Owl];
     }else if(hour == GAME_END_NIGHT_HOUR){
-        [audioEngine playEffect:SoundEffect_Rooster];
+        [[OALSimpleAudio sharedInstance] playEffect:SoundEffect_Rooster];
     }
 }
 
 - (void) stationBuilt{
-    [audioEngine playEffect:SoundEffect_BuildStation];
+    [[OALSimpleAudio sharedInstance] playEffect:SoundEffect_BuildStation];
     [self.gameState forceGoalEvaluate];
 }
 

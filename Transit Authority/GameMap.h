@@ -8,19 +8,22 @@
 
 #import <Foundation/Foundation.h>
 
-@class CCTMXTiledMap, CCTMXObjectGroup, CCTMXLayer, HKTMXTiledMap, HKTMXLayer;
+@class CCTiledMap, CCTiledMapObjectGroup, CCTiledMapLayer, CCTiledMap, HKTMXTiledMap;
 
 #define GAMEMAP_MAX_DENSITY 3 /// the maximum density in a given tile
 #define GAMEMAP_MAX_ELEVATION 3 /// the maximum elevation
 
-/// When running unit tests, switch out HKTMXTiledMap for the standard cocos2d class.
-/// It seems to freak out when we use HKTMXTiledMap, but we're not doing any graphics,
+/// When running unit tests, switch out CCTiledMap for the standard cocos2d class.
+/// It seems to freak out when we use CCTiledMap, but we're not doing any graphics,
 /// so it doesn't matter.
 #ifdef UNIT_TESTS
-#define MAP_CLASS CCTMXTiledMap
-#import "CCTMXTiledMap.h"
+#define MAP_CLASS CCTiledMap
+#define MAP_LAYER_CLASS CCTiledMapLayer
+#import "CCTiledMap.h"
 #else
+#import "HKTMXTiledMap.h"
 #define MAP_CLASS HKTMXTiledMap
+#define MAP_LAYER_CLASS HKTMXLayer
 #endif
 
 /// GameMap is a facade for accessing the map for a city.
@@ -30,12 +33,12 @@
 
 @property(strong, nonatomic, readonly) NSString *originalPath;
 @property(strong, nonatomic, readonly) MAP_CLASS *map;
-@property(strong, nonatomic, readonly) HKTMXLayer *landLayer;
-@property(strong, nonatomic, readonly) HKTMXLayer *residentialPopulationLayer;
-@property(strong, nonatomic, readonly) HKTMXLayer *commericalPopulationLayer;
-@property(strong, nonatomic, readonly) HKTMXLayer *elevationLayer;
-@property(strong, nonatomic, readonly) CCTMXObjectGroup *neighborhoodNames;
-@property(strong, nonatomic, readonly) CCTMXObjectGroup *streets;
+@property(strong, nonatomic, readonly) MAP_LAYER_CLASS *landLayer;
+@property(strong, nonatomic, readonly) MAP_LAYER_CLASS *residentialPopulationLayer;
+@property(strong, nonatomic, readonly) MAP_LAYER_CLASS *commericalPopulationLayer;
+@property(strong, nonatomic, readonly) MAP_LAYER_CLASS *elevationLayer;
+@property(strong, nonatomic, readonly) CCTiledMapObjectGroup *neighborhoodNames;
+@property(strong, nonatomic, readonly) CCTiledMapObjectGroup *streets;
 @property(assign, nonatomic, readonly) CGPoint startPosition; // where to put the camera when we start
 @property(assign, nonatomic, readonly) CGSize size;
 

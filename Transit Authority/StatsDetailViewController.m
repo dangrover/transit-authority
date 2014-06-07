@@ -25,6 +25,7 @@
 #import "CPTPlotAreaFrame.h"
 #import "CPTMutableLineStyle.h"
 #import "CPTFill.h"
+#import "HUDGraphTheme.h"
 
 @implementation StatDisplay
 
@@ -143,7 +144,7 @@
     CGFloat barWidth = floor(barTotalWidth - barPadding);
     
     graph = [[CPTXYGraph alloc] initWithFrame:graphView.bounds];
-    [graph applyTheme: [CPTTheme themeNamed:kCPTPlainWhiteTheme]];
+    [graph applyTheme: [[HUDGraphTheme alloc] init]];
     
     graph.paddingBottom = graph.paddingRight = graph.paddingLeft = graph.paddingTop = 0;
     graph.plotAreaFrame.paddingBottom = 50;
@@ -151,7 +152,7 @@
     graph.plotAreaFrame.paddingTop = 15;
     graph.plotAreaFrame.paddingRight = 10;
     graph.plotAreaFrame.borderLineStyle = nil;
-    graph.backgroundColor = [[UIColor clearColor] CGColor];
+
     
     
     CPTBarPlot *barPlot = [[CPTBarPlot alloc] init];
@@ -172,6 +173,7 @@
     CPTMutableTextStyle *ts = [[CPTMutableTextStyle alloc] init];
     ts.fontName = @"Helvetica Neue";
     ts.fontSize = 9;
+    ts.color = [CPTColor whiteColor];
     
     NSMutableSet *labels = [NSMutableSet set];
     NSMutableSet *tickLocs = [NSMutableSet set];
@@ -201,8 +203,8 @@
     x.labelOffset = 0;
     y.labelTextStyle = ts;
     
-    graphView.backgroundColor = [UIColor clearColor];
-    barPlot.backgroundColor = [[UIColor clearColor] CGColor];
+    barPlot.fill = [CPTFill fillWithColor:[CPTColor whiteColor]];
+    barPlot.borderWidth = 0;
     
     [graph addPlot:barPlot toPlotSpace:plotSpace];
     graphView.hostedGraph = graph;

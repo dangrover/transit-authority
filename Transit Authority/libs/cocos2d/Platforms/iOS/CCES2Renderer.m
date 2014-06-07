@@ -3,6 +3,7 @@
  *
  * Copyright (c) 2011 Ricardo Quesada
  * Copyright (c) 2011 Zynga Inc.
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -57,7 +58,6 @@
 
         if (!_context || ![EAGLContext setCurrentContext:_context] )
         {
-            [self release];
             return nil;
         }
 		
@@ -241,10 +241,7 @@
     if ([EAGLContext currentContext] == _context)
         [EAGLContext setCurrentContext:nil];
 
-    [_context release];
-    _context = nil;
 
-    [super dealloc];
 }
 
 @end

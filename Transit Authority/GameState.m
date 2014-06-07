@@ -9,7 +9,7 @@
 #import "GameState.h"
 #import "Utilities.h"
 #import "NSDate+Helper.h"
-#import "HKTMXTiledMap.h"
+#import "CCTiledMap.h"
 #import "Utilities.h"
 #import "GameLedger.h"
 #import "PointOfInterest.h"

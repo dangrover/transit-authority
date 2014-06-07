@@ -29,7 +29,7 @@
 
 
 #import "CCLayerPanZoom.h"
-
+#import "CCDrawingPrimitives.h"
 
 #ifdef DEBUG
 
@@ -70,6 +70,8 @@ enum nodeTags
 #else
     glColor4f(1.0f, 0.0f, 0.0f, 1.0);
 #endif
+    
+    
     glLineWidth(2.0f);    
     ccDrawLine(ccp(self.leftFrameMargin, 0.0f), 
                ccp(self.leftFrameMargin, self.contentSize.height));
@@ -104,7 +106,6 @@ typedef enum
 
 @property (readwrite, retain) NSMutableArray *touches;
 @property (readwrite, assign) CGFloat touchDistance;
-@property (readwrite, retain) CCScheduler *scheduler;
 // Return minimum possible scale for the layer considering panBoundsRect and enablePanBounds
 - (CGFloat) minPossibleScale;
 // Return edge in which current point located
@@ -159,6 +160,10 @@ typedef enum
     return _minScale;
 }
 
+- (BOOL)hitTestWithWorldPos:(CGPoint)pos{
+    return YES;
+}
+
 @dynamic rubberEffectRatio;
 - (void) setRubberEffectRatio:(CGFloat)rubberEffectRatio
 {
@@ -167,7 +172,8 @@ typedef enum
     // Avoid turning rubber effect On in frame mode.
     if (self.mode == kCCLayerPanZoomModeFrame)
     {
-        CCLOGERROR(@"CCLayerPanZoom#setRubberEffectRatio: rubber effect is not supported in frame mode.");
+        
+        CCLOG(@"CCLayerPanZoom#setRubberEffectRatio: rubber effect is not supported in frame mode.");
         _rubberEffectRatio = 0.0f;
     }
         
@@ -185,13 +191,17 @@ typedef enum
 {
 	if ((self = [super init])) 
 	{
+        
+        // TODO Figure out if I need to fix this
+        
 #if COCOS2D_VERSION >= 0x00020000
-        self.ignoreAnchorPointForPosition = NO;
+        //self.ignoreAnchorPointForPosition = NO;
 #else
-		self.isRelativeAnchorPoint = YES;
+		//self.isRelativeAnchorPoint = YES;
 #endif
-		self.isTouchEnabled = YES;
-		
+        
+        
+		self.userInteractionEnabled = YES;
 		self.maxScale = 3.0f;
 		self.minScale = 0.5f;
 		self.touches = [NSMutableArray arrayWithCapacity: 10];
@@ -217,16 +227,12 @@ typedef enum
 
 #pragma mark CCStandardTouchDelegate Touch events
 
-- (void) ccTouchesBegan: (NSSet *) touches 
-			  withEvent: (UIEvent *) event
-{	
-	for (UITouch *touch in [touches allObjects]) 
-	{
-		// Add new touche to the array with current touches
-		[self.touches addObject: touch];
-	}
+- (void)touchBegan:(UITouch *)touch withEvent:(UIEvent *)event{
+   
+    [self.touches addObject: touch];
+	
     
-    if ([self.touches count] == 1)
+    if ([event.allTouches count] == 1)
     {
         _touchMoveBegan = NO;
         _singleTouchTimestamp = [NSDate timeIntervalSinceReferenceDate];
@@ -235,15 +241,14 @@ typedef enum
         _singleTouchTimestamp = INFINITY;
 }
 
-- (void) ccTouchesMoved: (NSSet *) touches 
-			  withEvent: (UIEvent *) event
-{
-	BOOL multitouch = [self.touches count] > 1;
+- (void) touchMoved:(UITouch *)touch withEvent:(UIEvent *)event{
+
+	BOOL multitouch = [event.allTouches count] > 1;
 	if (multitouch)
 	{
 		// Get the two first touches
-        UITouch *touch1 = [self.touches objectAtIndex: 0];
-		UITouch *touch2 = [self.touches objectAtIndex: 1];
+        UITouch *touch1 = [event.allTouches.allObjects objectAtIndex: 0];
+		UITouch *touch2 = [event.allTouches.allObjects objectAtIndex: 1];
 		// Get current and previous positions of the touches
 		CGPoint curPosTouch1 = [[CCDirector sharedDirector] convertToGL: [touch1 locationInView: [touch1 view]]];
 		CGPoint curPosTouch2 = [[CCDirector sharedDirector] convertToGL: [touch2 locationInView: [touch2 view]]];
@@ -280,13 +285,16 @@ typedef enum
             self.position = ccp(self.position.x + curPosLayer.x - prevPosLayer.x,
                                 self.position.y + curPosLayer.y - prevPosLayer.y);
         }
+        
+        [self.delegate layerPanZoom:self updatedPosition:self.position scale:self.scale];
+        
         // Don't click with multitouch
 		self.touchDistance = INFINITY;
 	}
 	else
 	{	        
         // Get the single touch and it's previous & current position.
-        UITouch *touch = [self.touches objectAtIndex: 0];
+        UITouch *touch = [[event.allTouches allObjects] objectAtIndex: 0];
         CGPoint curTouchPosition = [[CCDirector sharedDirector] convertToGL: [touch locationInView: [touch view]]];
         CGPoint prevTouchPosition = [[CCDirector sharedDirector] convertToGL: [touch previousLocationInView: [touch view]]];
         
@@ -306,43 +314,34 @@ typedef enum
         {
             if (self.touchDistance > self.maxTouchDistanceToClick && !_touchMoveBegan)
             {
-                if([self.delegate respondsToSelector:@selector(layerPanZoom:touchMoveBeganAtPosition:)]){
-                    [self.delegate layerPanZoom: self
-                       touchMoveBeganAtPosition: [self convertToNodeSpace: prevTouchPosition]];
-                }
+                [self.delegate layerPanZoom: self 
+                   touchMoveBeganAtPosition: [self convertToNodeSpace: prevTouchPosition]];
                 _touchMoveBegan = YES;
             }
         }
-    }
-    
-    [self.delegate layerPanZoom:self updatedPosition:self.position scale:self.scale];
-    
+        
+         [self.delegate layerPanZoom:self updatedPosition:self.position scale:self.scale];
+    }	
 }
 
-- (void) ccTouchesEnded: (NSSet *) touches 
-			  withEvent: (UIEvent *) event
+- (void) touchEnded: (UITouch *) touch withEvent: (UIEvent *) event
 {
     _singleTouchTimestamp = INFINITY;
     
     // Process click event in single touch.
     if (  (self.touchDistance < self.maxTouchDistanceToClick) && (self.delegate) 
-        && ([self.touches count] == 1))
+        && ([event.allTouches count] == 1))
     {
         UITouch *touch = [self.touches objectAtIndex: 0];        
         CGPoint curPos = [[CCDirector sharedDirector] convertToGL: [touch locationInView: [touch view]]];
-       
-        if([self.delegate respondsToSelector:@selector(layerPanZoom:clickedAtPoint:tapCount:)]){
-            [self.delegate layerPanZoom: self
+        [self.delegate layerPanZoom: self
                      clickedAtPoint: [self convertToNodeSpace: curPos]
                            tapCount: [touch tapCount]];
-        }
     }
     
-	for (UITouch *touch in [touches allObjects]) 
-	{
 		// Remove touche from the array with current touches
 		[self.touches removeObject: touch];
-	}
+	
 	if ([self.touches count] == 0)
 	{
 		self.touchDistance = 0.0f;
@@ -352,13 +351,9 @@ typedef enum
     {
         [self recoverPositionAndScale];
     }
-    
-    [self.delegate layerPanZoom:self updatedPosition:self.position scale:self.scale];
-    
 }
 
-- (void) ccTouchesCancelled: (NSSet *) touches 
-				  withEvent: (UIEvent *) event
+- (void) touchCancelled: (NSSet *) touches withEvent: (UIEvent *) event
 {
 	for (UITouch *touch in [touches allObjects]) 
 	{
@@ -374,7 +369,7 @@ typedef enum
 #pragma mark Update
 
 // Updates position in frame mode.
-- (void) update: (ccTime) dt
+- (void) update: (CCTime) dt
 {
     // Only for frame mode with one touch.
 	if ( self.mode == kCCLayerPanZoomModeFrame && [self.touches count] == 1 )
@@ -403,10 +398,8 @@ typedef enum
         if (!CGPointEqualToPoint(_prevSingleTouchPositionInLayer, touchPositionInLayer))
         {
             _prevSingleTouchPositionInLayer = touchPositionInLayer;
-            if([self.delegate respondsToSelector:@selector(layerPanZoom:touchPositionUpdated:)]){
-                [self.delegate layerPanZoom: self 
+            [self.delegate layerPanZoom: self 
                    touchPositionUpdated: touchPositionInLayer];
-            }
         }
 
     }
@@ -415,25 +408,18 @@ typedef enum
 - (void) onEnter
 {
     [super onEnter];
+    // TODO see if this is using the right scheduler
+    NSAssert(_scheduler != nil, @"scheduler should exist");
     
-#if COCOS2D_VERSION >= 0x00020000
-    CCScheduler *scheduler = [[CCDirector sharedDirector] scheduler];
-#else
-    CCScheduler *scheduler = [CCScheduler sharedScheduler];
-#endif               
-                
-    [scheduler scheduleUpdateForTarget: self priority: 0 paused: NO];
+    [_scheduler scheduleTarget:self];
+    
+       self.userInteractionEnabled = YES;
 }
 
 - (void) onExit
 {
-#if COCOS2D_VERSION >= 0x00020000
-    CCScheduler *scheduler = [[CCDirector sharedDirector] scheduler];
-#else
-    CCScheduler *scheduler = [CCScheduler sharedScheduler];
-#endif 
-    
-    [scheduler unscheduleAllSelectorsForTarget: self];
+    CCScheduler *scheduler = _scheduler;
+    [scheduler unscheduleTarget:self];
     [super onExit];
 }
 
@@ -447,19 +433,19 @@ typedef enum
     if (mode == kCCLayerPanZoomModeFrame)
     {
         CCLayerPanZoomDebugLines *lines = [CCLayerPanZoomDebugLines node];
-        [lines setContentSize: [CCDirector sharedDirector].winSize];
+        [lines setContentSize: [CCDirector sharedDirector].viewSize];
         lines.topFrameMargin = self.topFrameMargin;
         lines.bottomFrameMargin = self.bottomFrameMargin;
         lines.leftFrameMargin = self.leftFrameMargin;
         lines.rightFrameMargin = self.rightFrameMargin;
         [[CCDirector sharedDirector].runningScene addChild: lines 
                                                          z: NSIntegerMax 
-                                                       tag: kDebugLinesTag];
+                                                       name: [NSString stringWithFormat:@"%d", kDebugLinesTag]];
     }
     if (_mode == kCCLayerPanZoomModeFrame)
     {
-        [[CCDirector sharedDirector].runningScene removeChildByTag: kDebugLinesTag 
-                                                           cleanup: YES];
+        [[CCDirector sharedDirector].runningScene removeChildByName:[NSString stringWithFormat:@"%d", kDebugLinesTag]
+                                                            cleanup:YES];
     }
 #endif
     _mode = mode;
@@ -560,7 +546,7 @@ typedef enum
 {
     if (!CGRectIsNull(self.panBoundsRect))
 	{    
-        CGSize winSize = [CCDirector sharedDirector].winSize;
+        CGSize winSize = [CCDirector sharedDirector].viewSize;
         CGFloat rightEdgeDistance = [self rightEdgeDistance];
         CGFloat leftEdgeDistance = [self leftEdgeDistance];
         CGFloat topEdgeDistance = [self topEdgeDistance];
@@ -641,21 +627,22 @@ typedef enum
                 newPosition = ccp(winSize.width * 0.5f + dx, self.position.y);
             } 
             
-            id moveToPosition = [CCMoveTo actionWithDuration: self.rubberEffectRecoveryTime
+            id moveToPosition = [CCActionMoveTo actionWithDuration: self.rubberEffectRecoveryTime
                                                     position: newPosition];
-            id scaleToPosition = [CCScaleTo actionWithDuration: self.rubberEffectRecoveryTime
+            id scaleToPosition = [CCActionScaleTo actionWithDuration: self.rubberEffectRecoveryTime
                                                          scale: scale];
-            id sequence = [CCSpawn actions: scaleToPosition, moveToPosition, [CCCallFunc actionWithTarget: self selector: @selector(recoverEnded)], nil];
+            id sequence = [CCActionSpawn actions: scaleToPosition, moveToPosition, [CCActionCallFunc actionWithTarget: self selector: @selector(recoverEnded)], nil];
             [self runAction: sequence];
 
         }
         else
         {
+            
             _rubberEffectRecovering = YES;
-            id moveToPosition = [CCMoveTo actionWithDuration: self.rubberEffectRecoveryTime
+            id moveToPosition = [CCActionMoveTo actionWithDuration: self.rubberEffectRecoveryTime
                                                     position: ccp(self.position.x + rightEdgeDistance - leftEdgeDistance, 
                                                                   self.position.y + topEdgeDistance - bottomEdgeDistance)];
-            id sequence = [CCSpawn actions: moveToPosition, [CCCallFunc actionWithTarget: self selector: @selector(recoverEnded)], nil];
+            id sequence = [CCActionSpawn actions: moveToPosition, [CCActionCallFunc actionWithTarget: self selector: @selector(recoverEnded)], nil];
             [self runAction: sequence];
             
         }

@@ -2,8 +2,8 @@
  * cocos2d for iPhone: http://www.cocos2d-iphone.org
  *
  * Copyright (c) 2008 Radu Gruian
- *
  * Copyright (c) 2011 Vit Valentin
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -45,7 +45,7 @@
 
 +(id) arrayWithCapacity:(NSUInteger)capacity
 {
-	return [[[self alloc] initWithCapacity:capacity] autorelease];
+	return [[self alloc] initWithCapacity:capacity];
 }
 
 -(id) init
@@ -68,17 +68,10 @@
 	NSMutableArray *newArray = [_controlPoints mutableCopy];
 	CCPointArray *points = [[[self class] allocWithZone:zone] initWithCapacity:10];
 	points.controlPoints = newArray;
-	[newArray release];
 	
 	return points;
 }
 
--(void) dealloc
-{
-	[_controlPoints release];
-	
-	[super dealloc];
-}
 
 -(void) addControlPoint:(CGPoint)controlPoint
 {
@@ -149,9 +142,8 @@
 	CCPointArray *config = [[[self class] alloc] initWithCapacity:0];
 	config.controlPoints = newArray;
 
-	[newArray release];
 	
-	return [config autorelease];
+	return config;
 }
 
 -(void) reverseInline
@@ -164,7 +156,7 @@
 
 // CatmullRom Spline formula:
 
-inline CGPoint ccCardinalSplineAt( CGPoint p0, CGPoint p1, CGPoint p2, CGPoint p3, CGFloat tension, ccTime t )
+inline CGPoint CCCardinalSplineAt( CGPoint p0, CGPoint p1, CGPoint p2, CGPoint p3, CGFloat tension, CCTime t )
 {
 	CGFloat t2 = t * t;
 	CGFloat t3 = t2 * t;
@@ -187,20 +179,20 @@ inline CGPoint ccCardinalSplineAt( CGPoint p0, CGPoint p1, CGPoint p2, CGPoint p
 
 #pragma mark - CCCatmullRomTo
 
-@interface CCCardinalSplineTo ()
+@interface CCActionCardinalSplineTo ()
 -(void) updatePosition:(CGPoint)newPosition;
 @end
 
-@implementation CCCardinalSplineTo
+@implementation CCActionCardinalSplineTo
 
 @synthesize points=_points;
 
-+(id) actionWithDuration:(ccTime)duration points:(CCPointArray *)points tension:(CGFloat)tension
++(id) actionWithDuration:(CCTime)duration points:(CCPointArray *)points tension:(CGFloat)tension
 {
-	return [[[self alloc] initWithDuration:duration points:points tension:tension ] autorelease];
+	return [[self alloc] initWithDuration:duration points:points tension:tension ];
 }
 
--(id) initWithDuration:(ccTime)duration points:(CCPointArray *)points tension:(CGFloat)tension								
+-(id) initWithDuration:(CCTime)duration points:(CCPointArray *)points tension:(CGFloat)tension								
 {
 	NSAssert( [points count] > 0, @"Invalid configuration. It must at least have one control point");
 
@@ -213,11 +205,6 @@ inline CGPoint ccCardinalSplineAt( CGPoint p0, CGPoint p1, CGPoint p2, CGPoint p
 	return self;
 }
 
-- (void)dealloc
-{
-	[_points release];
-    [super dealloc];
-}
 
 -(void) startWithTarget:(id)target
 {
@@ -238,7 +225,7 @@ inline CGPoint ccCardinalSplineAt( CGPoint p0, CGPoint p1, CGPoint p2, CGPoint p
     return copy;
 }
 
--(void) update:(ccTime)dt
+-(void) update:(CCTime)dt
 {
 	NSUInteger p;
 	CGFloat lt;
@@ -261,7 +248,7 @@ inline CGPoint ccCardinalSplineAt( CGPoint p0, CGPoint p1, CGPoint p2, CGPoint p
 	CGPoint pp2 = [_points getControlPointAtIndex:p+1];
 	CGPoint pp3 = [_points getControlPointAtIndex:p+2];
 
-	CGPoint newPos = ccCardinalSplineAt( pp0, pp1, pp2, pp3, _tension, lt );
+	CGPoint newPos = CCCardinalSplineAt( pp0, pp1, pp2, pp3, _tension, lt );
 
 #if CC_ENABLE_STACKABLE_ACTIONS
 	CCNode *node = (CCNode*)_target;
@@ -289,9 +276,9 @@ inline CGPoint ccCardinalSplineAt( CGPoint p0, CGPoint p1, CGPoint p2, CGPoint p
 }
 @end
 
-#pragma mark - CCCardinalSplineBy
+#pragma mark - CCActionCardinalSplineBy
 
-@implementation CCCardinalSplineBy
+@implementation CCActionCardinalSplineBy
 
 -(void) startWithTarget:(id)target
 {
@@ -328,7 +315,6 @@ inline CGPoint ccCardinalSplineAt( CGPoint p0, CGPoint p1, CGPoint p2, CGPoint p
 	// convert to "diffs" to "reverse absolute"
 	
 	CCPointArray *reverse = [copyConfig reverse];
-	[copyConfig release];
 	
 	// 1st element (which should be 0,0) should be here too
 	p = [reverse getControlPointAtIndex: [reverse count]-1];
@@ -351,13 +337,13 @@ inline CGPoint ccCardinalSplineAt( CGPoint p0, CGPoint p1, CGPoint p2, CGPoint p
 }
 @end
 
-@implementation CCCatmullRomTo
-+(id) actionWithDuration:(ccTime)dt points:(CCPointArray *)points
+@implementation CCActionCatmullRomTo
++(id) actionWithDuration:(CCTime)dt points:(CCPointArray *)points
 {
-	return [[[self alloc] initWithDuration:dt points:points] autorelease];
+	return [[self alloc] initWithDuration:dt points:points];
 }
 
--(id) initWithDuration:(ccTime)dt points:(CCPointArray *)points
+-(id) initWithDuration:(CCTime)dt points:(CCPointArray *)points
 {
 	if( (self=[super initWithDuration:dt points:points tension:0.5f]) ) {
 		
@@ -367,13 +353,13 @@ inline CGPoint ccCardinalSplineAt( CGPoint p0, CGPoint p1, CGPoint p2, CGPoint p
 }
 @end
 
-@implementation CCCatmullRomBy
-+(id) actionWithDuration:(ccTime)dt points:(CCPointArray *)points
+@implementation CCActionCatmullRomBy
++(id) actionWithDuration:(CCTime)dt points:(CCPointArray *)points
 {
-	return [[[self alloc] initWithDuration:dt points:points] autorelease];
+	return [[self alloc] initWithDuration:dt points:points];
 }
 
--(id) initWithDuration:(ccTime)dt points:(CCPointArray *)points
+-(id) initWithDuration:(CCTime)dt points:(CCPointArray *)points
 {
 	if( (self=[super initWithDuration:dt points:points tension:0.5f]) ) {
 		

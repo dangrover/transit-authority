@@ -3,6 +3,7 @@
  *
  * Copyright (c) 2008-2011 Ricardo Quesada
  * Copyright (c) 2011 Zynga Inc.
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +28,6 @@
 
 #import "ccConfig.h"
 #import "ccMacros.h"
-#import "CCDrawingPrimitives.h"
 #import "CCLabelAtlas.h"
 #import "CCShaderCache.h"
 #import "CCGLProgram.h"
@@ -46,12 +46,12 @@
 #pragma mark CCLabelAtlas - Creation & Init
 +(id) labelWithString:(NSString*)string charMapFile:(NSString*)charmapfile itemWidth:(NSUInteger)w itemHeight:(NSUInteger)h startCharMap:(NSUInteger)c
 {
-	return [[[self alloc] initWithString:string charMapFile:charmapfile itemWidth:w itemHeight:h startCharMap:c] autorelease];
+	return [[self alloc] initWithString:string charMapFile:charmapfile itemWidth:w itemHeight:h startCharMap:c];
 }
 
 +(id) labelWithString:(NSString*)string fntFile:(NSString*)fntFile
 {
-	return [[[self alloc] initWithString:string fntFile:fntFile] autorelease];
+	return [[self alloc] initWithString:string fntFile:fntFile];
 }
 
 -(id) initWithString:(NSString*) theString fntFile:(NSString*)fntFile
@@ -64,8 +64,9 @@
 	NSString *path = [fntFile stringByDeletingLastPathComponent];
 	NSString *textureFilename = [path stringByAppendingPathComponent:[dict objectForKey:@"textureFilename"]];
 	
-	NSUInteger width = [[dict objectForKey:@"itemWidth"] unsignedIntValue]  / CC_CONTENT_SCALE_FACTOR();
-	NSUInteger height = [[dict objectForKey:@"itemHeight"] unsignedIntValue] / CC_CONTENT_SCALE_FACTOR();
+	CGFloat scale = [CCDirector sharedDirector].contentScaleFactor;
+	NSUInteger width = [[dict objectForKey:@"itemWidth"] unsignedIntValue]  / scale;
+	NSUInteger height = [[dict objectForKey:@"itemHeight"] unsignedIntValue] / scale;
 	NSUInteger startChar = [[dict objectForKey:@"firstChar"] unsignedIntValue];
 	
 	return [self initWithString:theString
@@ -77,11 +78,11 @@
 
 -(id) initWithString:(NSString*)string charMapFile: (NSString*)filename itemWidth:(NSUInteger)w itemHeight:(NSUInteger)h startCharMap:(NSUInteger)c
 {
-	CCTexture2D *texture = [[CCTextureCache sharedTextureCache] addImage:filename];
+	CCTexture *texture = [[CCTextureCache sharedTextureCache] addImage:filename];
 	return [self initWithString:string texture:texture itemWidth:w itemHeight:h startCharMap:c];
 }
 
--(id) initWithString:(NSString*) theString texture:(CCTexture2D*)texture itemWidth:(NSUInteger)w itemHeight:(NSUInteger)h startCharMap:(NSUInteger)c
+-(id) initWithString:(NSString*) theString texture:(CCTexture*)texture itemWidth:(NSUInteger)w itemHeight:(NSUInteger)h startCharMap:(NSUInteger)c
 {
 	if ((self=[super initWithTexture:texture tileWidth:w tileHeight:h itemsToRender:[theString length] ]) ) {
 		
@@ -92,12 +93,6 @@
 	return self;
 }
 
--(void) dealloc
-{
-	[_string release];
-
-	[super dealloc];
-}
 
 #pragma mark CCLabelAtlas - Atlas generation
 
@@ -109,11 +104,13 @@
 
 	const unsigned char *s = (unsigned char*) [_string UTF8String];
 
-	CCTexture2D *texture = [_textureAtlas texture];
-	float textureWide = [texture pixelsWide];
-	float textureHigh = [texture pixelsHigh];
-    float itemWidthInPixels = _itemWidth * CC_CONTENT_SCALE_FACTOR();
-    float itemHeightInPixels = _itemHeight * CC_CONTENT_SCALE_FACTOR();
+	CCTexture *texture = [_textureAtlas texture];
+	float textureWide = [texture pixelWidth];
+	float textureHigh = [texture pixelHeight];
+	
+	CGFloat scale = _textureAtlas.texture.contentScale;
+	float itemWidthInPixels = _itemWidth * scale;
+	float itemHeightInPixels = _itemHeight * scale;
 
 
 	for( NSUInteger i=0; i<n; i++)
@@ -157,7 +154,7 @@
 		quad.tr.vertices.y = (int)(_itemHeight);
 		quad.tr.vertices.z = 0.0f;
 
-		ccColor4B c = { _displayedColor.r, _displayedColor.g, _displayedColor.b, _displayedOpacity };
+		ccColor4B c = ccc4BFromccc4F(_displayColor);
 		quad.tl.colors = c;
 		quad.tr.colors = c;
 		quad.bl.colors = c;
@@ -179,7 +176,6 @@
 		if( len > _textureAtlas.capacity )
 			[_textureAtlas resizeCapacity:len];
 
-		[_string release];
 		_string = [newString copy];
 		[self updateAtlasValues];
 

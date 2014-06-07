@@ -3,6 +3,7 @@
  *
  * Copyright (c) 2008-2010 Ricardo Quesada
  * Copyright (c) 2011 Zynga Inc.
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,12 +39,15 @@
 #import "ccMacros.h"
 #import "CCLabelBMFont.h"
 #import "CCSprite.h"
-#import "CCDrawingPrimitives.h"
 #import "CCConfiguration.h"
 #import "CCTextureCache.h"
 #import "Support/CCFileUtils.h"
 #import "Support/CGPointExtension.h"
 #import "Support/uthash.h"
+#import "CCLabelBMFont_Private.h"
+#import "CCSprite_Private.h"
+#import "CCSpriteBatchNode_Private.h"
+#import "CCDrawingPrimitives.h"
 
 #pragma mark -
 #pragma mark FNTConfig Cache - free functions
@@ -54,7 +58,7 @@ CCBMFontConfiguration* FNTConfigLoadFile( NSString *fntFile)
 	CCBMFontConfiguration *ret = nil;
     
 	if( configurations == nil )
-		configurations = [[NSMutableDictionary dictionaryWithCapacity:3] retain];
+		configurations = [NSMutableDictionary dictionaryWithCapacity:3];
     
 	ret = [configurations objectForKey:fntFile];
 	if( ret == nil ) {
@@ -94,7 +98,7 @@ void FNTConfigRemoveCache( void )
 
 +(id) configurationWithFNTFile:(NSString*)FNTfile
 {
-	return [[[self alloc] initWithFNTfile:FNTfile] autorelease];
+	return [[self alloc] initWithFNTfile:FNTfile];
 }
 
 -(id) initWithFNTfile:(NSString*)fntFile
@@ -107,11 +111,10 @@ void FNTConfigRemoveCache( void )
 		NSMutableString *validCharsString = [self parseConfigFile:fntFile];
 		  
 		if( ! validCharsString ) {
-			[self release];
 			return nil;
 		}
     
-		_characterSet = [[NSCharacterSet characterSetWithCharactersInString:validCharsString] retain];
+		_characterSet = [NSCharacterSet characterSetWithCharactersInString:validCharsString];
 	}
 	return self;
 }
@@ -119,11 +122,8 @@ void FNTConfigRemoveCache( void )
 - (void) dealloc
 {
 	CCLOGINFO( @"cocos2d: deallocing %@", self);
-	[_characterSet release];
 	[self purgeFontDefDictionary];
 	[self purgeKerningDictionary];
-	[_atlasName release];
-	[super dealloc];
 }
 
 - (NSString*) description
@@ -137,7 +137,8 @@ void FNTConfigRemoveCache( void )
 
 -(void) purgeFontDefDictionary
 {	
-	tCCFontDefHashElement *current, *tmp;
+	tCCFontDefHashElement *current;
+    tCCFontDefHashElement *tmp;
 	
 	HASH_ITER(hh, _fontDefDictionary, current, tmp) {
 		HASH_DEL(_fontDefDictionary, current);
@@ -205,7 +206,7 @@ void FNTConfigRemoveCache( void )
 			element->key = element->fontDef.charID;
 			HASH_ADD_INT(_fontDefDictionary, key, element);
       
-			[validCharsString appendString:[NSString stringWithFormat:@"%C", element->fontDef.charID]];
+            [validCharsString appendFormat:@"%C", element->fontDef.charID];
 		}
 //		else if([line hasPrefix:@"kernings count"]) {
 //			[self parseKerningCapacity:line];
@@ -215,9 +216,8 @@ void FNTConfigRemoveCache( void )
 		}
 	}
 	// Finished with lines so release it
-	[lines release];
 	
-	return [validCharsString autorelease];
+	return validCharsString;
 }
 
 -(void) parseImageFileName:(NSString*)line fntFile:(NSString*)fntFile
@@ -247,7 +247,6 @@ void FNTConfigRemoveCache( void )
 	NSString *dir = [fntFile stringByDeletingLastPathComponent];
 	_atlasName = [dir stringByAppendingPathComponent:propertyValue];
     
-	[_atlasName retain];
 }
 
 -(void) parseInfoArguments:(NSString*)line
@@ -436,10 +435,13 @@ void FNTConfigRemoveCache( void )
 #pragma mark -
 #pragma mark CCLabelBMFont
 
-@implementation CCLabelBMFont
+@implementation CCLabelBMFont {
+	// Replacement for the old CCNode.tag property which was
+	// used heavily in the original code.
+	NSMutableArray *_childForTag;
+}
 
 @synthesize alignment = _alignment;
-@synthesize cascadeColorEnabled = _cascadeColorEnabled, cascadeOpacityEnabled = _cascadeOpacityEnabled;
 
 #pragma mark LabelBMFont - Purge Cache
 +(void) purgeCachedData
@@ -451,27 +453,27 @@ void FNTConfigRemoveCache( void )
 
 +(id) labelWithString:(NSString *)string fntFile:(NSString *)fntFile
 {
-	return [[[self alloc] initWithString:string fntFile:fntFile width:kCCLabelAutomaticWidth alignment:kCCTextAlignmentLeft imageOffset:CGPointZero] autorelease];
+	return [[self alloc] initWithString:string fntFile:fntFile width:kCCLabelAutomaticWidth alignment:CCTextAlignmentLeft imageOffset:CGPointZero];
 }
 
 +(id) labelWithString:(NSString*)string fntFile:(NSString*)fntFile width:(float)width alignment:(CCTextAlignment)alignment
 {
-    return [[[self alloc] initWithString:string fntFile:fntFile width:width alignment:alignment imageOffset:CGPointZero] autorelease];
+    return [[self alloc] initWithString:string fntFile:fntFile width:width alignment:alignment imageOffset:CGPointZero];
 }
 
 +(id) labelWithString:(NSString*)string fntFile:(NSString*)fntFile width:(float)width alignment:(CCTextAlignment)alignment imageOffset:(CGPoint)offset
 {
-    return [[[self alloc] initWithString:string fntFile:fntFile width:width alignment:alignment imageOffset:offset] autorelease];
+    return [[self alloc] initWithString:string fntFile:fntFile width:width alignment:alignment imageOffset:offset];
 }
 
 -(id) init
 {
-	return [self initWithString:nil fntFile:nil width:kCCLabelAutomaticWidth alignment:kCCTextAlignmentLeft imageOffset:CGPointZero];
+	return [self initWithString:nil fntFile:nil width:kCCLabelAutomaticWidth alignment:CCTextAlignmentLeft imageOffset:CGPointZero];
 }
 
 -(id) initWithString:(NSString*)theString fntFile:(NSString*)fntFile
 {
-    return [self initWithString:theString fntFile:fntFile width:kCCLabelAutomaticWidth alignment:kCCTextAlignmentLeft];
+    return [self initWithString:theString fntFile:fntFile width:kCCLabelAutomaticWidth alignment:CCTextAlignmentLeft];
 }
 
 -(id) initWithString:(NSString*)theString fntFile:(NSString*)fntFile width:(float)width alignment:(CCTextAlignment)alignment
@@ -487,33 +489,36 @@ void FNTConfigRemoveCache( void )
 	// if theString && fntfile are both nil, then it is OK
 	NSAssert( (theString && fntFile) || (theString==nil && fntFile==nil), @"Invalid params for CCLabelBMFont");
 	
-	CCTexture2D *texture = nil;
+	CCTexture *texture = nil;
+    CCBMFontConfiguration *newConf = nil;
     
 	if( fntFile ) {
-		CCBMFontConfiguration *newConf = FNTConfigLoadFile(fntFile);
+		newConf = FNTConfigLoadFile(fntFile);
 		if(!newConf) {
 			CCLOGWARN(@"cocos2d: WARNING. CCLabelBMFont: Impossible to create font. Please check file: '%@'", fntFile );
-			[self release];
 			return nil;
 		}
         
-		_configuration = [newConf retain];
-		_fntFile = [fntFile copy];
-        
-		texture = [[CCTextureCache sharedTextureCache] addImage:_configuration.atlasName];
+		texture = [[CCTextureCache sharedTextureCache] addImage:newConf.atlasName];
         
 	} else
-		texture = [[[CCTexture2D alloc] init] autorelease];
+		texture = [[CCTexture alloc] init];
     
     
 	if ( (self=[super initWithTexture:texture capacity:[theString length]]) ) {
-        _width = width;
-        _alignment = alignment;
+        
+        if (fntFile)
+        {
+            _configuration = newConf;
+            _fntFile = [fntFile copy];
+        }
+        
+		_width = width;
+		_alignment = alignment;
 
-		_displayedOpacity = _realOpacity = 255;
-		_displayedColor = _realColor = ccWHITE;
-        _cascadeOpacityEnabled = YES;
-        _cascadeColorEnabled = YES;
+		_displayColor = _color = [CCColor whiteColor].ccColor4f;
+		_cascadeOpacityEnabled = YES;
+		_cascadeColorEnabled = YES;
 
 		_contentSize = CGSizeZero;
 		
@@ -525,6 +530,7 @@ void FNTConfigRemoveCache( void )
         
 		_reusedChar = [[CCSprite alloc] initWithTexture:_textureAtlas.texture rect:CGRectMake(0, 0, 0, 0) rotated:NO];
 		[_reusedChar setBatchNode:self];
+		_childForTag = [NSMutableArray array];
 
 		[self setString:theString updateLabel:YES];
 	}
@@ -532,16 +538,23 @@ void FNTConfigRemoveCache( void )
 	return self;
 }
 
--(void) dealloc
+-(CCSprite *)childForTag:(NSUInteger)tag
 {
-	[_string release];
-    [_initialString release];
-	[_configuration release];
-    [_fntFile release];
-	[_reusedChar release];
-    
-	[super dealloc];
+	if(tag < _childForTag.count){
+		id child = _childForTag[tag];
+		return (child == [NSNull null] ? nil : child);
+	} else {
+		return nil;
+	}
 }
+
+-(void)setTag:(NSUInteger)tag forChild:(CCSprite *)child
+{
+	// Insert NSNull to fill holes if necessary.
+	while(_childForTag.count < tag) [_childForTag addObject:[NSNull null]];
+	[_childForTag addObject:child];
+}
+
 
 #pragma mark LabelBMFont - Alignment
 
@@ -561,7 +574,7 @@ void FNTConfigRemoveCache( void )
         for (int j = 0; j < [_children count]; j++) {
             CCSprite *characterSprite;
             int justSkipped = 0;
-            while(!(characterSprite = (CCSprite *)[self getChildByTag:j+skip+justSkipped]))
+            while(!(characterSprite = [self childForTag:j+skip+justSkipped]))
                 justSkipped++;
             skip += justSkipped;
 			
@@ -641,7 +654,7 @@ void FNTConfigRemoveCache( void )
 	
     //Step 2: Make alignment
 	
-    if (self.alignment != kCCTextAlignmentLeft) {
+    if (self.alignment != CCTextAlignmentLeft) {
 		
         int i = 0;
         //Number of spaces skipped
@@ -656,17 +669,17 @@ void FNTConfigRemoveCache( void )
                 continue;
 			
             //Find position of last character on the line
-            CCSprite *lastChar = (CCSprite *)[self getChildByTag:index];
+            CCSprite *lastChar = [self childForTag:index];
 			
             lineWidth = lastChar.position.x + lastChar.contentSize.width/2;
 			
             //Figure out how much to shift each character in this line horizontally
             float shift = 0;
             switch (self.alignment) {
-                case kCCTextAlignmentCenter:
+                case CCTextAlignmentCenter:
                     shift = self.contentSize.width/2 - lineWidth/2;
                     break;
-                case kCCTextAlignmentRight:
+                case CCTextAlignmentRight:
                     shift = self.contentSize.width - lineWidth;
                 default:
                     break;
@@ -679,7 +692,7 @@ void FNTConfigRemoveCache( void )
                     index = i + j + lineNumber;
                     if (index < 0)
                         continue;
-                    CCSprite *characterSprite = (CCSprite *)[self getChildByTag:index];
+                    CCSprite *characterSprite = [self childForTag:index];
                     characterSprite.position = ccpAdd(characterSprite.position, ccp(shift, 0));
                 }
             }
@@ -737,8 +750,10 @@ void FNTConfigRemoveCache( void )
 	totalHeight = _configuration->_commonHeight * quantityOfLines;
 	nextFontPositionY = -(_configuration->_commonHeight - _configuration->_commonHeight*quantityOfLines);
     CGRect rect;
-    ccBMFontDef fontDef;
-
+    ccBMFontDef fontDef = (ccBMFontDef){};
+	
+	CGFloat contentScale = 1.0/self.texture.contentScale;
+	
 	for(NSUInteger i = 0; i<stringLen; i++) {
 		unichar c = [_string characterAtIndex:i];
         
@@ -764,19 +779,16 @@ void FNTConfigRemoveCache( void )
 			CCLOGWARN(@"cocos2d: CCLabelBMFont: characer not found %c", c);
 			continue;
 		}
-        
-        fontDef = element->fontDef;
-        
-        rect = fontDef.rect;
-		rect = CC_RECT_PIXELS_TO_POINTS(rect);
+		
+		fontDef = element->fontDef;
+		
+		rect = CC_RECT_SCALE(fontDef.rect, contentScale);
 		
 		rect.origin.x += _imageOffset.x;
 		rect.origin.y += _imageOffset.y;
         
-		CCSprite *fontChar;
-
 		BOOL hasSprite = YES;
-		fontChar = (CCSprite*) [self getChildByTag:i];
+		CCSprite *fontChar = [self childForTag:i];
 		if( fontChar )
 		{
 			// Reusing previous Sprite
@@ -795,16 +807,16 @@ void FNTConfigRemoveCache( void )
 				hasSprite = NO;
 			} else {
 				fontChar = [[CCSprite alloc] initWithTexture:_textureAtlas.texture rect:rect];
-				[self addChild:fontChar z:i tag:i];
-				[fontChar release];
+				[self addChild:fontChar z:i];
+				[self setTag:i forChild:fontChar];
 			}
 			
 			// Apply label properties
 			[fontChar setOpacityModifyRGB:_opacityModifyRGB];
 
 			// Color MUST be set before opacity, since opacity might change color if OpacityModifyRGB is on
-			[fontChar updateDisplayedColor:_displayedColor];
-			[fontChar updateDisplayedOpacity:_displayedOpacity];
+			[fontChar updateDisplayedColor:_displayColor];
+			[fontChar updateDisplayedOpacity:_displayColor.a];
 		}
 
 		// updating previous sprite
@@ -814,8 +826,8 @@ void FNTConfigRemoveCache( void )
 		// See issue 1343. cast( signed short + unsigned integer ) == unsigned integer (sign is lost!)
 		NSInteger yOffset = _configuration->_commonHeight - fontDef.yOffset;
 		CGPoint fontPos = ccp( (CGFloat)nextFontPositionX + fontDef.xOffset + fontDef.rect.size.width*0.5f + kerningAmount,
-							  (CGFloat)nextFontPositionY + yOffset - rect.size.height*0.5f * CC_CONTENT_SCALE_FACTOR() );
-        fontChar.position = CC_POINT_PIXELS_TO_POINTS(fontPos);
+							  (CGFloat)nextFontPositionY + yOffset - rect.size.height*0.5f * _textureAtlas.texture.contentScale );
+		fontChar.position = ccpMult(fontPos, contentScale);
 		
 		// update kerning
 		nextFontPositionX += fontDef.xAdvance + kerningAmount;
@@ -839,7 +851,7 @@ void FNTConfigRemoveCache( void )
     }
     tmpSize.height = totalHeight;
     
-	[self setContentSize:CC_SIZE_PIXELS_TO_POINTS(tmpSize)];
+	[self setContentSize:CC_SIZE_SCALE(tmpSize, contentScale)];
 }
 
 #pragma mark LabelBMFont - CCLabelProtocol protocol
@@ -861,104 +873,18 @@ void FNTConfigRemoveCache( void )
 - (void) setString:(NSString*) newString updateLabel:(BOOL)update
 {
     if( !update ) {
-        [_string release];
         _string = [newString copy];
     } else {
-        [_initialString release];
         _initialString = [newString copy];
     }
-	
-    CCSprite *child;
-    CCARRAY_FOREACH(_children, child)
-		child.visible = NO;
+    
+    for (CCSprite* child in _children)
+        child.visible = NO;
 	
 	[self createFontChars];
 	
     if (update)
         [self updateLabel];
-}
-
-#pragma mark LabelBMFont - CCRGBAProtocol protocol
-
--(ccColor3B) color
-{
-	return _realColor;
-}
-
--(ccColor3B) displayedColor
-{
-	return _displayedColor;
-}
-
--(void) setColor:(ccColor3B)color
-{
-	_displayedColor = _realColor = color;
-	
-	if( _cascadeColorEnabled ) {
-		ccColor3B parentColor = ccWHITE;
-		if( [_parent conformsToProtocol:@protocol(CCRGBAProtocol)] && [(id<CCRGBAProtocol>)_parent isCascadeColorEnabled] )
-			parentColor = [(id<CCRGBAProtocol>)_parent displayedColor];
-		[self updateDisplayedColor:parentColor];
-	}
-}
-
--(GLubyte) opacity
-{
-	return _realOpacity;
-}
-
--(GLubyte) displayedOpacity
-{
-	return _displayedOpacity;
-}
-
-/** Override synthesized setOpacity to recurse items */
-- (void) setOpacity:(GLubyte)opacity
-{
-	_displayedOpacity = _realOpacity = opacity;
-
-	if( _cascadeOpacityEnabled ) {
-		GLubyte parentOpacity = 255;
-		if( [_parent conformsToProtocol:@protocol(CCRGBAProtocol)] && [(id<CCRGBAProtocol>)_parent isCascadeOpacityEnabled] )
-			parentOpacity = [(id<CCRGBAProtocol>)_parent displayedOpacity];
-		[self updateDisplayedOpacity:parentOpacity];
-	}
-}
-
--(void) setOpacityModifyRGB:(BOOL)modify
-{
-	_opacityModifyRGB = modify;
-    
-	id<CCRGBAProtocol> child;
-	CCARRAY_FOREACH(_children, child)
-		[child setOpacityModifyRGB:modify];
-}
-
--(BOOL) doesOpacityModifyRGB
-{
-	return _opacityModifyRGB;
-}
-
-- (void)updateDisplayedOpacity:(GLubyte)parentOpacity
-{
-	_displayedOpacity = _realOpacity * parentOpacity/255.0;
-
-	CCSprite *item;
-	CCARRAY_FOREACH(_children, item) {
-		[item updateDisplayedOpacity:_displayedOpacity];
-	}
-}
-
-- (void)updateDisplayedColor:(ccColor3B)parentColor
-{
-	_displayedColor.r = _realColor.r * parentColor.r/255.0;
-	_displayedColor.g = _realColor.g * parentColor.g/255.0;
-	_displayedColor.b = _realColor.b * parentColor.b/255.0;
-
-	CCSprite *item;
-	CCARRAY_FOREACH(_children, item) {
-		[item updateDisplayedColor:_displayedColor];
-	}
 }
 
 #pragma mark LabelBMFont - AnchorPoint
@@ -985,17 +911,21 @@ void FNTConfigRemoveCache( void )
 - (void) setFntFile:(NSString*) fntFile
 {
 	if( fntFile != _fntFile ) {
-		
+
 		CCBMFontConfiguration *newConf = FNTConfigLoadFile(fntFile);
-		
-		NSAssert( newConf, @"CCLabelBMFont: Impossible to create font. Please check file: '%@'", fntFile );
-		
-		[_fntFile release];
-		_fntFile = [fntFile retain];
-		
-		[_configuration release];
-		_configuration = [newConf retain];
-        
+
+        // Always throw this exception instead of NSAssert to let a consumer handle
+        // errors gracefully in environments with disabled assertions(e.g. release builds).
+        // Otherwise createFontChars can crash with a nasty segmentation fault.
+        if (!newConf)
+        {
+            [NSException raise:@"Invalid font file" format:@"CCLabelBMFont: Impossible to create font. Please check file: '%@'", fntFile];
+        }
+
+		_fntFile = fntFile;
+
+		_configuration = newConf;
+
 		[self setTexture:[[CCTextureCache sharedTextureCache] addImage:_configuration.atlasName]];
 		[self createFontChars];
 	}

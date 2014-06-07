@@ -38,7 +38,7 @@
 // E.g A value of 0.5f will allow the map to be zoomed out upto 2x
 // WARNING: Changing this value will impact performance.
 #ifndef HKTMX_LAYER_SCALE_LIMIT
-#define HKTMX_LAYER_SCALE_LIMIT 0.5f
+#define HKTMX_LAYER_SCALE_LIMIT 0.15f
 #endif
 
 
@@ -55,10 +55,7 @@
 #define kTileRotated270       (kFlippedDiagonallyFlag|kFlippedVerticallyFlag)
 
 
-@class CCTMXMapInfo;
-@class CCTMXLayerInfo;
-@class CCTMXTilesetInfo;
-
+@class CCTiledMapInfo, CCTiledMapLayerInfo, CCTiledMapTilesetInfo;
 
 /**
  Represents a tile animation state.  When animClock == 0.0, each tile is in a state
@@ -86,8 +83,8 @@ struct HKTMXAnimCacheEntry {
 
 @interface HKTMXLayer : CCNode <CCBlendProtocol>
 {
-	CCTMXTilesetInfo	*tileset_;
-	CCTexture2D			*texture_;
+	CCTiledMapTilesetInfo	*tileset_;
+	CCTexture			*texture_;
 	NSString			*layerName_;
 	CGSize				layerSize_;
 	CGSize				mapTileSize_;
@@ -127,16 +124,16 @@ struct HKTMXAnimCacheEntry {
 /** pointer to the map of tiles */
 @property (nonatomic,readwrite) unsigned int *tiles;
 /** Tileset information for the layer */
-@property (nonatomic,readwrite,retain) CCTMXTilesetInfo *tileset;
+@property (nonatomic,readwrite,retain) CCTiledMapTilesetInfo *tileset;
 /** Layer orientation, which is the same as the map orientation */
 @property (nonatomic,readwrite) int layerOrientation;
 /** properties from the layer. They can be added using Tiled */
 @property (nonatomic,readwrite,retain) NSMutableArray *properties;
 
 /** creates an HKTMXLayer with a tileset info, a layer info and a map info */
-+(id) layerWithTilesetInfo:(CCTMXTilesetInfo*)tilesetInfo layerInfo:(CCTMXLayerInfo*)layerInfo mapInfo:(CCTMXMapInfo*)mapInfo;
++(id) layerWithTilesetInfo:(CCTiledMapTilesetInfo *)tilesetInfo layerInfo:(CCTiledMapLayerInfo *)layerInfo mapInfo:(CCTiledMapInfo *)mapInfo;
 /** initializes an HKTMXLayer with a tileset info, a layer info and a map info */
--(id) initWithTilesetInfo:(CCTMXTilesetInfo*)tilesetInfo layerInfo:(CCTMXLayerInfo*)layerInfo mapInfo:(CCTMXMapInfo*)mapInfo;
+-(id) initWithTilesetInfo:(CCTiledMapTilesetInfo *)tilesetInfo layerInfo:(CCTiledMapLayerInfo *)layerInfo mapInfo:(CCTiledMapInfo *)mapInfo;
 
 /** returns the tile gid at a given tile coordinate.
  if it returns 0, it means that the tile is empty.

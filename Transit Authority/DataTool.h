@@ -18,8 +18,10 @@
     IBOutlet UIViewController *mainVC;
 }
 
+
+@property(strong) IBOutlet UIViewController *viewController;
 @property(strong) IBOutlet UINavigationController *navController;
-@property(strong)IBOutlet DataToolRidershipBreakdownViewController *ridershipBreakdownVC;
+@property(strong) IBOutlet DataToolRidershipBreakdownViewController *ridershipBreakdownVC;
 
 - (IBAction)newPane:(id)sender;
 

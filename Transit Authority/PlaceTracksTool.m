@@ -10,6 +10,7 @@
 #import "MainGameScene.h"
 #import "TracksNode.h"
 #import "Utilities.h"
+#import "CCTiledMap.h"
 #import "CCLayerPanZoom.h"
 #import "HKTMXTiledMap.h"
 #import "CCTMXTiledMap+Extras.h"
@@ -27,12 +28,12 @@
 }
 
 
-- (BOOL)ccTouchBegan:(UITouch *)touch withEvent:(UIEvent *)event{
-    [super ccTouchBegan:touch withEvent:event];
+- (BOOL) touchBegan:(UITouch *)touch withEvent:(UIEvent *)event{
+    [super touchBegan:touch withEvent:event];
     
     startStation = endStation = nil;
     
-    CGPoint nodeCoord = [self.parent->tiledMap convertTouchToNodeSpace:touch];
+    CGPoint nodeCoord = [touch locationInNode:self.parent->tiledMap];
     Station *station = [self.parent stationAtNodeCoords:nodeCoord];
     
     if(station){
@@ -53,10 +54,10 @@
     return NO;
 }
 
-- (void)ccTouchMoved:(UITouch *)touch withEvent:(UIEvent *)event{
+- (void) touchMoved:(UITouch *)touch withEvent:(UIEvent *)event{
     
     if(trackPlacement){
-        CGPoint nodeCoord = [self.parent->tiledMap convertTouchToNodeSpace:touch];
+        CGPoint nodeCoord = [touch locationInNode:self.parent->tiledMap];
         CGPoint start = [self.parent->tiledMap tileCoordinateFromNodeCoordinate:trackPlacement.start];
         CGPoint end = [self.parent->tiledMap tileCoordinateFromNodeCoordinate:trackPlacement.end];
         CGFloat cost = [self.parent.gameState trackSegmentCostBetween:start tile:end];
@@ -80,12 +81,12 @@
         }
         
         costLabel.string = FormatCurrency(@(cost));
-        costLabel.position = CGPointOffset( [self.parent convertTouchToNodeSpace:touch], 75, 0);
+        costLabel.position = CGPointOffset( [touch locationInNode:self.parent], 75, 0);
     }
 }
 
-- (void)ccTouchEnded:(UITouch *)touch withEvent:(UIEvent *)event{
-    [super ccTouchEnded:touch withEvent:event];
+- (void) touchEnded:(UITouch *)touch withEvent:(UIEvent *)event{
+    [super touchEnded:touch withEvent:event];
     
     CGFloat distanceInTiles = PointDistance(startStation.tileCoordinate, endStation.tileCoordinate);
     CGFloat cost = distanceInTiles * GAME_TRACK_COST_PER_TILE;
@@ -94,7 +95,7 @@
     if(endStation && (endStation != startStation) && (cost < self.parent.gameState.currentCash)){
         TrackSegment *segment = [self.parent.gameState buildTrackSegmentBetween:startStation second:endStation];
         
-        [self.parent->audioEngine playEffect:SoundEffect_BuildTunnel];
+        [[OALSimpleAudio sharedInstance] playEffect:SoundEffect_BuildTunnel];
         
         // If there's only one line in the game, apply it here.
         if((self.parent.gameState.lines.count == 1) && ([self.parent.gameState line:self.parent.gameState.lines.allValues[0] canAddSegment:segment])){
@@ -111,7 +112,7 @@
         }
     }else{
         // invalid placement
-        [self.parent->audioEngine playEffect:SoundEffect_Error];
+        [[OALSimpleAudio sharedInstance] playEffect:SoundEffect_Error];
     }
     [self.parent.gameState didChangeValueForKey:@"tracks"];
     
@@ -121,8 +122,8 @@
 }
 
 
-- (void)ccTouchCancelled:(UITouch *)touch withEvent:(UIEvent *)event{
-    [super ccTouchCancelled:touch withEvent:event];
+- (void) touchCancelled:(UITouch *)touch withEvent:(UIEvent *)event{
+    [super touchCancelled:touch withEvent:event];
     if(trackPlacement){
         [self.parent->tiledMap removeChild:trackPlacement cleanup:YES];
         trackPlacement = nil;

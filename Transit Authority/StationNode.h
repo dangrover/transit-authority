@@ -11,7 +11,7 @@
 
 @protocol StationNodeDelegate;
 
-@interface StationNode : CCNode<CCTouchOneByOneDelegate>
+@interface StationNode : CCNode
 @property(assign, nonatomic) int passengerCount;
 @property(assign, nonatomic) NSObject<StationNodeDelegate> *delegate;
 @property(strong, nonatomic) NSString *stationUUID;

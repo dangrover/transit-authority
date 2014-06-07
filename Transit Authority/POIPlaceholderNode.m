@@ -22,19 +22,20 @@
 - (id) initWithGlyph:(NSString *)glyphFilename displayName:(NSString *)displayName{
     if(self = [super init]){
         
-        _glyph = [[CCSprite alloc] initWithFile:glyphFilename];
-        _dottedLine = [CCSprite spriteWithFile:@"poi-placeholder.png"];
-        _nameLabel = [[CCLabelTTF alloc] initWithString:[displayName uppercaseString]
-                                               fontName:@"HelveticaNeue-CondensedBold"
-                                               fontSize:11];
+        _glyph = [CCSprite spriteWithImageNamed:glyphFilename];
+        _dottedLine = [CCSprite spriteWithImageNamed:@"poi-placeholder.png"];
+        _nameLabel = [[CCLabelTTF alloc] initWithString:displayName
+                                               fontName:@"Raleway"
+                                               fontSize:22];
         
         
         [self addChild:_dottedLine];
         [self addChild:_glyph];
         [self addChild:_nameLabel];
         
-        _nameLabel.position = CGPointMake(0, -30);
-        _nameLabel.color = ccc3(125, 125, 125);
+        
+        _nameLabel.position = CGPointMake(0, -60);
+        _nameLabel.color = [CCColor colorWithCcColor3b:ccc3(125, 125, 125)];
         _glyph.scale = 1.25;
         _dottedLine.scale = 0.6;
         _dottedLine.opacity = 200;

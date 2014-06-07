@@ -3,6 +3,7 @@
  *
  * Copyright (c) 2011 Ricardo Quesada
  * Copyright (c) 2011 Zynga Inc.
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -45,7 +46,6 @@ static CCShaderCache *_sharedShaderCache;
 
 +(void)purgeSharedShaderCache
 {
-	[_sharedShaderCache release];
 	_sharedShaderCache = nil;
 }
 
@@ -60,13 +60,10 @@ static CCShaderCache *_sharedShaderCache;
 {
 	CCLOGINFO(@"cocos2d deallocing %@", self);
 
-	[_programs release];
-    [super dealloc];
 }
 
 +(void)purgeSharedTextureCache
 {
-	[_sharedShaderCache release];
 	_sharedShaderCache = nil;
 }
 
@@ -95,7 +92,6 @@ static CCShaderCache *_sharedShaderCache;
 	[p updateUniforms];
 
 	[_programs setObject:p forKey:kCCShader_PositionTextureColor];
-	[p release];
 
 	CHECK_GL_ERROR_DEBUG();
 
@@ -111,7 +107,6 @@ static CCShaderCache *_sharedShaderCache;
 	[p updateUniforms];
 
 	[_programs setObject:p forKey:kCCShader_PositionTextureColorAlphaTest];
-	[p release];
 
 	CHECK_GL_ERROR_DEBUG();
 
@@ -128,7 +123,6 @@ static CCShaderCache *_sharedShaderCache;
 	[p updateUniforms];
 
 	[_programs setObject:p forKey:kCCShader_PositionColor];
-	[p release];
 
 	CHECK_GL_ERROR_DEBUG();
 
@@ -145,7 +139,6 @@ static CCShaderCache *_sharedShaderCache;
 	[p updateUniforms];
 
 	[_programs setObject:p forKey:kCCShader_PositionTexture];
-	[p release];
 
 	CHECK_GL_ERROR_DEBUG();
 
@@ -162,7 +155,6 @@ static CCShaderCache *_sharedShaderCache;
 	[p updateUniforms];
 
 	[_programs setObject:p forKey:kCCShader_PositionTexture_uColor];
-	[p release];
 	
 	CHECK_GL_ERROR_DEBUG();
 
@@ -180,7 +172,6 @@ static CCShaderCache *_sharedShaderCache;
 	[p updateUniforms];
 
 	[_programs setObject:p forKey:kCCShader_PositionTextureA8Color];
-	[p release];
 
 	CHECK_GL_ERROR_DEBUG();
 	
@@ -196,7 +187,6 @@ static CCShaderCache *_sharedShaderCache;
 	[p updateUniforms];
 
 	[_programs setObject:p forKey:kCCShader_Position_uColor];
-	[p release];
 
 	CHECK_GL_ERROR_DEBUG();
 	
@@ -214,7 +204,6 @@ static CCShaderCache *_sharedShaderCache;
 	[p updateUniforms];
 	
 	[_programs setObject:p forKey:kCCShader_PositionLengthTexureColor];
-	[p release];
 	CHECK_GL_ERROR_DEBUG();
 }
 

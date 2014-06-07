@@ -3,6 +3,7 @@
  *
  * Copyright (c) 2008-2010 Ricardo Quesada
  * Copyright (c) 2011 Zynga Inc.
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,15 +25,13 @@
  * THE SOFTWARE.
  */
 
-
 #import "CCTextureAtlas.h"
 #import "CCNode.h"
 #import "CCProtocols.h"
 
-@class CCTexture2D;
+@class CCTexture;
 
-/** CCAtlasNode is a subclass of CCNode that implements the CCRGBAProtocol and
- CCTextureProtocol protocol
+/** CCAtlasNode is a subclass of CCNode that implements the CCTextureProtocol protocol
 
  It knows how to render a TextureAtlas object.
  If you are going to render a TextureAtlas consider sub-classing CCAtlasNode (or a subclass of CCAtlasNode)
@@ -40,59 +39,97 @@
  All features from CCNode are valid, plus the following features:
  - opacity and RGB colors
  */
-@interface CCAtlasNode : CCNodeRGBA <CCTextureProtocol>
-{
-	// texture atlas
+@interface CCAtlasNode : CCNode <CCTextureProtocol> {
+	// Texture Atlas.
 	CCTextureAtlas	*_textureAtlas;
 
-	// chars per row
+	// Chars per row.
 	NSUInteger		_itemsPerRow;
-	// chars per column
+    
+	// Chars per column.
 	NSUInteger		_itemsPerColumn;
 
-	// width of each char
+	// Width of each char.
 	NSUInteger		_itemWidth;
-	// height of each char
+    
+	// Height of each char.
 	NSUInteger		_itemHeight;
 
-	// quads to draw
+	// Quads to draw.
 	NSUInteger		_quadsToDraw;
 
-	// blend function
+	// Blend function.
 	ccBlendFunc		_blendFunc;
 
-	// texture RGBA.
+	// Texture RGBA.
 	ccColor3B	_colorUnmodified;
 	BOOL		_opacityModifyRGB;
 
-	// color uniform
+	// Color uniform.
 	GLint	_uniformColor;
 }
 
-/** conforms to CCTextureProtocol protocol */
-@property (nonatomic,readwrite,retain) CCTextureAtlas *textureAtlas;
 
-/** conforms to CCTextureProtocol protocol */
+/// -----------------------------------------------------------------------
+/// @name Accessing the Atlas Node Attributes
+/// -----------------------------------------------------------------------
+
+/** Conforms to CCTextureProtocol protocol. */
+@property (nonatomic,readwrite,strong) CCTextureAtlas *textureAtlas;
+
+/** Conforms to CCTextureProtocol protocol. */
 @property (nonatomic,readwrite) ccBlendFunc blendFunc;
 
-/** conforms to CCRGBAProtocol protocol */
-@property (nonatomic,readwrite) ccColor3B color;
-
-/** how many quads to draw */
+/** How many quads to draw. */
 @property (nonatomic,readwrite) NSUInteger quadsToDraw;
 
-/** creates a CCAtlasNode  with an Atlas file the width and height of each item measured in points and the quantity of items to render*/
+
+/// -----------------------------------------------------------------------
+/// @name Creating a CCAtlasNode Object
+/// -----------------------------------------------------------------------
+
+/**
+ *  Creates a CCAtlasNode with an Atlas file the width and height of each item measured in points and the quantity of items to render.
+ *
+ *  @param tile Tile filename.
+ *  @param w    Width of tile node.
+ *  @param h    Height of tile node.
+ *  @param c    Number of tiles to render.
+ *
+ *  @return A newly initialized CCAtlasNode.
+ */
 +(id) atlasWithTileFile:(NSString*)tile tileWidth:(NSUInteger)w tileHeight:(NSUInteger)h itemsToRender: (NSUInteger) c;
 
-/** initializes an CCAtlasNode  with an Atlas file the width and height of each item measured in points and the quantity of items to render*/
+
+/// -----------------------------------------------------------------------
+/// @name Initializing a CCAtlasNode Object
+/// -----------------------------------------------------------------------
+
+/**
+ *  Initializes an CCAtlasNode with an Atlas file the width and height of each item measured in points and the quantity of items to render
+ *
+ *  @param tile Tile filename.
+ *  @param w    Width of tile node.
+ *  @param h    Height of tile node.
+ *  @param c    Number of tiles to render.
+ *
+ *  @return A newly initialized CCAtlasNode.
+ */
 -(id) initWithTileFile:(NSString*)tile tileWidth:(NSUInteger)w tileHeight:(NSUInteger)h itemsToRender: (NSUInteger) c;
 
-/** initializes an CCAtlasNode  with a texture the width and height of each item measured in points and the quantity of items to render*/
--(id) initWithTexture:(CCTexture2D*)texture tileWidth:(NSUInteger)w tileHeight:(NSUInteger)h itemsToRender: (NSUInteger) c;
-
-
-/** updates the Atlas (indexed vertex array).
- * Shall be overridden in subclasses
+/**
+ *  Initializes an CCAtlasNode  with a texture the width and height of each item measured in points and the quantity of items to render.
+ *
+ *  @param texture Texture.
+ *  @param w       Width of tile node.
+ *  @param h       Height of tile node.
+ *  @param c       Number of tiles to render.
+ *
+ *  @return A newly initialized CCAtlasNode.
  */
+-(id) initWithTexture:(CCTexture*)texture tileWidth:(NSUInteger)w tileHeight:(NSUInteger)h itemsToRender: (NSUInteger) c;
+
+/** Updates the Atlas (indexed vertex array). Shall be overridden in subclasses. */
 -(void) updateAtlasValues;
+
 @end

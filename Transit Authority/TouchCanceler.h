@@ -7,11 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "CCTouchDelegateProtocol.h"
-#import "CCTouchHandler.h"
 
 // Cancel touches in the main GL view if it bumps up against a subview we've added
-@interface TouchCanceler : NSObject<CCTouchOneByOneDelegate>
+@interface TouchCanceler : NSObject
 
 
 @end

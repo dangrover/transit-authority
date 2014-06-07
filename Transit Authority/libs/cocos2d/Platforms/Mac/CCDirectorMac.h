@@ -3,6 +3,7 @@
  *
  * Copyright (c) 2010 Ricardo Quesada
  * Copyright (c) 2011 Zynga Inc.
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,37 +33,29 @@
 #import <QuartzCore/CVDisplayLink.h>
 #import "../../CCDirector.h"
 
-@class CCEventDispatcher;
-
 enum  {
-	/// If the window is resized, it won't be autoscaled
+	// If the window is resized, it won't be autoscaled
 	kCCDirectorResize_NoScale,
-	/// If the window is resized, it will be autoscaled (default behavior)
+	// If the window is resized, it will be autoscaled (default behavior)
 	kCCDirectorResize_AutoScale,
 };
 
 @interface CCDirector (MacExtension)
-/** sets the CCEventDispatcher (Mac only) */
-@property (nonatomic, readwrite, retain) CCEventDispatcher* eventDispatcher;
 
-/** converts an NSEvent to GL coordinates (Mac only) */
+/* converts an NSEvent to GL coordinates (Mac only) */
 -(CGPoint) convertEventToGL:(NSEvent*)event;
 @end
 
-/** Base class of Mac directors
- @since v0.99.5
+/* Base class of Mac directors
  */
 @interface CCDirectorMac : CCDirector
 {
 	BOOL			_isFullScreen;
 	int				_resizeMode;
 	CGPoint			_winOffset;
-    CGSize			_originalWinSize;
+	CGSize			_originalWinSizeInPoints;
 
 	NSWindow		*_fullScreenWindow;
-
-	// Event Dispatcher
-	CCEventDispatcher	*_eventDispatcher;
 
 	// cache
 	NSWindow		*_windowGLView;
@@ -76,20 +69,15 @@ enum  {
 // resize mode: with or without scaling
 @property (nonatomic, readwrite) int resizeMode;
 
-@property (nonatomic, readwrite) CGSize originalWinSize;
+@property (nonatomic, readwrite) CGSize originalWinSizeInPoints;
 
-/** Sets the view in fullscreen or window mode */
+/* Sets the view in fullscreen or window mode */
 - (void) setFullScreen:(BOOL)fullscreen;
 
-/** Converts window size coordinates to logical coordinates.
- Useful only if resizeMode is kCCDirectorResize_Scale.
- If resizeMode is kCCDirectorResize_NoScale, then no conversion will be done.
-*/
-- (CGPoint) convertToLogicalCoordinates:(CGPoint)coordinates;
 @end
 
 
-/** DisplayLinkDirector is a Director that synchronizes timers with the refresh rate of the display.
+/* DisplayLinkDirector is a Director that synchronizes timers with the refresh rate of the display.
  *
  * Features and Limitations:
  * - Only available on 3.1+
@@ -98,7 +86,6 @@ enum  {
  *
  * It is the recommended Director if the SDK is 3.1 or newer
  *
- * @since v0.8.2
  */
 @interface CCDirectorDisplayLink : CCDirectorMac
 {

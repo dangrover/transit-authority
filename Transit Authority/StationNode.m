@@ -17,17 +17,20 @@
 
 - (id) init{
     if(self = [super init]){
-        _dot = [[CCSprite alloc] initWithFile:@"station.png"];
+        _dot = [[CCSprite alloc] initWithImageNamed:@"station.png"];
         [self addChild:_dot];
         
-        _countLabel = [[CCLabelTTF alloc] initWithString:@"" fontName:@"Helvetica-Bold" fontSize:26/CC_CONTENT_SCALE_FACTOR()];
+        _countLabel = [[CCLabelTTF alloc] initWithString:@"" fontName:@"Helvetica-Bold" fontSize:26];
         _countLabel.anchorPoint = CGPointMake(0.5, 0.5);
         _countLabel.position = CGPointMake(_dot.contentSize.width/2, _dot.contentSize.height / 2);
-        _countLabel.color = ccWHITE;
+        _countLabel.color = [CCColor whiteColor];
         [_dot addChild:_countLabel];
         
         self.passengerCount = 0;
         _glyphSprites = [NSMutableDictionary dictionary];
+        
+        self.userInteractionEnabled = YES;
+     //   self.claimsUserInteraction = YES;
     }
     
     return self;
@@ -42,16 +45,20 @@
 }
 
 
-- (BOOL)ccTouchBegan:(UITouch *)touch withEvent:(UIEvent *)event{
-    return CGRectContainsPoint(_dot.boundingBox, [self convertTouchToNodeSpace:touch]);
+- (BOOL)hitTestWithWorldPos:(CGPoint)pos{
+    return CGRectContainsPoint(_dot.boundingBox, [self convertToNodeSpace:pos]);
 }
 
-- (void)ccTouchMoved:(UITouch *)touch withEvent:(UIEvent *)event{
+- (void) touchBegan:(UITouch *)touch withEvent:(UIEvent *)event{
+ //   return CGRectContainsPoint(_dot.boundingBox, [touch locationInNode:self]);
+}
+
+- (void) touchMoved:(UITouch *)touch withEvent:(UIEvent *)event{
     
 }
 
-- (void)ccTouchEnded:(UITouch *)touch withEvent:(UIEvent *)event{
-    if(CGRectContainsPoint(_dot.boundingBox, [self convertTouchToNodeSpace:touch])){
+- (void) touchEnded:(UITouch *)touch withEvent:(UIEvent *)event{
+    if(CGRectContainsPoint(_dot.boundingBox, [touch locationInNode:self])){
         [self.delegate stationNodeClicked:self];
     }
 }
@@ -90,7 +97,7 @@
     for(NSString *path in _glyphs){
         CCSprite *s = _glyphSprites[path];
         if(!s){
-            CCSprite *s = [[CCSprite alloc] initWithFile:path];
+            CCSprite *s = [[CCSprite alloc] initWithImageNamed:path];
             _glyphSprites[path] = s;
             s.scale = 0.6;
             s.anchorPoint = CGPointMake(0.5, 0.5);

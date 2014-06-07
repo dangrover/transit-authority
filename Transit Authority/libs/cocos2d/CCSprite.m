@@ -3,6 +3,7 @@
  *
  * Copyright (c) 2008-2010 Ricardo Quesada
  * Copyright (c) 2011 Zynga Inc.
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +33,6 @@
 #import "CCAnimation.h"
 #import "CCAnimationCache.h"
 #import "CCTextureCache.h"
-#import "CCDrawingPrimitives.h"
 #import "CCShaderCache.h"
 #import "ccGLStateCache.h"
 #import "CCGLProgram.h"
@@ -41,6 +41,11 @@
 #import "Support/TransformUtils.h"
 #import "Support/CCProfiling.h"
 #import "Support/OpenGL_Internal.h"
+#import "CCNode_Private.h"
+
+#import "CCSprite_Private.h"
+#import "CCSpriteBatchNode_Private.h"
+#import "CCTexture_Private.h"
 
 // external
 #import "kazmath/GL/matrix.h"
@@ -72,30 +77,34 @@
 @synthesize textureAtlas = _textureAtlas;
 @synthesize offsetPosition = _offsetPosition;
 
-
-+(id)spriteWithTexture:(CCTexture2D*)texture
++(id)spriteWithImageNamed:(NSString*)imageName
 {
-	return [[[self alloc] initWithTexture:texture] autorelease];
+    return [[self alloc] initWithImageNamed:imageName];
 }
 
-+(id)spriteWithTexture:(CCTexture2D*)texture rect:(CGRect)rect
++(id)spriteWithTexture:(CCTexture*)texture
 {
-	return [[[self alloc] initWithTexture:texture rect:rect] autorelease];
+	return [[self alloc] initWithTexture:texture];
+}
+
++(id)spriteWithTexture:(CCTexture*)texture rect:(CGRect)rect
+{
+	return [[self alloc] initWithTexture:texture rect:rect];
 }
 
 +(id)spriteWithFile:(NSString*)filename
 {
-	return [[[self alloc] initWithFile:filename] autorelease];
+	return [[self alloc] initWithFile:filename];
 }
 
 +(id)spriteWithFile:(NSString*)filename rect:(CGRect)rect
 {
-	return [[[self alloc] initWithFile:filename rect:rect] autorelease];
+	return [[self alloc] initWithFile:filename rect:rect];
 }
 
 +(id)spriteWithSpriteFrame:(CCSpriteFrame*)spriteFrame
 {
-	return [[[self alloc] initWithSpriteFrame:spriteFrame] autorelease];
+	return [[self alloc] initWithSpriteFrame:spriteFrame];
 }
 
 +(id)spriteWithSpriteFrameName:(NSString*)spriteFrameName
@@ -108,7 +117,12 @@
 
 +(id)spriteWithCGImage:(CGImageRef)image key:(NSString*)key
 {
-	return [[[self alloc] initWithCGImage:image key:key] autorelease];
+	return [[self alloc] initWithCGImage:image key:key];
+}
+
++(id) emptySprite
+{
+    return [[self alloc] init];
 }
 
 -(id) init
@@ -117,7 +131,7 @@
 }
 
 // designated initializer
--(id) initWithTexture:(CCTexture2D*)texture rect:(CGRect)rect rotated:(BOOL)rotated
+-(id) initWithTexture:(CCTexture*)texture rect:(CGRect)rect rotated:(BOOL)rotated
 {
 	if( (self = [super init]) )
 	{
@@ -164,12 +178,17 @@
 	return self;
 }
 
--(id) initWithTexture:(CCTexture2D*)texture rect:(CGRect)rect
+- (id) initWithImageNamed:(NSString*)imageName
+{
+    return [self initWithSpriteFrame:[CCSpriteFrame frameWithImageNamed:imageName]];
+}
+
+-(id) initWithTexture:(CCTexture*)texture rect:(CGRect)rect
 {
 	return [self initWithTexture:texture rect:rect rotated:NO];
 }
 
--(id) initWithTexture:(CCTexture2D*)texture
+-(id) initWithTexture:(CCTexture*)texture
 {
 	NSAssert(texture!=nil, @"Invalid texture for sprite");
 
@@ -182,14 +201,13 @@
 {
 	NSAssert(filename != nil, @"Invalid filename for sprite");
 
-	CCTexture2D *texture = [[CCTextureCache sharedTextureCache] addImage: filename];
+	CCTexture *texture = [[CCTextureCache sharedTextureCache] addImage: filename];
 	if( texture ) {
 		CGRect rect = CGRectZero;
 		rect.size = texture.contentSize;
 		return [self initWithTexture:texture rect:rect];
 	}
 
-	[self release];
 	return nil;
 }
 
@@ -197,11 +215,10 @@
 {
 	NSAssert(filename!=nil, @"Invalid filename for sprite");
 
-	CCTexture2D *texture = [[CCTextureCache sharedTextureCache] addImage: filename];
+	CCTexture *texture = [[CCTextureCache sharedTextureCache] addImage: filename];
 	if( texture )
 		return [self initWithTexture:texture rect:rect];
 
-	[self release];
 	return nil;
 }
 
@@ -210,7 +227,7 @@
 	NSAssert(spriteFrame!=nil, @"Invalid spriteFrame for sprite");
 
 	id ret = [self initWithTexture:spriteFrame.texture rect:spriteFrame.rect];
-	[self setDisplayFrame:spriteFrame];
+    self.spriteFrame = spriteFrame;
 	return ret;
 }
 
@@ -227,7 +244,7 @@
 	NSAssert(image!=nil, @"Invalid CGImageRef for sprite");
 
 	// XXX: possible bug. See issue #349. New API should be added
-	CCTexture2D *texture = [[CCTextureCache sharedTextureCache] addCGImage:image forKey:key];
+	CCTexture *texture = [[CCTextureCache sharedTextureCache] addCGImage:image forKey:key];
 
 	CGRect rect = CGRectZero;
 	rect.size = texture.contentSize;
@@ -237,18 +254,13 @@
 
 - (NSString*) description
 {
-	return [NSString stringWithFormat:@"<%@ = %p | Rect = (%.2f,%.2f,%.2f,%.2f) | tag = %ld | atlasIndex = %ld>", [self class], self,
+	return [NSString stringWithFormat:@"<%@ = %p | Rect = (%.2f,%.2f,%.2f,%.2f) | tag = %@ | atlasIndex = %ld>", [self class], self,
 			_rect.origin.x, _rect.origin.y, _rect.size.width, _rect.size.height,
-			(long)_tag,
+			_name,
 			(unsigned long)_atlasIndex
 	];
 }
 
-- (void) dealloc
-{
-	[_texture release];
-	[super dealloc];
-}
 
 -(CCSpriteBatchNode*) batchNode
 {
@@ -291,6 +303,7 @@
 {
 	_rectRotated = rotated;
 
+    self.contentSizeType = CCSizeTypePoints;
 	[self setContentSize:untrimmedSize];
 	[self setVertexRect:rect];
 	[self setTextureCoords:rect];
@@ -339,14 +352,15 @@
 
 -(void) setTextureCoords:(CGRect)rect
 {
-	rect = CC_RECT_POINTS_TO_PIXELS(rect);
-
-	CCTexture2D *tex	= (_batchNode) ? [_textureAtlas texture] : _texture;
+	CCTexture *tex	= (_batchNode) ? [_textureAtlas texture] : _texture;
 	if(!tex)
 		return;
-
-	float atlasWidth = (float)tex.pixelsWide;
-	float atlasHeight = (float)tex.pixelsHigh;
+	
+	CGFloat scale = tex.contentScale;
+	rect = CC_RECT_SCALE(rect, scale);
+	
+	float atlasWidth = (float)tex.pixelWidth;
+	float atlasHeight = (float)tex.pixelHeight;
 
 	float left, right ,top , bottom;
 
@@ -411,7 +425,7 @@
 	NSAssert( _batchNode, @"updateTransform is only valid when CCSprite is being rendered using an CCSpriteBatchNode");
 
 	// recaculate matrix only if it is dirty
-	if( self.dirty ) {
+	if( self.dirty || self->_physicsBody ) {
 
 		// If it is not visible, or one of its ancestors is not visible, then do nothing:
 		if( !_visible || ( _parent && _parent != _batchNode && ((CCSprite*)_parent)->_shouldBeHidden) ) {
@@ -557,13 +571,17 @@
 
 #pragma mark CCSprite - CCNode overrides
 
--(void) addChild:(CCSprite*)child z:(NSInteger)z tag:(NSInteger) aTag
+-(void) addChild:(CCSprite*)child z:(NSInteger)z name:(NSString*) name
 {
 	NSAssert( child != nil, @"Argument must be non-nil");
 
 	if( _batchNode ) {
 		NSAssert( [child isKindOfClass:[CCSprite class]], @"CCSprite only supports CCSprites as children when using CCSpriteBatchNode");
-		NSAssert( child.texture.name == _textureAtlas.texture.name, @"CCSprite is not using the same texture id");
+        
+		if(child.texture) {
+            NSAssert( (child.texture.name == _textureAtlas.texture.name), @"CCSprite is not using the same texture id");
+        }
+
 
 		//put it in descendants array of batch node
 		[_batchNode appendChild:child];
@@ -573,7 +591,7 @@
 	}
 
 	//CCNode already sets _isReorderChildDirty so this needs to be after batchNode check
-	[super addChild:child z:z tag:aTag];
+	[super addChild:child z:z name:name];
 
 	_hasChildren = YES;
 }
@@ -608,8 +626,7 @@
 -(void)removeAllChildrenWithCleanup:(BOOL)doCleanup
 {
 	if( _batchNode ) {
-		CCSprite *child;
-		CCARRAY_FOREACH(_children, child)
+        for (CCSprite *child in _children)
 			[_batchNode removeSpriteFromAtlas:child];
 	}
 
@@ -622,24 +639,7 @@
 {
 	if (_isReorderChildDirty)
 	{
-		NSInteger i,j,length = _children->data->num;
-		CCNode** x = _children->data->arr;
-		CCNode *tempItem;
-
-		// insertion sort
-		for(i=1; i<length; i++)
-		{
-			tempItem = x[i];
-			j = i-1;
-
-			//continue moving element downwards while zOrder is smaller or when zOrder is the same but orderOfArrival is smaller
-			while(j>=0 && ( tempItem.zOrder < x[j].zOrder || ( tempItem.zOrder == x[j].zOrder && tempItem.orderOfArrival < x[j].orderOfArrival ) ) )
-			{
-				x[j+1] = x[j];
-				j = j-1;
-			}
-			x[j+1] = tempItem;
-		}
+        [_children sortUsingSelector:@selector(compareZOrderToNode:)];
 
 		if ( _batchNode)
 			[_children makeObjectsPerformSelector:@selector(sortAllChildren)];
@@ -675,8 +675,7 @@
 	_dirty = _recursiveDirty = b;
 	// recursively set dirty
 	if( _hasChildren ) {
-		CCSprite *child;
-		CCARRAY_FOREACH(_children, child)
+        for (CCSprite *child in _children)
 			[child setDirtyRecursively:YES];
 	}
 }
@@ -702,15 +701,15 @@
 	SET_DIRTY_RECURSIVELY();
 }
 
--(void)setRotationX:(float)rot
+-(void)setRotationalSkewX:(float)rot
 {
-	[super setRotationX:rot];
+	[super setRotationalSkewX:rot];
 	SET_DIRTY_RECURSIVELY();
 }
 
--(void)setRotationY:(float)rot
+-(void)setRotationalSkewY:(float)rot
 {
-	[super setRotationY:rot];
+	[super setRotationalSkewY:rot];
 	SET_DIRTY_RECURSIVELY();
 }
 
@@ -756,12 +755,6 @@
 	SET_DIRTY_RECURSIVELY();
 }
 
--(void) setIgnoreAnchorPointForPosition:(BOOL)value
-{
-	NSAssert( ! _batchNode, @"ignoreAnchorPointForPosition is invalid in CCSprite");
-	[super setIgnoreAnchorPointForPosition:value];
-}
-
 -(void)setVisible:(BOOL)v
 {
 	[super setVisible:v];
@@ -798,15 +791,14 @@
 #pragma mark CCSprite - RGBA protocol
 -(void) updateColor
 {
-	ccColor4B color4 = {_displayedColor.r, _displayedColor.g, _displayedColor.b, _displayedOpacity};
-
+	ccColor4B color4 = ccc4BFromccc4F(_displayColor);
 	
 	// special opacity for premultiplied textures
 	if ( _opacityModifyRGB ) {
-		color4.r *= _displayedOpacity/255.0f;
-		color4.g *= _displayedOpacity/255.0f;
-		color4.b *= _displayedOpacity/255.0f;
-    }
+		color4.r *= _displayColor.a;
+		color4.g *= _displayColor.a;
+		color4.b *= _displayColor.a;
+	}
 
 	_quad.bl.colors = color4;
 	_quad.br.colors = color4;
@@ -826,21 +818,27 @@
 	// do nothing
 }
 
--(void) setColor:(ccColor3B)color3
+-(void) setColor:(CCColor*)color
 {
-    [super setColor:color3];
+	[super setColor:color];
 	[self updateColor];
 }
 
--(void)updateDisplayedColor:(ccColor3B)parentColor
+- (void) setColorRGBA:(CCColor*)color
 {
-    [super updateDisplayedColor:parentColor];
-    [self updateColor];
+	[super setColorRGBA:color];
+	[self updateColor];
 }
 
--(void) setOpacity:(GLubyte)opacity
+-(void)updateDisplayedColor:(ccColor4F) parentColor
 {
-    [super setOpacity:opacity];
+	[super updateDisplayedColor:parentColor];
+	[self updateColor];
+}
+
+-(void) setOpacity:(CGFloat)opacity
+{
+	[super setOpacity:opacity];
 	[self updateColor];
 }
 
@@ -857,7 +855,7 @@
 	return _opacityModifyRGB;
 }
 
--(void)updateDisplayedOpacity:(GLubyte)parentOpacity
+-(void)updateDisplayedOpacity:(CGFloat)parentOpacity
 {
     [super updateDisplayedOpacity:parentOpacity];
     [self updateColor];
@@ -869,11 +867,11 @@
 //
 #pragma mark CCSprite - Frames
 
--(void) setDisplayFrame:(CCSpriteFrame*)frame
+-(void) setSpriteFrame:(CCSpriteFrame*)frame
 {
 	_unflippedOffsetPositionFromCenter = frame.offset;
 
-	CCTexture2D *newTexture = [frame texture];
+	CCTexture *newTexture = [frame texture];
 	// update texture before updating texture rect
 	if ( newTexture.name != _texture.name )
 		[self setTexture: newTexture];
@@ -882,39 +880,23 @@
 	_rectRotated = frame.rotated;
 
 	[self setTextureRect:frame.rect rotated:_rectRotated untrimmedSize:frame.originalSize];
+    
+    _spriteFrame = frame;
 }
 
--(void) setDisplayFrameWithAnimationName: (NSString*) animationName index:(int) frameIndex
+-(void) setSpriteFrameWithAnimationName: (NSString*) animationName index:(int) frameIndex
 {
-	NSAssert( animationName, @"CCSprite#setDisplayFrameWithAnimationName. animationName must not be nil");
+	NSAssert( animationName, @"CCSprite#setSpriteFrameWithAnimationName. animationName must not be nil");
 
 	CCAnimation *a = [[CCAnimationCache sharedAnimationCache] animationByName:animationName];
 
-	NSAssert( a, @"CCSprite#setDisplayFrameWithAnimationName: Frame not found");
+	NSAssert( a, @"CCSprite#setSpriteFrameWithAnimationName: Frame not found");
 
 	CCAnimationFrame *frame = [[a frames] objectAtIndex:frameIndex];
 
-	NSAssert( frame, @"CCSprite#setDisplayFrame. Invalid frame");
-
-	[self setDisplayFrame:frame.spriteFrame];
-}
-
-
--(BOOL) isFrameDisplayed:(CCSpriteFrame*)frame
-{
-	CGRect r = [frame rect];
-	return ( CGRectEqualToRect(r, _rect) &&
-			frame.texture.name == self.texture.name &&
-			CGPointEqualToPoint( frame.offset, _unflippedOffsetPositionFromCenter ) );
-}
-
--(CCSpriteFrame*) displayFrame
-{
-	return [CCSpriteFrame frameWithTexture:_texture
-							  rectInPixels:CC_RECT_POINTS_TO_PIXELS(_rect)
-								   rotated:_rectRotated
-									offset:CC_POINT_POINTS_TO_PIXELS(_unflippedOffsetPositionFromCenter)
-							  originalSize:CC_SIZE_POINTS_TO_PIXELS(_contentSize)];
+	NSAssert( frame, @"CCSprite#setSpriteFrame. Invalid frame");
+    
+    self.spriteFrame = frame.spriteFrame;
 }
 
 #pragma mark CCSprite - CocosNodeTexture protocol
@@ -935,25 +917,49 @@
 	}
 }
 
--(void) setTexture:(CCTexture2D*)texture
+-(void) setTexture:(CCTexture*)texture
 {
 	// If batchnode, then texture id should be the same
 	NSAssert( !_batchNode || texture.name == _batchNode.texture.name , @"CCSprite: Batched sprites should use the same texture as the batchnode");	
 
 	// accept texture==nil as argument
-	NSAssert( !texture || [texture isKindOfClass:[CCTexture2D class]], @"setTexture expects a CCTexture2D. Invalid argument");
-
+    NSAssert( !texture || [texture isKindOfClass:[CCTexture class]], @"setTexture expects a CCTexture2D. Invalid argument");
+    
 	if( ! _batchNode && _texture != texture ) {
-		[_texture release];
-		_texture = [texture retain];
+		_texture = texture;
 
 		[self updateBlendFunc];
 	}
 }
 
--(CCTexture2D*) texture
+-(CCTexture*) texture
 {
 	return _texture;
 }
 
 @end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

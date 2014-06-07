@@ -5,16 +5,19 @@ PODS:
   - FMDB/common (2.1)
   - FMDB/standard (2.1):
     - FMDB/common
-  - TestFlightSDK (2.1.1b)
+  - FontAwesome+iOS (0.1.1)
+  - TestFlightSDK (3.0.0)
 
 DEPENDENCIES:
   - CorePlot (~> 1.4)
   - FMDB
-  - TestFlightSDK
+  - FontAwesome+iOS
+  - TestFlightSDK (~> 3.0)
 
 SPEC CHECKSUMS:
-  CorePlot: 620ec9763d92cc0478eae469c515132df317e24e
-  FMDB: 8e5b7e0c644a13a70be0ec5dbffc6b30e524ab5d
-  TestFlightSDK: 2dc092bf16239551bdf6d31ea6bba265b6785287
+  CorePlot: 0c6cfe42f4cc458062dfd765d5b8f59a0d0fdddf
+  FMDB: d47c9f71888fcbbf6ca7d37bd3e145672477d921
+  FontAwesome+iOS: 243c5309e90d5788909b0f859f75ecff4a20f88f
+  TestFlightSDK: fe0567a897456b6f65b180541892ef0154986e01
 
-COCOAPODS: 0.26.2
+COCOAPODS: 0.32.1

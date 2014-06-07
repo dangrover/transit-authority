@@ -10,11 +10,11 @@
 #import "MainGameScene.h"
 #import "cocos2d.h"
 #import "CCTMXTiledMap+Extras.h"
-#import "CCLayerPanZoom.h"
 #import "GameLedger.h"
 #import "Utilities.h"
 #import "StationCoverageOverlay.h"
 #import "PointOfInterest.h"
+#import "CCTMXTiledMap+Extras.h"
 
 @implementation PlaceStationTool{
     CCSprite *stationPlacement;
@@ -44,13 +44,17 @@
     
 }
 
-- (BOOL)ccTouchBegan:(UITouch *)touch withEvent:(UIEvent *)event{
-    [super ccTouchBegan:touch withEvent:event];
+- (BOOL) touchBegan:(UITouch *)touch withEvent:(UIEvent *)event{
+    if(event.allTouches.count > 1){
+        return NO;
+    }
+    
+    [super touchBegan:touch withEvent:event];
     
     _heatmapWasOriginallyVisible = self.parent.showPopulationHeatmap;
     
 
-    stationPlacement = [[CCSprite alloc] initWithFile:@"station.png"];
+    stationPlacement = [[CCSprite alloc] initWithImageNamed:@"station.png"];
     stationPlacement.anchorPoint = CGPointMake(0.5, 0.5);
     stationPlacement.scale = [self.parent scaleConsideringZoom:STATION_SPRITE_SCALE_UNSELECTED];
     [self.parent->tiledMap addChild:stationPlacement z:20];
@@ -63,58 +67,56 @@
     //_clippingMask = [[CCDrawNode alloc] init];
     _clippingNode = [[CCClippingNode alloc] initWithStencil:_clippingMask];
     
-    HeatMapNode *heatMap = self.parent.heatMap;
+   /* HeatMapNode *heatMap = self.parent.heatMap;
     heatMap.visible = YES;
     [heatMap removeFromParent];
     [_clippingNode addChild:heatMap];
     [self.parent->tiledMap addChild:_clippingNode z:50];
     _clippingNode.alphaThreshold = 0.5;
-   
+   */
+    
     
     coverageOverlay = [[StationCoverageOverlay alloc] init];
     [self.parent->tiledMap addChild:coverageOverlay z:50];
     coverageOverlay.walkTiles = GAME_STATION_WALK_RADIUS_TILES;
     coverageOverlay.carTiles = GAME_STATION_CAR_RADIUS_TILES;
-   
+    coverageOverlay.scale = 1.0f/self.parent->tiledMap.parent.scale;
     //CGFloat r = GAME_STATION_CAR_RADIUS_TILES*self.parent.gameState.map.map.tileSize.width*2;
    // [_clippingMask drawDot:CGPointMake(-0.5*r, -0.5*r)
    //                 radius:r
    //                  color:ccc4f(0, 0, 0, 1)];
     
-    [self ccTouchMoved:touch withEvent:event];
+    [self touchMoved:touch withEvent:event];
     
     return YES;
 }
 
 
-- (void)ccTouchMoved:(UITouch *)touch withEvent:(UIEvent *)event{
-    [super ccTouchMoved:touch withEvent:event];
+- (void) touchMoved:(UITouch *)touch withEvent:(UIEvent *)event{
+    [super touchMoved:touch withEvent:event];
     
-    CGPoint pos = [self.parent->tiledMap convertTouchToNodeSpace:touch];
+    CGPoint pos = [touch locationInNode:self.parent->tiledMap];
     CGPoint tileCoordinate = [self.parent->tiledMap tileCoordinateFromNodeCoordinate:pos];
     
     
     BOOL stationAlreadyExistsHere = ([self.parent stationAtNodeCoords:pos] != nil);
     
     if(stationAlreadyExistsHere || ![self.parent.gameState.map tileIsLand:tileCoordinate] || (self.parent.gameState.currentCash < GAME_STATION_COST)){
-        stationPlacement.texture = [[CCTexture2D alloc] initWithCGImage:[[UIImage imageNamed:@"invalid-station.png"] CGImage]
-                                                         resolutionType:kCCResolutioniPhone];
+        stationPlacement.texture = [CCTexture textureWithFile:@"invalid-station.png"];
         self.validMove = NO;
     }else{
-        
         // see if it hits a POI
         for(PointOfInterest *potentialPOI in _poisToCheck){
             if(PointDistance(potentialPOI.location, tileCoordinate) < 5){
                 _poiToBeAssociatedWithStation = potentialPOI;
                 tileCoordinate = potentialPOI.location;
                 pos = [self.parent.gameState.map.landLayer positionAt:tileCoordinate]; // round it off
-                
+        
                 break;
             }
         }
         
-        stationPlacement.texture = [[CCTexture2D alloc] initWithCGImage:[[UIImage imageNamed:@"station.png"] CGImage]
-                                                         resolutionType:kCCResolutioniPhone];
+        stationPlacement.texture = [CCTexture textureWithFile:@"station.png"];
         self.validMove = YES;
     }
     
@@ -122,8 +124,8 @@
     
 }
 
-- (void)ccTouchEnded:(UITouch *)touch withEvent:(UIEvent *)event{
-    [super ccTouchEnded:touch withEvent:event];
+- (void) touchEnded:(UITouch *)touch withEvent:(UIEvent *)event{
+    [super touchEnded:touch withEvent:event];
     
     [self.parent->tiledMap removeChild:stationPlacement cleanup:YES];
     stationPlacement = nil;
@@ -132,10 +134,10 @@
     
     GameState *gameState = self.parent.gameState;
     
-    [self _fixHeatMap];
+   // [self _fixHeatMap];
     
     // place the actual station
-    CGPoint tileCoordinate = [self.parent->tiledMap tileCoordinateFromNodeCoordinate:[self.parent->tiledMap convertTouchToNodeSpace:touch]];
+    CGPoint tileCoordinate = [self.parent->tiledMap tileCoordinateFromNodeCoordinate:[touch locationInNode:self.parent->tiledMap]];
     
     if(self.validMove && (gameState.currentCash >= GAME_STATION_COST)){
         if(_poiToBeAssociatedWithStation){
@@ -146,12 +148,12 @@
             [gameState buildNewStationAt:tileCoordinate];
         }
     }else{
-        [self.parent->audioEngine playEffect:SoundEffect_Error];
+        [[OALSimpleAudio sharedInstance] playEffect:SoundEffect_Error];
     }
 }
 
-- (void)ccTouchCancelled:(UITouch *)touch withEvent:(UIEvent *)event{
-    [super ccTouchCancelled:touch withEvent:event];
+- (void)touchCancelled:(UITouch *)touch withEvent:(UIEvent *)event{
+    [super touchCancelled:touch withEvent:event];
     
     [self.parent->tiledMap removeChild:stationPlacement];
     [self.parent->tiledMap removeChild:coverageOverlay];
@@ -170,8 +172,8 @@
 
 - (CCSprite *) _createCircleStencilWithWalkRadius:(unsigned)walkRadius driveRadius:(unsigned)driveRadius{
     CGSize imgPointSize = CGSizeMake(driveRadius*2, driveRadius*2);
-    CGSize imgBufferSize = CGSizeMake(driveRadius*2*CC_CONTENT_SCALE_FACTOR(),
-                                driveRadius*2*CC_CONTENT_SCALE_FACTOR());
+    CGSize imgBufferSize = CGSizeMake(driveRadius*2,
+                                driveRadius*2);
     
     NSMutableData *mainRenderSpace = [[NSMutableData alloc] initWithLength:imgBufferSize.width*imgBufferSize.height*4];
     
@@ -184,7 +186,7 @@
                                              rgbColorSpace,
                                              kCGImageAlphaOnly);
     
-    CGContextScaleCTM(ctx, CC_CONTENT_SCALE_FACTOR(), CC_CONTENT_SCALE_FACTOR());
+  //  CGContextScaleCTM(ctx, CC_CONTENT_SCALE_FACTOR(), CC_CONTENT_SCALE_FACTOR());
     
     CGContextSetFillColorWithColor(ctx, [[UIColor colorWithWhite:0 alpha:0.5] CGColor]);
     CGContextFillEllipseInRect(ctx, CGRectMake(0, 0, imgPointSize.width, imgPointSize.height));
@@ -197,11 +199,14 @@
     
     */
     
-    CCTexture2D *tex = [[CCTexture2D alloc] initWithData:[mainRenderSpace bytes]
-                                             pixelFormat:kCCTexture2DPixelFormat_A8
-                                              pixelsWide:imgBufferSize.width
-                                              pixelsHigh:imgBufferSize.height
-                                             contentSize:imgBufferSize];
+     CCTexture *tex = [[CCTexture alloc] initWithData:[mainRenderSpace bytes]
+                        pixelFormat:CCTexturePixelFormat_A8
+                         pixelsWide:imgBufferSize.width
+                         pixelsHigh:imgBufferSize.height
+                contentSizeInPixels:CGSizeMake(imgBufferSize.width, imgBufferSize.height)
+                       contentScale:1.0];
+    
+    
     
     CGContextRelease(ctx);
     

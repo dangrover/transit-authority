@@ -44,7 +44,7 @@ typedef enum
 
 @class CCLayerPanZoom;
 @protocol CCLayerPanZoomClickDelegate <NSObject>
-@optional
+
 /** Sent to delegate each time, when click event was obtained. 
  * Only for mode = kCCLayerPanZoomModeSheet. */
 - (void) layerPanZoom: (CCLayerPanZoom *) sender 
@@ -60,7 +60,6 @@ typedef enum
 - (void) layerPanZoom: (CCLayerPanZoom *) sender touchMoveBeganAtPosition: (CGPoint) aPoint;
 
 - (void) layerPanZoom:(CCLayerPanZoom *)sender updatedPosition:(CGPoint)pos scale:(CGFloat)scale;
-
 @end
 
 
@@ -69,7 +68,7 @@ typedef enum
  *
  * @version 0.2.1
  */
-@interface CCLayerPanZoom : CCLayer 
+@interface CCLayerPanZoom : CCNode
 {
     CGFloat _maxScale;
     CGFloat _minScale;
@@ -97,7 +96,7 @@ typedef enum
     // Flag used to call touchMoveBeganAtPosition: only once for each single touch event.
     BOOL _touchMoveBegan;
     
-    ccTime _rubberEffectRecoveryTime;
+    CCTime _rubberEffectRecoveryTime;
     CGFloat _rubberEffectRatio;
     BOOL _rubberEffectRecovering;
     BOOL _rubberEffectZooming;
@@ -167,7 +166,7 @@ typedef enum
  * panBoundsRect due to rubber effect.
  * Default is 0.2f.
  */
-@property (readwrite, assign) ccTime rubberEffectRecoveryTime;
+@property (readwrite, assign) CCTime rubberEffectRecoveryTime;
 
 /** Ratio for rubber effect. Describes the proportion of the panBoundsRect size,
  * that layer can be moved outside from panBoundsRect border.

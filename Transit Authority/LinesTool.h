@@ -21,6 +21,7 @@
 - (IBAction) newLine:(id)sender;
 
 @property(strong) IBOutlet UITableView *tableView;
+@property(strong) IBOutlet UIViewController *viewController;
 
 @end
 

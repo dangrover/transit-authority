@@ -7,7 +7,7 @@
 //
 
 #import "UIColor+Cocos.h"
-
+#import "CCDrawingPrimitives.h"
 
 @implementation UIColor (Cocos)
 

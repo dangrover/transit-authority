@@ -12,6 +12,7 @@
 #import "cocos2d.h"
 #import "Utilities.h"
 #import "PopoverView.h"
+#import "GameFontSupport.h"
 
 @interface LinesTool()<PopoverViewDelegate>
 @end
@@ -28,6 +29,7 @@
         [[UINib nibWithNibName:@"LineToolUI" bundle:nil] instantiateWithOwner:self options:nil];
         navController.view.frame = CGRectMake(0, 0, 200, 160);
         navController.viewControllers = @[mainVC];
+        self.viewController = navController;
     }
     return self;
 }
@@ -57,7 +59,7 @@
     cell.textLabel.text = [Line nameForLineColor:line.color];
     cell.textLabel.textColor = [UIColor whiteColor];
     cell.textLabel.shadowColor = [UIColor blackColor];
-    cell.textLabel.font = [UIFont fontWithName:@"Helvetica Nueue-Medium" size:12];
+    cell.textLabel.font = [UIFont gameFontOfSize:16];
     cell.textLabel.shadowOffset = CGSizeMake(0, 1);
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     
@@ -72,7 +74,7 @@
 
 
 - (IBAction)newLine:(id)sender{
-    NSLog(@"New line. nav=%@, vc=%@",navController, newLineViewController);
+    newLineViewController.view.backgroundColor = [UIColor clearColor];
     [navController pushViewController:newLineViewController animated:YES];
 }
 
@@ -94,6 +96,7 @@
 
 - (void) editLine:(Line *)l{
     editLineViewController.line = l;
+    editLineViewController.view.backgroundColor = [UIColor clearColor];
     [navController pushViewController:editLineViewController animated:YES];
 }
 
@@ -119,7 +122,7 @@
     }
     
     // make the color buttons
-    CGFloat xCursor = 5;
+    CGFloat xCursor = 10;
     lineColorButtons = [NSMutableArray array];
     for(LineColor c = LineColor_Red; c <= LineColor_Max; c++){
         if([self.parent.parent.gameState.lines objectForKey:@(c)]){
@@ -127,16 +130,18 @@
         }
         
         UIButton *colorButton = [[UIButton alloc] initWithFrame:CGRectMake(xCursor, 72, 34, 46)];
-        colorButton.backgroundColor = [Line uiColorForLineColor:c];
+        UIColor *lineColor = [Line uiColorForLineColor:c];
+        
+        colorButton.backgroundColor = [lineColor colorWithAlphaComponent:0.5];
         [colorButton setTitle:@"X" forState:UIControlStateSelected];
         [colorButton addTarget:self action:@selector(colorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
         colorButton.selected = NO;
         colorButton.tag = c;
     
         colorButton.layer.opacity = 1;
-        colorButton.layer.borderColor = [[UIColor darkGrayColor] CGColor];
+        colorButton.layer.borderColor = [[UIColor colorWithWhite:0 alpha:0.6] CGColor];
         colorButton.layer.borderWidth = 1;
-        colorButton.layer.cornerRadius = 4;
+        colorButton.layer.cornerRadius = 3;
     
         [lineColorButtons addObject:colorButton];
         [self.view addSubview:colorButton];
@@ -187,7 +192,7 @@
 - (void) _updateDisplay{
     NSSet *trainsOnLine = [self.parent.parent.gameState trainsOnLine:self.line];
     
-    titleLabel.text = [[Line nameForLineColor:self.line.color] uppercaseString];
+    titleLabel.text = [Line nameForLineColor:self.line.color];
     numberOfTrainsLabel.text = [NSString stringWithFormat:@"%d", trainsOnLine.count];
     trainLengthLabel.text = [NSString stringWithFormat:@"%d", self.line.numberOfCars];
     

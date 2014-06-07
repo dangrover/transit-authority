@@ -114,7 +114,7 @@
     NSString *keyClause = (keyComponents.count == 1) ? @"key=?" : @"key=? AND subkey=?";
     
     if(gameStat == Stat_Sum){
-        FMResultSet *r = [_db executeQuery:[NSString stringWithFormat:@"SELECT SUM(value) as value, SUM(multiplier) as rows FROM ledger WHERE %@ and time >= ? and time <= ?;",keyClause]
+        FMResultSet *r =  [_db executeQuery:[NSString stringWithFormat:@"SELECT SUM(value) as value, SUM(multiplier) as rows FROM ledger WHERE %@ and time >= ? and time <= ?;",keyClause]
                       withArgumentsInArray:[keyComponents arrayByAddingObjectsFromArray:@[@(startDate),@(endDate)]]];
         
         [r next];

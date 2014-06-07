@@ -16,24 +16,24 @@
     BOOL _validMove;
 }
 
-- (BOOL)ccTouchBegan:(UITouch *)touch withEvent:(UIEvent *)event{
+- (BOOL) touchBegan:(UITouch *)touch withEvent:(UIEvent *)event{
     costLabel = [[CCLabelTTF alloc] initWithString:@"" fontName:@"Helvetica-Bold" fontSize:20];
-    [costLabel enableShadowWithOffset:CGSizeMake(0, 1) opacity:1 blur:2 updateImage:NO];
+ //   [costLabel enableShadowWithOffset:CGSizeMake(0, 1) opacity:1 blur:2 updateImage:NO];
     [self.parent addChild:costLabel z:95];
     
     return YES;
 }
 
-- (void)ccTouchMoved:(UITouch *)touch withEvent:(UIEvent *)event{
-    CGPoint pos = [self.parent convertTouchToNodeSpace:touch];
+- (void) touchMoved:(UITouch *)touch withEvent:(UIEvent *)event{
+    CGPoint pos = [touch locationInNode:self.parent];
     costLabel.position = CGPointOffset(pos, 90, 0);
 }
 
-- (void)ccTouchEnded:(UITouch *)touch withEvent:(UIEvent *)event{
+- (void) touchEnded:(UITouch *)touch withEvent:(UIEvent *)event{
     [self.parent removeChild:costLabel cleanup:YES];
 }
 
-- (void)ccTouchCancelled:(UITouch *)touch withEvent:(UIEvent *)event{
+- (void) touchCancelled:(UITouch *)touch withEvent:(UIEvent *)event{
     [self.parent removeChild:costLabel cleanup:YES];
 }
 
@@ -59,7 +59,7 @@
 
 - (void) setValidMove:(BOOL)validMove{
     _validMove = validMove;
-    [costLabel setFontFillColor:validMove ? ccc3(255, 255, 255) : ccc3(255, 0, 0) updateImage:YES];
+   // [costLabel setFontFillColor:validMove ? ccc3(255, 255, 255) : ccc3(255, 0, 0) updateImage:YES];
 }
 
 - (BOOL) validMove{
