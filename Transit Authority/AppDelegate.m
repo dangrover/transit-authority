@@ -51,6 +51,9 @@
     
     //[TestFlight setDeviceIdentifier:[[[UIDevice currentDevice] identifierForVendor] UUIDString]];
    
+    
+    [[OALSimpleAudio sharedInstance] preloadBg:@"theme-music.mp3"];
+    
     [TestFlight takeOff:@"36d93e59-b263-4c26-a1e8-1fe37b7e934e"];
     
     [[UIApplication sharedApplication] setStatusBarHidden:YES];

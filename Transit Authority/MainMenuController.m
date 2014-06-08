@@ -13,11 +13,15 @@
 #import "MainGameScene.h"
 #import "OALSimpleAudio.h"
 
-@implementation MainMenuController
+@implementation MainMenuController{
+    BOOL _started;
+}
 
 - (void) opened{
-    NSLog(@"Opened");
-    [[OALSimpleAudio sharedInstance] playBg:@"theme-music.mp3" loop:YES];
+    if(!_started){
+        [[OALSimpleAudio sharedInstance] playBg:@"theme-music.mp3" loop:YES];
+        _started = YES;
+    }
 }
 
 - (void) newGame{
