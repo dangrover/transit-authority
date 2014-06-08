@@ -131,3 +131,10 @@ xcuserdata
 # UNKNOWN: recommended by others, but I can't discover what these files are
 #
 # ...none. Everything is now explained.
+
+
+Scripts/map-maker/stylesheet/world_boundaries/*
+
+Scripts/map-maker/stylesheet/ne_110m_admin_0_boundary_lines_land.zip
+
+Scripts/map-maker/stylesheet/ne_10m_populated_places.zip

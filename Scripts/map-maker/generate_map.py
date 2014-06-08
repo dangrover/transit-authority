@@ -14,10 +14,10 @@ from ElevationMap import ElevationMap
 TILE_SIZE = 16 #tile size in non-retina pixels
 
 # Tile IDs for different things in the tile set
-LAND_GID=9 
-WATER_GID=29
-PARK_GID=30
-AIRPORT_GID=74
+LAND_GID=0 
+WATER_GID=1
+PARK_GID=2
+AIRPORT_GID=3
 
 # Some pre-determined geographical bounds for generating levels
 # Format: w, n, e, s
