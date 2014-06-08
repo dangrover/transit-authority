@@ -238,7 +238,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     [self _updateGoalDisplay];
     
     // Music
-    NSArray *trackNames = @[@"jazzy-glide",@"big-boy-blues"];
+    NSArray *trackNames = @[@"game-track-1",@"game-track-2"];
     NSMutableArray *itemArray = [NSMutableArray array];
     for(NSString *t in trackNames){
         [itemArray addObject:[[AVPlayerItem alloc] initWithAsset:[AVAsset assetWithURL:[[NSBundle mainBundle] URLForResource:t withExtension:@"mp3"]]]];
