@@ -1074,9 +1074,6 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
     for(Line *l in _linesByColor.allValues){
         if (l.segmentsServed.count == 0){
             NSLog(@"Not making a train for route with color %d",l.color);
-            
-            // Remove all the trains and put them in unassigned
-            // TODO
             continue;
         }
         
@@ -1100,9 +1097,14 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
     
     for(NSString *trainID in assignedTrainIds){
         Train *t = _assignedTrains[trainID];
-        if(t.line.preferredRoute){
+        // Move the train if it has a route and segments for its color.
+        if (t.line.preferredRoute && t.line.segmentsServed.count > 0)
+        {
             [self moveTrain:t toRoute:t.line.preferredRoute];
-        }else{
+        }
+        // Otherwise remove it.
+        else
+        {
             _unassignedTrains[trainID] = t;
             [_assignedTrains removeObjectForKey:trainID];
         }
