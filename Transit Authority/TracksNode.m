@@ -118,7 +118,7 @@ void splineInterpolate(CCPointArray *points, int numVertices, ccVertex2F *vertic
     int style = DIAGONAL_FIRST;
     int lineWidth;
     
-    // One buffer corresponds to one colored strip in the visible track between two stations.
+    // Each buffer corresponds to one colored strip in the visible track between two stations.
     glDeleteBuffers(_numLines, _verticesBuffers);
     _numLines = max(self.segment.lines.count,1);
     glGenBuffers(_numLines, _verticesBuffers);
@@ -158,9 +158,21 @@ void splineInterpolate(CCPointArray *points, int numVertices, ccVertex2F *vertic
     
     // Calculate where the elbow of a->b is.
     CGPoint mainElbow = [self elbowBetweenPoint:a andPoint:b style:style];
-    // We will use the elbow angle to draw the flat ends of the lines.
+    // Calculate the angle of the line segments so we can draw ends on them.
     float endAngleA = AngleBetweenPoints(a, mainElbow) + M_PI_2;
     float endAngleB = AngleBetweenPoints(b, mainElbow) - M_PI_2;
+    // Check whether the elbow is at one of the the ends.
+    bool segmentAExists = PointDistance(a, mainElbow) > 0;
+    bool segmentBExists = PointDistance(b, mainElbow) > 0;
+    // If there is no elbow:
+    if (!segmentAExists)
+    {
+        endAngleA = endAngleB;
+    }
+    else if (!segmentBExists)
+    {
+        endAngleB = endAngleA;
+    }
     
     int numVertices, numElbowVertices;
     for (int i = 0; i < numEdges; i++)
