@@ -246,9 +246,9 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     
     _musicPlayer = [[AVQueuePlayer alloc] initWithItems:itemArray];
          
-    #if !(TARGET_IPHONE_SIMULATOR)
+    //#if !(TARGET_IPHONE_SIMULATOR)
     [_musicPlayer play];
-    #endif
+    //#endif
     
     CGSize screenSize = [CCDirector sharedDirector].viewSizeInPixels;
     self.heatMap = [[HeatMapNode alloc] initWithMap:self.gameState.map

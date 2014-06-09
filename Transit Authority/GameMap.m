@@ -11,9 +11,9 @@
 #import "CCTMXXMLParser.h"
 #import "CCTiledMapLayer.h"
 
-#define TILE_GID_LAND 10
-#define TILE_GID_AIRPORT 75
-#define TILE_GID_WATER 30
+#define TILE_GID_LAND 1
+#define TILE_GID_AIRPORT 4
+#define TILE_GID_WATER 2
 
 @interface GameMap()
 @property(strong, readwrite) NSString *originalPath;
@@ -172,6 +172,7 @@
 
 - (BOOL) tileIsLand:(CGPoint)p{
     unsigned gid = [self.landLayer tileGIDAt:p];
+    NSLog(@"gid = %d", gid);
     return ((gid == TILE_GID_LAND) || (gid == TILE_GID_AIRPORT));
 }
 @end

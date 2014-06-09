@@ -53,7 +53,6 @@
     
     _heatmapWasOriginallyVisible = self.parent.showPopulationHeatmap;
     
-
     stationPlacement = [[CCSprite alloc] initWithImageNamed:@"station.png"];
     stationPlacement.anchorPoint = CGPointMake(0.5, 0.5);
     stationPlacement.scale = [self.parent scaleConsideringZoom:STATION_SPRITE_SCALE_UNSELECTED];
