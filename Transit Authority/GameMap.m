@@ -172,7 +172,6 @@
 
 - (BOOL) tileIsLand:(CGPoint)p{
     unsigned gid = [self.landLayer tileGIDAt:p];
-    NSLog(@"gid = %d", gid);
     return ((gid == TILE_GID_LAND) || (gid == TILE_GID_AIRPORT));
 }
 @end
