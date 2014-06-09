@@ -3,6 +3,7 @@ import sys, os, shutil, datetime, math
 import mapnik
 import tmxlib
 import wand
+import random
 from PIL import Image
 from util import *
 from PopulationMap import PopulationMap
@@ -14,10 +15,14 @@ from ElevationMap import ElevationMap
 TILE_SIZE = 16 #tile size in non-retina pixels
 
 # Tile IDs for different things in the tile set
-LAND_GID=0 
+LAND_GID=0
 WATER_GID=1
 PARK_GID=2
 AIRPORT_GID=3
+
+# Distortions to make the imported data seem less coarse
+BLUR_THRESHOLD = 2 #times to blur
+NOISE_THRESHOLD = 15 #1 in X chance that a tile gets a random value
 
 # Some pre-determined geographical bounds for generating levels
 # Format: w, n, e, s
@@ -224,7 +229,6 @@ def main():
     previewYScale = round(tiles_height/20)
     
     for y in range(0,tiles_height):
-    
         for x in range(0,tiles_width):
             
             printPreviewTile = "-v" in sys.argv and y%previewYScale == 0 and x%previewXScale == 0
@@ -306,6 +310,48 @@ def main():
 
         # If -v option, print an elevation grid
         if "-v" in sys.argv and y%previewYScale == 0: print ""
+
+
+    # Now apply a blur to the population layer to make it less tract-y
+    def average_of_neighbors(layer, x, y):
+        the_sum, counted = 0, 0
+        for x_neighbor in range(max(0, x - 1), min(tiles_width - 1, x + 1) + 1):
+            for y_neighbor in range(max(0, y - 1), min(tiles_height - 1, y + 1) + 1):
+                if layer[x_neighbor, y_neighbor] != 0:
+                    the_sum += layer[x_neighbor, y_neighbor].number + 1
+                counted += 1
+                 #print "averaging %d,%d for %d,%d -> %d" % (x_neighbor, y_neighbor, x, y, layer[x_neighbor, y_neighbor].number)
+               
+        return int(round(float(the_sum) / float(counted)))
+    
+    for iteration in range(0,BLUR_THRESHOLD+1):    
+        for y in range(0,tiles_height):
+            for x in range(0,tiles_width):
+                new_com = average_of_neighbors(com_layer, x, y)
+                com_layer[x,y] = 0 if (new_com == 0) else com_tileset[new_com - 1]
+
+                new_res = average_of_neighbors(res_layer, x, y)
+                res_layer[x,y] = 0 if (new_res == 0) else res_tileset[new_res - 1]
+
+    # Now apply a noise filter to the population layers
+    for y in range(0,tiles_height):
+            for x in range(0,tiles_width):
+                if random.randint(1,NOISE_THRESHOLD) == NOISE_THRESHOLD:
+                    print "distorting tile %d,%d" % (x, y)
+                    new_res = random.randint(0,3)
+                    new_com = random.randint(0,3)
+                    res_layer[x,y] =  0 if (new_res == 0) else res_tileset[new_res-1]
+                    com_layer[x,y] =  0 if (new_com == 0) else com_tileset[new_com-1]
+                    
+                    
+    # Now make sure non-land tiles have no population
+    for y in range(0,tiles_height):
+            for x in range(0,tiles_width):
+                tile_num_here = land_layer[x,y].number
+                #print "gid = %d <-> %d" % (tile_num_here, LAND_GID)
+                if (tile_num_here != LAND_GID):
+                    res_layer[x,y] = 0
+                    com_layer[x,y] = 0
 
     land_layer[0, 0] = land_tileset[0]
     tmx_map.save(map_output_uri)
