@@ -91,7 +91,6 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     
     NSDateFormatter *_dateFormatter;
  
-    
     float currentSpeed;
     
     NSTimeInterval lastTick;
@@ -113,7 +112,6 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     
     // Sprites
     NSMutableSet *_streetSprites;
-    
     NSMutableDictionary *_trackSprites;
     NSMutableDictionary *_trainSprites;
     NSMutableSet *_nameSprites;
@@ -132,33 +130,39 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     CCButton *cashButton;
     
     CCNode *topNode;
-    CCNode *_moreMenuNode;
-    CCNode *_buildSubmenuNode;
     
     LinesTool *linesTool;
     UIView *_linesTopView;
     
-    CCNode *buildButtonGroup;
-    CCButton *buildButton;
-    CCNode *menuButtonGroup;
-    CCButton *menuButton;
     CCSprite *speedIcon;
     
     CCButton *goalsButton;
     
+    CCNode *backgroundPlaceholderNode; // This is removed on load
+    
+    CCNode *buildButtonGroup;
+    CCButton *buildButton;
+    CCSprite *buildButtonSprite;
+    
+        CCNode *_buildSubmenuNode;
+        CCButton *stationButton;
+        CCButton *tracksButton;
+    
     CCButton *manageButton;
-    
     CCNode *manageButtonGroup;
-    
-    CCButton *stationButton;
-    CCButton *tracksButton;
+    CCSprite *manageButtonSprite;
     
     CCNode *dataButtonGroup;
     CCButton *dataButton;
-    UIView *_dataTopView;
-    DataTool *dataTool;
+    CCSprite *dataButtonSprite;
     
-    CCNode *backgroundPlaceholderNode;
+        UIView *_dataTopView;
+        DataTool *dataTool;
+    
+    CCNode *menuButtonGroup;
+    CCButton *menuButton;
+    CCSprite *menuButtonSprite;
+        CCNode *_moreMenuNode;
 }
 
 - (id) initWithGameState:(GameState *)theState{
@@ -180,7 +184,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
         _unbuiltPOISprites = [NSMutableDictionary dictionary];
         
         _dateFormatter = [[NSDateFormatter alloc] init];
-        _dateFormatter.dateFormat = @"LLL d, h:mma";
+        _dateFormatter.dateFormat = @"eeee, h:mma";
         _dateFormatter.AMSymbol = @"am";
         _dateFormatter.PMSymbol = @"pm";
         _dateFormatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
@@ -238,7 +242,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     [self _updateGoalDisplay];
     
     // Music
-    NSArray *trackNames = @[@"game-track-1",@"game-track-2"];
+    NSArray *trackNames = @[@"game-track-2",@"game-track-1"];
     NSMutableArray *itemArray = [NSMutableArray array];
     for(NSString *t in trackNames){
         [itemArray addObject:[[AVPlayerItem alloc] initWithAsset:[AVAsset assetWithURL:[[NSBundle mainBundle] URLForResource:t withExtension:@"mp3"]]]];
@@ -246,9 +250,9 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     
     _musicPlayer = [[AVQueuePlayer alloc] initWithItems:itemArray];
          
-    //#if !(TARGET_IPHONE_SIMULATOR)
+    #if !(TARGET_IPHONE_SIMULATOR)
     [_musicPlayer play];
-    //#endif
+    #endif
     
     CGSize screenSize = [CCDirector sharedDirector].viewSizeInPixels;
     self.heatMap = [[HeatMapNode alloc] initWithMap:self.gameState.map
@@ -378,8 +382,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     }
     else if([keyPath isEqual:@"currentDate"]){
         // update displayed date
-        dateLabel.string = [[_dateFormatter stringFromDate:[NSDate dateWithTimeIntervalSince1970:self.gameState.currentDate]] uppercaseString];
-        
+        dateLabel.string = [_dateFormatter stringFromDate:[NSDate dateWithTimeIntervalSince1970:self.gameState.currentDate]];
         
         struct tm info = self.gameState.currentDateComponents;
         
@@ -534,8 +537,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
         _buildSubmenuNode = [CCBReader load:@"BuildSubmenu" owner:self];
     
         _buildSubmenuNode.positionType = buildButtonGroup.positionType;
-        _buildSubmenuNode.position = CGPointMake(buildButtonGroup.position.x + buildButtonGroup.contentSize.width + 1,
-                                                 buildButtonGroup.position.y);
+        _buildSubmenuNode.position = CGPointMake(0,128);//[topNode convertToNodeSpace:[buildButtonGroup convertToWorldSpace:CGPointMake(buildButtonGroup.position.x, buildButtonGroup.position.y)]];
         
         [topNode addChild:_buildSubmenuNode];
         _buildSubmenuNode.cascadeOpacityEnabled = YES;
@@ -562,11 +564,12 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
         _linesTopView = linesTool.viewController.view;
         UIView *gameView = [[CCDirector sharedDirector] view];
         
-        _linesTopView.frame = CGRectMake(manageButtonGroup.position.x + manageButtonGroup.contentSize.width + 1,
-                                         manageButtonGroup.position.y,
-                                         240,
-                                         gameView.frame.size.height - manageButtonGroup.position.y);
-        _linesTopView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
+        _linesTopView.frame = CGRectMake(gameView.frame.size.width - 260,
+                                         gameView.frame.size.height - 180 - 45,
+                                         260,
+                                         180);
+        
+        _linesTopView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.75];
         _linesTopView.alpha = 0;
         [gameView addSubview:_linesTopView];
         [UIView animateWithDuration:UI_FADE_DURATION animations:^{
@@ -598,12 +601,13 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
         _dataTopView = dataTool.navController.view;
         UIView *gameView = [[CCDirector sharedDirector] view];
         
-        _dataTopView.frame = CGRectMake(manageButtonGroup.position.x + manageButtonGroup.contentSize.width + 1,
-                                         manageButtonGroup.position.y,
-                                         240,
-                                         gameView.frame.size.height - manageButtonGroup.position.y);
+        _dataTopView.frame =  CGRectMake(gameView.frame.size.width - 240,
+                                      gameView.frame.size.height - 200 - 45,
+                                      240,
+                                      200);
         
-        _dataTopView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
+        
+        _dataTopView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.6];
         _dataTopView.alpha = 0;
         
         [dataTool started];
