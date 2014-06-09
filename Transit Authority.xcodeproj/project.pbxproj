@@ -347,8 +347,8 @@
 		4DB6D7CC178DEBEF0073F0EE /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DB6D7CB178DEBEF0073F0EE /* CoreText.framework */; };
 		4DBC422817BE98E0005F343E /* Passenger.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DBC422717BE98E0005F343E /* Passenger.m */; };
 		4DC43C7C17A9875F00BF0F8C /* TrainNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DC43C7B17A9875F00BF0F8C /* TrainNode.m */; };
-		4DC908BD1944E91B00D89A4C /* game-track-1.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 4DC908BB1944E91B00D89A4C /* game-track-1.mp3 */; };
-		4DC908BE1944E91B00D89A4C /* game-track-2.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 4DC908BC1944E91B00D89A4C /* game-track-2.mp3 */; };
+		4DC908C11944F14500D89A4C /* game-track-1.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 4DC908BF1944F14500D89A4C /* game-track-1.mp3 */; };
+		4DC908C21944F14500D89A4C /* game-track-2.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 4DC908C01944F14500D89A4C /* game-track-2.mp3 */; };
 		4DCA2CAB18D4D4350016F5F6 /* MainMenu.ccbi in Resources */ = {isa = PBXBuildFile; fileRef = 4DCA2CAA18D4D4350016F5F6 /* MainMenu.ccbi */; };
 		4DCA2CB618D4D8B90016F5F6 /* MainMenuController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DCA2CB518D4D8B90016F5F6 /* MainMenuController.m */; };
 		4DCA2CC418D649060016F5F6 /* GameScene.ccbi in Resources */ = {isa = PBXBuildFile; fileRef = 4DCA2CC318D649060016F5F6 /* GameScene.ccbi */; };
@@ -1000,8 +1000,8 @@
 		4DBC422717BE98E0005F343E /* Passenger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Passenger.m; sourceTree = "<group>"; };
 		4DC43C7A17A9875F00BF0F8C /* TrainNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrainNode.h; sourceTree = "<group>"; };
 		4DC43C7B17A9875F00BF0F8C /* TrainNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TrainNode.m; sourceTree = "<group>"; };
-		4DC908BB1944E91B00D89A4C /* game-track-1.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = "game-track-1.mp3"; path = "TransitAuthority.spritebuilder/Source/Resources/Published-iOS/Music/game-track-1.mp3"; sourceTree = SOURCE_ROOT; };
-		4DC908BC1944E91B00D89A4C /* game-track-2.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = "game-track-2.mp3"; path = "TransitAuthority.spritebuilder/Source/Resources/Published-iOS/Music/game-track-2.mp3"; sourceTree = SOURCE_ROOT; };
+		4DC908BF1944F14500D89A4C /* game-track-1.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = "game-track-1.mp3"; path = "TransitAuthority.spritebuilder/SpriteBuilder Resources/Music/game-track-1.mp3"; sourceTree = SOURCE_ROOT; };
+		4DC908C01944F14500D89A4C /* game-track-2.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = "game-track-2.mp3"; path = "TransitAuthority.spritebuilder/SpriteBuilder Resources/Music/game-track-2.mp3"; sourceTree = SOURCE_ROOT; };
 		4DCA2CAA18D4D4350016F5F6 /* MainMenu.ccbi */ = {isa = PBXFileReference; lastKnownFileType = file; name = MainMenu.ccbi; path = "TransitAuthority.spritebuilder/Source/Resources/Published-iOS/MainMenu.ccbi"; sourceTree = SOURCE_ROOT; };
 		4DCA2CB418D4D8B90016F5F6 /* MainMenuController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainMenuController.h; sourceTree = "<group>"; };
 		4DCA2CB518D4D8B90016F5F6 /* MainMenuController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainMenuController.m; sourceTree = "<group>"; };
@@ -1334,10 +1334,10 @@
 				4DB2B6CD18F222B100236F75 /* tracks-button.png */,
 				4D3CD3E819180F57001268C6 /* old-subway-map.jpg */,
 				4DE1F7A61943866F006AADD0 /* theme-music.mp3 */,
-				4DC908BB1944E91B00D89A4C /* game-track-1.mp3 */,
-				4DC908BC1944E91B00D89A4C /* game-track-2.mp3 */,
 				4D6EDB5F17E3EEC80071065B /* closebox.png */,
 				4D6EDB6017E3EEC80071065B /* closebox@2x.png */,
+				4DC908BF1944F14500D89A4C /* game-track-1.mp3 */,
+				4DC908C01944F14500D89A4C /* game-track-2.mp3 */,
 				4D1A637818E0126200BD179B /* dummypixel.png */,
 				4D5A963617E17689008175B8 /* error.aiff */,
 				4D5A962D17E10097008175B8 /* owl.aiff */,
@@ -2330,7 +2330,7 @@
 				4D1B8D36178B525D0033DD70 /* tool-more-selected.png in Resources */,
 				4D2642CD17DEA3E7006D9652 /* tool-stats-selected.png in Resources */,
 				4D1B8D37178B525D0033DD70 /* tool-more-selected@2x.png in Resources */,
-				4DC908BE1944E91B00D89A4C /* game-track-2.mp3 in Resources */,
+				4DC908C21944F14500D89A4C /* game-track-2.mp3 in Resources */,
 				4D298D2B178B7FF7005964E3 /* bank.png in Resources */,
 				4D298D2C178B7FF7005964E3 /* bank@2x.png in Resources */,
 				4D298D2F178B8069005964E3 /* disclosure-arrow.png in Resources */,
@@ -2363,7 +2363,7 @@
 				4D2642D017DEAC7C006D9652 /* goals@2x.png in Resources */,
 				4D3CD3FF19184974001268C6 /* Raleway-Light.ttf in Resources */,
 				4DD481A01919DCC800BD540D /* setting.png in Resources */,
-				4DC908BD1944E91B00D89A4C /* game-track-1.mp3 in Resources */,
+				4DC908C11944F14500D89A4C /* game-track-1.mp3 in Resources */,
 				4D6BF7A717EA720F007E2FD6 /* connection-ferry.png in Resources */,
 				4D3CD3FB19184974001268C6 /* Raleway-Bold.ttf in Resources */,
 				4D6BF7A917EA720F007E2FD6 /* connection-rail.png in Resources */,

@@ -246,9 +246,9 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     
     _musicPlayer = [[AVQueuePlayer alloc] initWithItems:itemArray];
          
-    #if !(TARGET_IPHONE_SIMULATOR)
+    //#if !(TARGET_IPHONE_SIMULATOR)
     [_musicPlayer play];
-    #endif
+    //#endif
     
     CGSize screenSize = [CCDirector sharedDirector].viewSizeInPixels;
     self.heatMap = [[HeatMapNode alloc] initWithMap:self.gameState.map
@@ -880,16 +880,19 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
         NSString *name = obj[@"name"];
         if(!name) continue;
         
-        CCLabelTTF *neighborhood = [[CCLabelTTF alloc] initWithString:name fontName:@"Palatino-Bold" fontSize:12];
+        CCLabelTTF *neighborhood = [[CCLabelTTF alloc] initWithString:name fontName:@"Raleway-Thin" fontSize:10];
         if([obj[@"type"] isEqual:@"region"]){
-            neighborhood.color = [CCColor colorWithUIColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0]];
-            neighborhood.string = [name uppercaseString];
+            neighborhood.color = [CCColor colorWithUIColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:1]];
+            neighborhood.string = name;
+            neighborhood.opacity = 0.4;
         }else if([obj[@"type"] isEqual:@"water"]){
-            neighborhood.color = [CCColor colorWithUIColor:[UIColor colorWithRed:1 green:1 blue:1 alpha:1]];
-            neighborhood.fontName = @"Palatino-Italic";
+            neighborhood.color = [CCColor colorWithUIColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:1]];
+            neighborhood.fontName = @"Raleway-Thin";
+            neighborhood.opacity = 0.5;
+            
         }
         neighborhood.position = centered;
-        neighborhood.opacity = 0.5;
+        
         neighborhood.scale = [self scaleConsideringZoom:1 useContentScale:NO];
         [tiledMap addChild:neighborhood z:100];
         [_nameSprites addObject:neighborhood];

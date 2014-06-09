@@ -60,14 +60,14 @@ static int _streetShaderColorLocation;
         _bbox = CGRectMake(minX, minY, maxX - minX, maxY - minY);
    
         if(theType == StreetType_Highway){
-            _lineColor = ccc4f(1.000, 1.000, 0.815, 1.000);
-            _lineThickness = 15;
+            _lineColor = ccc4f(0, 0, 0, 0.4);
+            _lineThickness = 3;
         }else if(theType == StreetType_Railroad){
             _lineColor = ccc4f(0,0,0,0.25);
             _lineThickness = 2;
         }else{
-            _lineColor = ccc4f(1, 1, 1, 0.5);
-            _lineThickness = 5;
+            _lineColor = ccc4f(0, 0, 0, 0.1);
+            _lineThickness = 1;
         }
         
         if(!_streetShader){
@@ -94,28 +94,10 @@ static int _streetShaderColorLocation;
 	CGFloat deltaT = 1.0 / [_points count];
     
     for( NSUInteger i=0; i < _numVertices+1;i++) {
-		
-		CGFloat dt = (CGFloat)i / _numVertices;
-        
-		// border
-		if( dt == 1 ) {
-			p = [_points count] - 1;
-			lt = 1;
-		} else {
-			p = dt / deltaT;
-			lt = (dt - deltaT * (CGFloat)p) / deltaT;
-		}
-		
-		// Interpolate
-		CGPoint pp0 = [_points getControlPointAtIndex:p-1];
-		CGPoint pp1 = [_points getControlPointAtIndex:p+0];
-		CGPoint pp2 = [_points getControlPointAtIndex:p+1];
-		CGPoint pp3 = [_points getControlPointAtIndex:p+2];
-		
-		CGPoint newPos = CCCardinalSplineAt( pp0, pp1, pp2, pp3, 0.5, lt);
-		vertices[i].x = newPos.x;
-		vertices[i].y = newPos.y;
-	}
+        CGPoint point = [_points getControlPointAtIndex:i];
+        vertices[i].x = point.x;
+        vertices[i].y = point.y;
+    }
     
     glGenBuffers(1, &_verticesBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, _verticesBuffer);

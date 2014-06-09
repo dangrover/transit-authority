@@ -18,10 +18,10 @@
 }
 
 - (void) opened{
-    if(!_started){
+   /* if(!_started){
         [[OALSimpleAudio sharedInstance] playBg:@"theme-music.mp3" loop:YES];
         _started = YES;
-    }
+    }*/
 }
 
 - (void) newGame{
