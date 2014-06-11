@@ -655,9 +655,11 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
         _moreMenuNode = [CCBReader load:@"MoreSubmenu"];
     
         menuButton.selected = YES;
+        menuButtonSprite.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"more-selected.png"];
         _moreMenuNode.positionType = menuButtonGroup.positionType;
-        _moreMenuNode.position = CGPointMake(menuButtonGroup.position.x  + menuButtonGroup.contentSize.width + 1,
-                                             menuButtonGroup.position.y - 1);
+        _moreMenuNode.position = CGPointMake([CCDirector sharedDirector].viewSize.width - 96    ,
+                                             225);
+        
         
         [topNode addChild:_moreMenuNode];
         _moreMenuNode.cascadeOpacityEnabled = YES;
@@ -666,6 +668,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
         
     }else{
         menuButton.selected = NO;
+        menuButtonSprite.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"more.png"];
         
         [_moreMenuNode runAction:[CCActionSequence actions:[CCActionFadeOut actionWithDuration:UI_FADE_DURATION],[CCActionCallBlock actionWithBlock:^{
             [_moreMenuNode removeFromParentAndCleanup:YES];

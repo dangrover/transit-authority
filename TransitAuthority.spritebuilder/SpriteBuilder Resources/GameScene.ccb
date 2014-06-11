@@ -1150,7 +1150,7 @@
 										<key>value</key>
 										<array>
 											<string></string>
-											<string>ccbResources/ccbButtonNormal.png</string>
+											<string></string>
 										</array>
 									</dict>
 									<dict>
@@ -1278,6 +1278,8 @@
 										</array>
 									</dict>
 								</array>
+								<key>selected</key>
+								<true/>
 							</dict>
 						</array>
 						<key>customClass</key>
@@ -1305,9 +1307,9 @@
 								<string>Position</string>
 								<key>value</key>
 								<array>
-									<real>343.5</real>
+									<real>224.5</real>
 									<real>0.0</real>
-									<integer>0</integer>
+									<integer>3</integer>
 									<integer>0</integer>
 									<integer>0</integer>
 								</array>
@@ -1785,9 +1787,9 @@
 								<string>Position</string>
 								<key>value</key>
 								<array>
-									<real>399.66665649414062</real>
+									<real>168.33334350585938</real>
 									<real>0.0</real>
-									<integer>0</integer>
+									<integer>3</integer>
 									<integer>0</integer>
 									<integer>0</integer>
 								</array>
@@ -2265,9 +2267,9 @@
 								<string>Position</string>
 								<key>value</key>
 								<array>
-									<real>456.33334350585938</real>
+									<real>111.66665649414062</real>
 									<real>0.0</real>
-									<integer>0</integer>
+									<integer>3</integer>
 									<integer>0</integer>
 									<integer>0</integer>
 								</array>
@@ -2479,7 +2481,7 @@
 										<string>Block</string>
 										<key>value</key>
 										<array>
-											<string>menuButtonPressed</string>
+											<string>moreButtonPressed</string>
 											<integer>2</integer>
 										</array>
 									</dict>
@@ -2745,9 +2747,9 @@
 								<string>Position</string>
 								<key>value</key>
 								<array>
-									<real>513</real>
+									<real>55</real>
 									<real>0.0</real>
-									<integer>0</integer>
+									<integer>3</integer>
 									<integer>0</integer>
 									<integer>0</integer>
 								</array>
