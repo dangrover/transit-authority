@@ -39,9 +39,9 @@
 						<key>displayName</key>
 						<string>CCNodeColor</string>
 						<key>memberVarAssignmentName</key>
-						<string></string>
+						<string>stationButtonBg</string>
 						<key>memberVarAssignmentType</key>
-						<integer>0</integer>
+						<integer>2</integer>
 						<key>properties</key>
 						<array>
 							<dict>
@@ -136,6 +136,8 @@
 								</array>
 							</dict>
 						</array>
+						<key>selected</key>
+						<true/>
 					</dict>
 					<dict>
 						<key>baseClass</key>
@@ -509,10 +511,10 @@
 								<string>Position</string>
 								<key>value</key>
 								<array>
+									<real>10</real>
 									<real>0.5</real>
-									<real>0.40000000596046448</real>
-									<integer>2</integer>
-									<integer>2</integer>
+									<integer>1</integer>
+									<integer>0</integer>
 									<integer>2</integer>
 								</array>
 							</dict>
@@ -523,7 +525,7 @@
 								<string>Point</string>
 								<key>value</key>
 								<array>
-									<real>0.5</real>
+									<real>0.0</real>
 									<real>0.5</real>
 								</array>
 							</dict>
@@ -596,11 +598,11 @@
 								<string>Position</string>
 								<key>value</key>
 								<array>
-									<real>30</real>
-									<real>15</real>
+									<real>62</real>
+									<real>0.5</real>
 									<integer>0</integer>
-									<integer>0</integer>
-									<integer>0</integer>
+									<integer>1</integer>
+									<integer>2</integer>
 								</array>
 							</dict>
 							<dict>
@@ -634,7 +636,7 @@
 								<string>Text</string>
 								<key>value</key>
 								<array>
-									<string>STATION</string>
+									<string>Station</string>
 									<false/>
 								</array>
 							</dict>
@@ -644,7 +646,7 @@
 								<key>type</key>
 								<string>FontTTF</string>
 								<key>value</key>
-								<string>Raleway-SemiBold.ttf</string>
+								<string>Raleway-Medium.ttf</string>
 							</dict>
 							<dict>
 								<key>name</key>
@@ -672,9 +674,9 @@
 								<string>Color3</string>
 								<key>value</key>
 								<array>
-									<real>0.25882354378700256</real>
-									<real>0.31372550129890442</real>
-									<real>0.61568629741668701</real>
+									<real>0.20000000298023224</real>
+									<real>0.20000000298023224</real>
+									<real>0.20000000298023224</real>
 									<real>1</real>
 								</array>
 							</dict>
@@ -824,8 +826,8 @@
 						<string>Size</string>
 						<key>value</key>
 						<array>
-							<real>64</real>
-							<real>64</real>
+							<real>96</real>
+							<real>44</real>
 							<integer>0</integer>
 							<integer>0</integer>
 						</array>
@@ -871,9 +873,9 @@
 						<key>displayName</key>
 						<string>CCNodeColor</string>
 						<key>memberVarAssignmentName</key>
-						<string></string>
+						<string>tracksButtonBg</string>
 						<key>memberVarAssignmentType</key>
-						<integer>0</integer>
+						<integer>2</integer>
 						<key>properties</key>
 						<array>
 							<dict>
@@ -1336,10 +1338,10 @@
 								<string>Position</string>
 								<key>value</key>
 								<array>
+									<real>10</real>
 									<real>0.5</real>
-									<real>0.40000000596046448</real>
-									<integer>2</integer>
-									<integer>2</integer>
+									<integer>1</integer>
+									<integer>0</integer>
 									<integer>2</integer>
 								</array>
 							</dict>
@@ -1350,7 +1352,7 @@
 								<string>Point</string>
 								<key>value</key>
 								<array>
-									<real>0.5</real>
+									<real>0.0</real>
 									<real>0.5</real>
 								</array>
 							</dict>
@@ -1423,11 +1425,11 @@
 								<string>Position</string>
 								<key>value</key>
 								<array>
-									<real>30</real>
-									<real>15</real>
+									<real>62</real>
+									<real>0.5</real>
 									<integer>0</integer>
 									<integer>0</integer>
-									<integer>0</integer>
+									<integer>2</integer>
 								</array>
 							</dict>
 							<dict>
@@ -1461,7 +1463,7 @@
 								<string>Text</string>
 								<key>value</key>
 								<array>
-									<string>TRACKS</string>
+									<string>Tracks</string>
 									<false/>
 								</array>
 							</dict>
@@ -1471,7 +1473,7 @@
 								<key>type</key>
 								<string>FontTTF</string>
 								<key>value</key>
-								<string>Raleway-SemiBold.ttf</string>
+								<string>Raleway-Medium.ttf</string>
 							</dict>
 							<dict>
 								<key>name</key>
@@ -1491,6 +1493,19 @@
 								<string>Check</string>
 								<key>value</key>
 								<false/>
+							</dict>
+							<dict>
+								<key>name</key>
+								<string>color</string>
+								<key>type</key>
+								<string>Color3</string>
+								<key>value</key>
+								<array>
+									<real>0.20000000298023224</real>
+									<real>0.20000000298023224</real>
+									<real>0.20000000298023224</real>
+									<real>1</real>
+								</array>
 							</dict>
 							<dict>
 								<key>name</key>
@@ -1625,7 +1640,7 @@
 						<key>value</key>
 						<array>
 							<real>0.0</real>
-							<real>65</real>
+							<real>45</real>
 							<integer>1</integer>
 							<integer>0</integer>
 							<integer>0</integer>
@@ -1638,8 +1653,8 @@
 						<string>Size</string>
 						<key>value</key>
 						<array>
-							<real>64</real>
-							<real>64</real>
+							<real>96</real>
+							<real>44</real>
 							<integer>0</integer>
 							<integer>0</integer>
 						</array>
@@ -1724,7 +1739,7 @@
 				<key>value</key>
 				<array>
 					<real>0.0</real>
-					<real>0.0</real>
+					<real>1</real>
 				</array>
 			</dict>
 			<dict>
@@ -1741,8 +1756,6 @@
 				</array>
 			</dict>
 		</array>
-		<key>selected</key>
-		<true/>
 	</dict>
 	<key>notes</key>
 	<array/>

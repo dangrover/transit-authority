@@ -29,5 +29,4 @@
 - (IBAction) newPrincipal:(id)sender;
 - (IBAction) issue:(id)sender;
 
-
 @end

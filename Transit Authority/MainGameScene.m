@@ -147,6 +147,8 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
         CCNode *_buildSubmenuNode;
         CCButton *stationButton;
         CCButton *tracksButton;
+        CCNodeColor *tracksButtonBg;
+        CCNodeColor *stationButtonBg;
     
     CCButton *manageButton;
     CCNode *manageButtonGroup;
@@ -534,10 +536,13 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     
     if(!_buildSubmenuNode){
         buildButton.selected = YES;
+        buildButtonSprite.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"hammer-selected.png"];
+        
         _buildSubmenuNode = [CCBReader load:@"BuildSubmenu" owner:self];
     
         _buildSubmenuNode.positionType = buildButtonGroup.positionType;
-        _buildSubmenuNode.position = CGPointMake(0,128);//[topNode convertToNodeSpace:[buildButtonGroup convertToWorldSpace:CGPointMake(buildButtonGroup.position.x, buildButtonGroup.position.y)]];
+        _buildSubmenuNode.position = CGPointMake(buildButtonGroup.position.x - 5,
+                                                135);
         
         [topNode addChild:_buildSubmenuNode];
         _buildSubmenuNode.cascadeOpacityEnabled = YES;
@@ -547,6 +552,8 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     }else{
         self.currentTool = nil;
         buildButton.selected = NO;
+        buildButtonSprite.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"hammer.png"];
+        
         [_buildSubmenuNode runAction:[CCActionSequence actions:[CCActionFadeOut actionWithDuration:UI_FADE_DURATION],[CCActionCallBlock actionWithBlock:^{
                 [_buildSubmenuNode removeFromParentAndCleanup:YES];
                 _buildSubmenuNode = nil;
@@ -558,6 +565,8 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
   
     if(!linesTool){
         manageButton.selected = YES;
+        manageButtonSprite.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"lines-selected.png"];
+        
         linesTool = [[LinesTool alloc] init];
         linesTool.parent = self;
         
@@ -578,6 +587,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
         
     }else{
         manageButton.selected = NO;
+        manageButtonSprite.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"lines.png"];
         
         [UIView animateWithDuration:UI_FADE_DURATION animations:^{
             _linesTopView.alpha = 0;
@@ -594,6 +604,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 - (void) dataButtonPressed{
     if(!dataTool){
         dataButton.selected = YES;
+        dataButtonSprite.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"graph-selected.png"];
         
         dataTool = [[DataTool alloc] init];
         dataTool.parent = self;
@@ -621,6 +632,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
         
     }else{
         dataButton.selected = NO;
+        dataButtonSprite.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"graph.png"];
         
         [dataTool finished];
         [UIView animateWithDuration:UI_FADE_DURATION animations:^{
@@ -680,28 +692,34 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 
 #pragma mark -
 
+- (void) _setBuildButton:(CCButton *)button bg:(CCNodeColor *)bg selected:(BOOL)sel{
+    button.selected = sel;
+    bg.color = sel ? [CCColor colorWithWhite:0.8 alpha:1] : [CCColor colorWithWhite:1 alpha:1];
+}
+
 - (void) buildTracks{
-    
+     NSLog(@"build tracks");
     if(!tracksButton.selected){
-        tracksButton.selected = YES;
-        stationButton.selected = NO;
+        [self _setBuildButton:tracksButton bg:tracksButtonBg selected:YES];
+        [self _setBuildButton:stationButton bg:stationButtonBg selected:NO];
         
         self.currentTool = [[PlaceTracksTool alloc] init];
     }else{
-        tracksButton.selected = NO;
+        [self _setBuildButton:tracksButton bg:tracksButtonBg selected:NO];
         self.currentTool = nil;
     }
     
 }
 
 - (void) buildStations{
+    NSLog(@"build stations");
     if(!stationButton.selected){
-        tracksButton.selected = NO;
-        stationButton.selected = YES;
+        [self _setBuildButton:tracksButton bg:tracksButtonBg selected:NO];
+        [self _setBuildButton:stationButton bg:stationButtonBg selected:YES];
         
         self.currentTool = [[PlaceStationTool alloc] init];
     }else{
-        stationButton.selected = NO;
+         [self _setBuildButton:stationButton bg:stationButtonBg selected:NO];
         self.currentTool = nil;
     }
 }
