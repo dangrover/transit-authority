@@ -12,6 +12,7 @@
 #import "FinancesSubsidiesViewController.h"
 #import "FinancesBondsViewController.h"
 #import "GameLedger.h"
+#import "GameFontSupport.h"
 
 static NSString *cellIdent = @"cell";
 
@@ -99,7 +100,7 @@ static NSString *cellIdent = @"cell";
         c.col3Label.text = @"-";
     }
     
-    c.textLabel.font = [UIFont systemFontOfSize:14];
+    c.textLabel.font = [UIFont gameFontOfSize:14];
     
     return c;
 }

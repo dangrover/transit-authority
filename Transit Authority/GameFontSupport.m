@@ -32,6 +32,18 @@
 
 
 
+@implementation GameFontButton
+
+- (id) initWithCoder:(NSCoder *)aDecoder{
+    if(self = [super initWithCoder:aDecoder]){
+        [self.titleLabel setFont:[UIFont gameFontOfSize:self.titleLabel.font.pointSize]];
+    }
+    
+    return self;
+}
+@end
+
+
 @implementation UIFont (GameFont)
 
 + (UIFont *) gameFontOfSize:(CGFloat)theSize{

@@ -13,6 +13,9 @@
 
 @end
 
+@interface GameFontButton : UIButton
+
+@end
 
 @interface UIFont (GameFont)
 + (UIFont *) gameFontOfSize:(CGFloat)theSize;
