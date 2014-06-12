@@ -889,7 +889,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 - (Station *) stationAtNodeCoords:(CGPoint)thePoint{
     for(NSString *stationID in _stationSprites.keyEnumerator){
         StationNode *sprite = _stationSprites[stationID];
-        if(CGRectContainsPoint(CGRectInset(sprite.boundingBox, -40, -40), thePoint)){
+        if(CGRectContainsPoint(CGRectInset(sprite.boundingBox, -80, -80), thePoint)){
             return self.gameState.stations[stationID];
         }
     }

@@ -14,11 +14,11 @@
 static CCGLProgram *_trackShader;
 static int _trackShaderColorLocation;
 
-#define LINE_CLICK_THRESHOLD 10
+#define LINE_CLICK_THRESHOLD 25
 
 #define INVALID_LINE_WIDTH 10
-#define LINE_WIDTH 20
-#define MAX_TRACK_WIDTH 30
+#define LINE_WIDTH 30
+#define MAX_TRACK_WIDTH 40
 
 // Take a line of control points and return an interpolated spline line.
 // This function must always return the same amount of points however many times it's called.
@@ -305,25 +305,29 @@ void splineInterpolate(CCPointArray *points, int numVertices, ccVertex2F *vertic
     return [[_trainPaths objectAtIndex:line] coordinatesAtPosition:position];
 }
 
-- (BOOL)ccTouchBegan:(UITouch *)touch withEvent:(UIEvent *)event{
-    return [self _touchIsOnLine:touch];
+- (void)touchBegan:(UITouch *)touch withEvent:(UIEvent *)event{
+ //   return [self _touchIsOnLine:touch];
 }
 
-- (void)ccTouchMoved:(UITouch *)touch withEvent:(UIEvent *)event{
+- (BOOL) hitTestWithWorldPos:(CGPoint)pos{
+    return [self _touchIsOnLine:[self convertToNodeSpace:pos]];
+}
+
+- (void)touchMoved:(UITouch *)touch withEvent:(UIEvent *)event{
     
 }
 
-- (void)ccTouchEnded:(UITouch *)touch withEvent:(UIEvent *)event{
-    if([self _touchIsOnLine:touch]){
+- (void)touchEnded:(UITouch *)touch withEvent:(UIEvent *)event{
+    if([self _touchIsOnLine:[touch locationInNode:self]]){
         [self.delegate tracks:self gotClicked:[touch locationInView:[CCDirector sharedDirector].view]];
     }
 }
 
-- (BOOL) _touchIsOnLine:(UITouch *)touch{
+- (BOOL) _touchIsOnLine:(CGPoint)touchLoc{
     
     // Accurate way of testing track touches. See if the touch comes close (within LINE_CLICK_THRESHOLD) to any train path.
     
-    CGPoint touchLoc = [touch locationInNode:self];
+   // CGPoint touchLoc = [touch locationInNode:self];
     for (int i = 0; i < _trainPaths.count; i++)
     {
         if ([_trainPaths[i] distanceToPoint:touchLoc] < LINE_CLICK_THRESHOLD) return YES;
