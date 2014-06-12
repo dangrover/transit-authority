@@ -53,7 +53,13 @@
     
     _heatmapWasOriginallyVisible = self.parent.showPopulationHeatmap;
     
-  
+    stationPlacement = [[CCSprite alloc] initWithImageNamed:@"station.png"];
+    stationPlacement.anchorPoint = CGPointMake(0.5, 0.5);
+    stationPlacement.scale = [self.parent scaleConsideringZoom:STATION_SPRITE_SCALE_UNSELECTED];
+    [self.parent->tiledMap addChild:stationPlacement z:20];
+    
+    CGPoint pos = [[CCDirector sharedDirector] convertToGL:[touch locationInView:[touch view]]];
+    stationPlacement.position = pos;
     
     costLabel.string = FormatCurrency(@(GAME_STATION_COST));
     
@@ -73,18 +79,10 @@
     coverageOverlay.walkTiles = GAME_STATION_WALK_RADIUS_TILES;
     coverageOverlay.carTiles = GAME_STATION_CAR_RADIUS_TILES;
     coverageOverlay.scale = 1.0f/self.parent->tiledMap.parent.scale;
-    CGFloat r = GAME_STATION_CAR_RADIUS_TILES * self.parent.gameState.map.map.tileSize.width*2;
+    CGFloat r = GAME_STATION_CAR_RADIUS_TILES * (1.0f/self.parent->tiledMap.parent.scale) * self.parent.gameState.map.map.tileSize.width*2;
     [_clippingMask drawDot:CGPointMake(-0.5*r, -0.5*r)
                     radius:r
                      color:[CCColor colorWithWhite:0 alpha:1]];
-    
-    stationPlacement = [[CCSprite alloc] initWithImageNamed:@"station.png"];
-    stationPlacement.anchorPoint = CGPointMake(0.5, 0.5);
-    stationPlacement.scale = [self.parent scaleConsideringZoom:STATION_SPRITE_SCALE_UNSELECTED];
-    [self.parent->tiledMap addChild:stationPlacement z:20];
-    
-    CGPoint pos = [[CCDirector sharedDirector] convertToGL:[touch locationInView:[touch view]]];
-    stationPlacement.position = pos;
     
     [self touchMoved:touch withEvent:event];
     
