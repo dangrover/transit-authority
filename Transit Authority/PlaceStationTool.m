@@ -25,7 +25,7 @@
     PointOfInterest *_poiToBeAssociatedWithStation;
     BOOL _heatmapWasOriginallyVisible;
     CCClippingNode *_clippingNode;
-    CCSprite *_clippingMask;
+    CCDrawNode *_clippingMask;
 }
 
 
@@ -63,16 +63,16 @@
     
     costLabel.string = FormatCurrency(@(GAME_STATION_COST));
     
-    //_clippingMask = [[CCDrawNode alloc] init];
+    _clippingMask = [[CCDrawNode alloc] init];
     _clippingNode = [[CCClippingNode alloc] initWithStencil:_clippingMask];
     
-   /* HeatMapNode *heatMap = self.parent.heatMap;
+    HeatMapNode *heatMap = self.parent.heatMap;
     heatMap.visible = YES;
     [heatMap removeFromParent];
     [_clippingNode addChild:heatMap];
     [self.parent->tiledMap addChild:_clippingNode z:50];
     _clippingNode.alphaThreshold = 0.5;
-   */
+   
     
     
     coverageOverlay = [[StationCoverageOverlay alloc] init];
@@ -80,10 +80,10 @@
     coverageOverlay.walkTiles = GAME_STATION_WALK_RADIUS_TILES;
     coverageOverlay.carTiles = GAME_STATION_CAR_RADIUS_TILES;
     coverageOverlay.scale = 1.0f/self.parent->tiledMap.parent.scale;
-    //CGFloat r = GAME_STATION_CAR_RADIUS_TILES*self.parent.gameState.map.map.tileSize.width*2;
-   // [_clippingMask drawDot:CGPointMake(-0.5*r, -0.5*r)
-   //                 radius:r
-   //                  color:ccc4f(0, 0, 0, 1)];
+    CGFloat r = GAME_STATION_CAR_RADIUS_TILES*self.parent.gameState.map.map.tileSize.width*2;
+    [_clippingMask drawDot:CGPointMake(-0.5*r, -0.5*r)
+                    radius:r
+                     color:[CCColor colorWithWhite:0 alpha:1]];
     
     [self touchMoved:touch withEvent:event];
     
@@ -133,7 +133,7 @@
     
     GameState *gameState = self.parent.gameState;
     
-   // [self _fixHeatMap];
+    [self _fixHeatMap];
     
     // place the actual station
     CGPoint tileCoordinate = [self.parent->tiledMap tileCoordinateFromNodeCoordinate:[touch locationInNode:self.parent->tiledMap]];

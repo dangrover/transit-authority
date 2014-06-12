@@ -258,9 +258,9 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     
     CGSize screenSize = [CCDirector sharedDirector].viewSizeInPixels;
     self.heatMap = [[HeatMapNode alloc] initWithMap:self.gameState.map
-                                   viewportSize:CGSizeMake(2*ceil(screenSize.width/tiledMap.tileSize.width),
-                                                           2*ceil(screenSize.height/tiledMap.tileSize.width))
-                                     bufferSize:CGSizeMake(26, 26)];
+                                   viewportSize:CGSizeMake(2*ceil(screenSize.width/tiledMap.tileSize.width) + 10,
+                                                           2*ceil(screenSize.height/tiledMap.tileSize.width) + 10)
+                                     bufferSize:CGSizeMake(32, 32)];
     
     [tiledMap addChild:self.heatMap z:90];
     
