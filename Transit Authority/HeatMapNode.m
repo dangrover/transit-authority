@@ -67,7 +67,6 @@
         
         unsigned tilePixelDim = self.map.map.tileSize.width*_textureScale;
         
-        
         _renderBufferSize = 4 * ((self.bufferSize.width+(_bufferPaddingInTiles.width*2))*tilePixelDim)*((self.bufferSize.height+(_bufferPaddingInTiles.height*2))*tilePixelDim);
         
         NSLog(@"Actual texture size is %@",NSStringFromCGSize(CGSizeMake(tilePixelDim*(self.bufferSize.width+_bufferPaddingInTiles.width*2),
@@ -316,8 +315,6 @@
        /* CGContextSetLineWidth(ctx, 10);
         CGContextSetStrokeColorWithColor(ctx, [[UIColor blackColor] CGColor]);
         CGContextStrokeRect(ctx, CGRectMake(1, 1, imgSize.width - 2, imgSize.height - 2));*/
-    
-    
     
     CCTexture *tex = [[CCTexture alloc] initWithData:_disableBlur ? [mainRenderSpace bytes] : [blurRenderSpace bytes]
                         pixelFormat:CCTexturePixelFormat_RGBA8888

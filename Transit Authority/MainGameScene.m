@@ -527,46 +527,42 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 }
 
 
-- (void) setCurrentTool:(GameTool *)aCurrentTool{
-    _currentTool = aCurrentTool;
-    _currentTool.parent = self;
-    [_currentTool started];
-}
+#pragma mark - Tools
 
-- (void) buildButtonPressed{
-    
-    NSLog(@"Build");
-    
-    if(!_buildSubmenuNode){
+- (void) setBuildToolVisible:(BOOL)visible{
+    if(visible && !buildButton.selected){
+        [self _hideAllTools];
+        
         buildButton.selected = YES;
         buildButtonSprite.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"hammer-selected.png"];
         
         _buildSubmenuNode = [CCBReader load:@"BuildSubmenu" owner:self];
-    
+        
         _buildSubmenuNode.positionType = buildButtonGroup.positionType;
         _buildSubmenuNode.position = CGPointMake(buildButtonGroup.position.x - 5,
-                                                135);
+                                                 135);
         
         [topNode addChild:_buildSubmenuNode];
         _buildSubmenuNode.cascadeOpacityEnabled = YES;
         _buildSubmenuNode.opacity = 0;
         [_buildSubmenuNode runAction:[CCActionFadeIn actionWithDuration:UI_FADE_DURATION]];
-        
-    }else{
+    }else if(!visible && buildButton.selected){
         self.currentTool = nil;
         buildButton.selected = NO;
         buildButtonSprite.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"hammer.png"];
         
         [_buildSubmenuNode runAction:[CCActionSequence actions:[CCActionFadeOut actionWithDuration:UI_FADE_DURATION],[CCActionCallBlock actionWithBlock:^{
-                [_buildSubmenuNode removeFromParentAndCleanup:YES];
-                _buildSubmenuNode = nil;
+            [_buildSubmenuNode removeFromParentAndCleanup:YES];
+            _buildSubmenuNode = nil;
         }], nil]];
     }
 }
 
-- (void) manageButtonPressed{
-  
-    if(!linesTool){
+- (void) setManageToolVisible:(BOOL)visible{
+    if(visible && !manageButton.selected){
+        [self _hideAllTools];
+        
+
         manageButton.selected = YES;
         manageButtonSprite.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"lines-selected.png"];
         
@@ -587,8 +583,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
         [UIView animateWithDuration:UI_FADE_DURATION animations:^{
             _linesTopView.alpha = 1;
         } completion:^(BOOL finished) {}];
-        
-    }else{
+    }else if(!visible && manageButton.selected){
         manageButton.selected = NO;
         manageButtonSprite.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"lines.png"];
         
@@ -604,8 +599,8 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     }
 }
 
-- (void) dataButtonPressed{
-    if(!dataTool){
+- (void) setDataToolVisible:(BOOL)visible{
+    if(visible && !dataButton.selected){
         dataButton.selected = YES;
         dataButtonSprite.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"graph-selected.png"];
         
@@ -616,9 +611,9 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
         UIView *gameView = [[CCDirector sharedDirector] view];
         
         _dataTopView.frame =  CGRectMake(gameView.frame.size.width - 240,
-                                      gameView.frame.size.height - 200 - 45,
-                                      240,
-                                      200);
+                                         gameView.frame.size.height - 200 - 45,
+                                         240,
+                                         200);
         
         
         _dataTopView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.6];
@@ -632,8 +627,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
                              _dataTopView.alpha = 1;
                          }
                          completion:^(BOOL finished){}];
-        
-    }else{
+    }else if(!visible && dataButton.selected){
         dataButton.selected = NO;
         dataButtonSprite.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"graph.png"];
         
@@ -650,13 +644,12 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     }
 }
 
-- (void) moreButtonPressed{
-
-    NSLog(@"Menu");
-    
-    if(!_moreMenuNode){
+- (void) setMoreMenuVisible:(BOOL)visible{
+    if(visible && !menuButton.selected){
+        [self _hideAllTools];
+        
         _moreMenuNode = [CCBReader load:@"MoreSubmenu"];
-    
+        
         menuButton.selected = YES;
         menuButtonSprite.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"more-selected.png"];
         _moreMenuNode.positionType = menuButtonGroup.positionType;
@@ -668,8 +661,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
         _moreMenuNode.cascadeOpacityEnabled = YES;
         _moreMenuNode.opacity = 0;
         [_moreMenuNode runAction:[CCActionFadeIn actionWithDuration:UI_FADE_DURATION]];
-        
-    }else{
+    }else if(!visible && menuButton.selected){
         menuButton.selected = NO;
         menuButtonSprite.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"more.png"];
         
@@ -678,6 +670,28 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
             _moreMenuNode = nil;
         }], nil]];
     }
+}
+
+- (void) setCurrentTool:(GameTool *)aCurrentTool{
+    _currentTool = aCurrentTool;
+    _currentTool.parent = self;
+    [_currentTool started];
+}
+
+- (void) buildButtonPressed{
+    [self setBuildToolVisible:!buildButton.selected];
+}
+
+- (void) manageButtonPressed{
+    [self setManageToolVisible:!manageButton.selected];
+}
+
+- (void) moreButtonPressed{
+    [self setMoreMenuVisible:!menuButton.selected];
+}
+
+- (void) dataButtonPressed{
+    [self setDataToolVisible:!dataButton.selected];
 }
 
 - (void) saveGame{
@@ -694,6 +708,14 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 
 - (void) exitGame{
     NSLog(@"Exit game");
+}
+
+
+- (void) _hideAllTools{
+    [self setBuildToolVisible:NO];
+    [self setMoreMenuVisible:NO];
+    [self setManageToolVisible:NO];
+    [self setDataToolVisible:NO];
 }
 
 #pragma mark -
@@ -811,7 +833,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     });
 }
 
-#pragma mark -
+#pragma mark - Sprite Updating
 
 - (void) setNamesVisible:(BOOL)newNamesVisible{
     _namesLayerOn = newNamesVisible;
@@ -1088,7 +1110,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     _tracksBeingInspected = nil;
 }
 
-#pragma mark -
+#pragma mark - Events
 
 - (void) goalCompleted:(NSNotification *)notification{
     ScenarioGoal *goal = notification.userInfo[@"goal"];
