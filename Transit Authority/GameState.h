@@ -21,6 +21,7 @@ extern NSString *GameStateNotification_AccomplishedGoal;
 extern NSString *GameStateNotification_IssuedBond;
 extern NSString *GameStateNotification_StationBuilt;
 extern NSString *GameStateNotification_HourChanged;
+extern NSString *GameStateNotification_TrackUpdated;
 
 @interface GameState : NSObject
 

@@ -43,6 +43,7 @@
         
         trackPlacement.start = ((CCSprite *)self.parent->_stationSprites[station.UUID]).position;
         trackPlacement.end = nodeCoord;
+        [trackPlacement rebuffer];
         
         startStation = station;
         
@@ -81,7 +82,16 @@
         }
         
         costLabel.string = FormatCurrency(@(cost));
-        costLabel.position = CGPointOffset( [touch locationInNode:self.parent], 75, 0);
+      
+        
+        // Push the cost label right so it's not under the finger,
+        // or left if it's close to the right edge.
+        CGPoint position =  [touch locationInNode:self.parent];
+        int labelWidth = costLabel.texture.contentSize.width;
+        int xOffset = position.x + labelWidth + 75 < self.parent.contentSize.width ? 75 : -75;
+        costLabel.position = CGPointOffset(position, xOffset, 0);
+        
+        [trackPlacement rebuffer];
     }
 }
 

@@ -21,6 +21,7 @@ NSString *GameStateNotification_CheckedGoals = @"GameStateNotification_CheckedGo
 NSString *GameStateNotification_IssuedBond = @"GameStateNotification_IssuedBond";
 NSString *GameStateNotification_HourChanged = @"GameStateNotification_HourChanged";
 NSString *GameStateNotification_StationBuilt = @"GameStateNotification_StationBuilt";
+NSString *GameStateNotification_TrackUpdated = @"GameStateNotification_TrackUpdated";
 
 #define LEDGER_COALESCE_INTERVAL (SECONDS_PER_HOUR)   // How often to compress ledger entries for efficiency
 #define EVALUATE_GOALS_FREQUENCY SECONDS_PER_MINUTE*10 // How often to evaluate the scenario goals
@@ -1077,9 +1078,6 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
     for(Line *l in _linesByColor.allValues){
         if (l.segmentsServed.count == 0){
             NSLog(@"Not making a train for route with color %d",l.color);
-            
-            // Remove all the trains and put them in unassigned
-            // TODO
             continue;
         }
         
@@ -1088,6 +1086,9 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
     }
     
     [self _moveAllTrainsToCurrentPreferredRoutes];
+    
+    // Redraw tracks.
+    [[NSNotificationCenter defaultCenter] postNotificationName:GameStateNotification_TrackUpdated object:self];
 
     _regeneratingRoutes = NO;
 }
@@ -1100,9 +1101,14 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
     
     for(NSString *trainID in assignedTrainIds){
         Train *t = _assignedTrains[trainID];
-        if(t.line.preferredRoute){
+        // Move the train if it has a route and segments for its color.
+        if (t.line.preferredRoute && t.line.segmentsServed.count > 0)
+        {
             [self moveTrain:t toRoute:t.line.preferredRoute];
-        }else{
+        }
+        // Otherwise remove it.
+        else
+        {
             _unassignedTrains[trainID] = t;
             [_assignedTrains removeObjectForKey:trainID];
         }

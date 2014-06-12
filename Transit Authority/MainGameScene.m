@@ -288,6 +288,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     [nc addObserver:self selector:@selector(bondIssued) name:GameStateNotification_IssuedBond object:self.gameState];
     [nc addObserver:self selector:@selector(hourChime) name:GameStateNotification_HourChanged object:self.gameState];
     [nc addObserver:self selector:@selector(stationBuilt) name:GameStateNotification_StationBuilt object:self.gameState];
+    [nc addObserver:self selector:@selector(trackUpdated) name:GameStateNotification_TrackUpdated object:self.gameState];
     [nc addObserver:self selector:@selector(goalCompleted:) name:GameStateNotification_AccomplishedGoal    object:self.gameState];
     [nc addObserver:self selector:@selector(_updateGoalDisplay) name:GameStateNotification_CheckedGoals object:self.gameState];
     
@@ -869,6 +870,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
             node.segment = segment;
             node.valid = YES;
             node.delegate = self;
+            [node rebuffer];
             _trackSprites[segment.UUID] = node;
         //    [[CCDirector sharedDirector].touchDispatcher addTargetedDelegate:node priority:5 swallowsTouches:YES];
             [tiledMap addChild:node z:99];
@@ -991,20 +993,20 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
         TrainNode *s = _trainSprites[uuid];
        
         s.color = t.currentRoute.line.color;
-        
-        // stagger the placement a little so the pins aren't all on top of each other
-        const CGFloat jitterPerColor = 2;
-        //CGFloat stationOffset = (((CCSprite *)[_stationSprites allValues][0]).contentSize.width * [self scaleConsideringZoom:STATION_SPRITE_SCALE_UNSELECTED]);
-        CGFloat lineJitter = (-2 * jitterPerColor) + ((float)t.currentRoute.line.color * jitterPerColor);
-        
+
         RouteChunk *currentChunk = t.currentRoute.routeChunks[t.currentRouteChunk];
-        CGPoint originNodeCoord = [self.gameState.map.landLayer positionAt:currentChunk.origin.tileCoordinate];
-        CGPoint destNodeCoord = [self.gameState.map.landLayer positionAt:currentChunk.destination.tileCoordinate];
+        TracksNode *trackSprite = [_trackSprites objectForKey:currentChunk.trackSegment.UUID];
         
-        CGPoint currentCoord = CGPointMake(originNodeCoord.x + ((destNodeCoord.x - originNodeCoord.x) * t.currentChunkPosition) - (s.contentSize.width/2) + lineJitter,
-                                           originNodeCoord.y + ((destNodeCoord.y - originNodeCoord.y) * t.currentChunkPosition) + lineJitter);
+        NSArray *lineColors = [currentChunk.trackSegment.lines.allKeys sortedArrayUsingSelector:@selector(compare:)];
+        int lineIndex = [lineColors indexOfObject:[NSNumber numberWithInt:t.currentRoute.line.color]];
         
-        s.position = currentCoord;
+        if (trackSprite.lineCount > lineIndex)
+        {
+            float position = currentChunk.backwards ? 1-t.currentChunkPosition : t.currentChunkPosition;
+            CGPoint currentCoord = [trackSprite coordForTrainAtPosition:position onLine:lineIndex];
+            
+            s.position = currentCoord;
+        }
     }
 }
 
@@ -1116,6 +1118,14 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 - (void) stationBuilt{
     [[OALSimpleAudio sharedInstance] playEffect:SoundEffect_BuildStation];
     [self.gameState forceGoalEvaluate];
+}
+
+- (void)trackUpdated {
+    for (TrackSegment *segment in self.gameState.trackSegments.allValues){
+        if([_trackSprites objectForKey:segment.UUID]){
+            [_trackSprites[segment.UUID] rebuffer];
+        }
+    }
 }
 
 @end

@@ -29,6 +29,13 @@
 		4D1A638118E013A100BD179B /* hammer.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D1A637D18E013A100BD179B /* hammer.png */; };
 		4D1A638518E0A4D000BD179B /* more.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D1A638418E0A4D000BD179B /* more.png */; };
 		4D1B11A1193FCC6A0035A98D /* NewsCycle-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4D1B11A0193FCC6A0035A98D /* NewsCycle-Bold.ttf */; };
+		0F4ED3C019280CD1007D85B4 /* TrainPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F4ED3BF19280CD1007D85B4 /* TrainPath.m */; };
+		4D1B8CF8178B43090033DD70 /* pause.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D1B8CF2178B43090033DD70 /* pause.png */; };
+		4D1B8CF9178B43090033DD70 /* fast-forward.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D1B8CF3178B43090033DD70 /* fast-forward.png */; };
+		4D1B8CFA178B43090033DD70 /* fast-forward@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D1B8CF4178B43090033DD70 /* fast-forward@2x.png */; };
+		4D1B8CFB178B43090033DD70 /* play.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D1B8CF5178B43090033DD70 /* play.png */; };
+		4D1B8CFC178B43090033DD70 /* play@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D1B8CF6178B43090033DD70 /* play@2x.png */; };
+		4D1B8CFD178B43090033DD70 /* pause@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D1B8CF7178B43090033DD70 /* pause@2x.png */; };
 		4D1B8D0A178B4B800033DD70 /* fast-forward-selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D1B8D04178B4B7F0033DD70 /* fast-forward-selected.png */; };
 		4D1B8D0B178B4B800033DD70 /* fast-forward-selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D1B8D05178B4B7F0033DD70 /* fast-forward-selected@2x.png */; };
 		4D1B8D0C178B4B800033DD70 /* play-selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D1B8D06178B4B7F0033DD70 /* play-selected.png */; };
@@ -439,6 +446,8 @@
 		4D03E6A9190D94EF00405699 /* CCBuilderReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCBuilderReader.h; sourceTree = "<group>"; };
 		4D03E6B1190D9A0F00405699 /* GameFontSupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameFontSupport.h; sourceTree = "<group>"; };
 		4D03E6B2190D9A0F00405699 /* GameFontSupport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameFontSupport.m; sourceTree = "<group>"; };
+		0F4ED3BE19280CD1007D85B4 /* TrainPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrainPath.h; sourceTree = "<group>"; };
+		0F4ED3BF19280CD1007D85B4 /* TrainPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TrainPath.m; sourceTree = "<group>"; };
 		4D0715011773D1E5008D10E3 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		4D0850F61948FF2D0079ECD7 /* prefs.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = prefs.png; path = "TransitAuthority.spritebuilder/SpriteBuilder Resources/resources-auto/prefs.png"; sourceTree = SOURCE_ROOT; };
 		4D0850F71948FF2D0079ECD7 /* share-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "share-hd.png"; path = "TransitAuthority.spritebuilder/SpriteBuilder Resources/resources-auto/share-hd.png"; sourceTree = SOURCE_ROOT; };
@@ -1281,6 +1290,8 @@
 		4D3929151792080C00373AAD /* Sprites */ = {
 			isa = PBXGroup;
 			children = (
+				0F4ED3BE19280CD1007D85B4 /* TrainPath.h */,
+				0F4ED3BF19280CD1007D85B4 /* TrainPath.m */,
 				4D232A00177A257100B513FE /* TracksNode.h */,
 				4D232A01177A257100B513FE /* TracksNode.m */,
 				4D3929161792082A00373AAD /* StationNode.h */,
@@ -2766,6 +2777,8 @@
 				4DAB18A718CD1A80008CF267 /* CCTiledMapLayer.m in Sources */,
 				4DAB18A918CD1A80008CF267 /* CCTMXXMLParser.m in Sources */,
 				4DAB187D18CD1A80008CF267 /* CCDirector.m in Sources */,
+				4D2DF7551794B714008B7A29 /* CCLayerPanZoom.m in Sources */,
+				0F4ED3C019280CD1007D85B4 /* TrainPath.m in Sources */,
 				4DE702FE1794CD3B00AC228B /* StreetNode.m in Sources */,
 				4DAB18B018CD1A80008CF267 /* UITouch+CC.m in Sources */,
 				4DAB186418CD1A80008CF267 /* cpSpaceDebug.c in Sources */,
