@@ -44,7 +44,7 @@
         self.bufferSize = theBufferSize;
         
         #if (TARGET_IPHONE_SIMULATOR)
-        _textureScale = 1.0f/8.0f;
+        _textureScale = 1.0f/4.0f;
         #else
         _textureScale = 1.0f/4.0f;
         #endif
@@ -55,9 +55,9 @@
         _bufferGridSize = CGSizeMake(ceil(self.map.size.width / self.bufferSize.width),
                                      ceil(self.map.size.height / self.bufferSize.height));
         
-        _bufferPaddingInTiles = CGSizeMake(4, 4);
+        _bufferPaddingInTiles = CGSizeMake(2, 2);
         
-        _disableBlur = NO;
+        _disableBlur = YES;
         
         NSLog(@"Buffer grid size is %@", NSStringFromCGSize(_bufferGridSize));
         NSLog(@"viewport size is %@", NSStringFromCGSize(self.viewportSize));
@@ -103,7 +103,8 @@
     float densityProportion = (float)density/(float)GAMEMAP_MAX_DENSITY;
    // NSLog(@"Density %d -> %f opacity/%f", density, densityProportion, pow(densityProportion, 2));
    // return pow(densityProportion,2);
-    return densityProportion;
+   // return densityProportion * 0.5;
+    return 0.25 + (densityProportion * 0.05);
 }
 
 - (void) refresh{
@@ -248,6 +249,8 @@
                                              rgbColorSpace,
                                              kCGBitmapByteOrder32Big | kCGImageAlphaPremultipliedLast);
     
+    CGContextSetBlendMode(ctx, kCGBlendModeMultiply);
+    
     for(unsigned xTile = boundingBoxInTiles.origin.x; xTile < CGRectGetMaxX(boundingBoxInTiles); xTile++){
         for(unsigned yTile = boundingBoxInTiles.origin.y; yTile < CGRectGetMaxY(boundingBoxInTiles); yTile++){
             CGPoint tileCoord = CGPointMake(xTile, yTile);
@@ -256,20 +259,26 @@
                                            (_bufferPaddingInTiles.height + ((CGRectGetMaxY(boundingBoxInTiles) - yTile))) * tileSize);
             
             CGRect tileRect = CGRectMake(imgCoord.x, imgCoord.y, tileSize, tileSize);
+            tileRect = CGRectInset(tileRect, -3, -3);
             
             unsigned resD = [self.map residentialDensityAt:tileCoord];
             unsigned comD = [self.map commercialDensityAt:tileCoord];
             if(resD){
                 CGContextSetRGBFillColor(ctx, 1, 0, 0, [self _opacityForDensity:resD]);
                 //    CGContextFillRect(ctx, tileRect);
-                unsigned insetAmount = (GAMEMAP_MAX_DENSITY - resD) * tileSize*0.1;
+                tileRect.origin.x += (arc4random() % 4) - 2.0f;
+                tileRect.origin.y += (arc4random() % 4) - 2.0f;
+                
+                unsigned insetAmount = (GAMEMAP_MAX_DENSITY - resD) * tileSize*0.3;
                 CGContextFillEllipseInRect(ctx, CGRectInset(tileRect, insetAmount, insetAmount));
             }
             
             if(comD){
                 CGContextSetRGBFillColor(ctx, 0, 0, 1, [self _opacityForDensity:comD]);
+                tileRect.origin.x += (arc4random() % 4) - 2.0f;
+                tileRect.origin.y += (arc4random() % 4) - 2.0f;
                 //      CGContextFillRect(ctx, tileRect);
-                unsigned insetAmount = (GAMEMAP_MAX_DENSITY - comD) * tileSize*0.1;
+                unsigned insetAmount = (GAMEMAP_MAX_DENSITY - comD) * tileSize*0.3;
                 CGContextFillEllipseInRect(ctx, CGRectInset(tileRect, insetAmount, insetAmount));
             }
         }
@@ -288,7 +297,7 @@
         CIContext *context = [CIContext contextWithOptions:@{kCIContextUseSoftwareRenderer: @(NO)}];
         
         CIFilter *filter = [CIFilter filterWithName:@"CIGaussianBlur"];
-        [filter setValue:@(tileSize*0.5) forKey:@"inputRadius"];
+        [filter setValue:@(tileSize*0.25) forKey:@"inputRadius"];
         [filter setValue:ci forKey:@"inputImage"];
         
         blurRenderSpace = [self _getNewRenderBuffer];
@@ -304,9 +313,9 @@
     // Now generate a texture from the buffer
     
     // border for debugging
-        CGContextSetLineWidth(ctx, 10);
+       /* CGContextSetLineWidth(ctx, 10);
         CGContextSetStrokeColorWithColor(ctx, [[UIColor blackColor] CGColor]);
-        CGContextStrokeRect(ctx, CGRectMake(1, 1, imgSize.width - 2, imgSize.height - 2));
+        CGContextStrokeRect(ctx, CGRectMake(1, 1, imgSize.width - 2, imgSize.height - 2));*/
     
     
     

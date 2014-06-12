@@ -173,7 +173,7 @@
     CPTMutableTextStyle *ts = [[CPTMutableTextStyle alloc] init];
     ts.fontName = @"Helvetica Neue";
     ts.fontSize = 9;
-    ts.color = [CPTColor whiteColor];
+    ts.color = [CPTColor blackColor];
     
     NSMutableSet *labels = [NSMutableSet set];
     NSMutableSet *tickLocs = [NSMutableSet set];
@@ -203,7 +203,7 @@
     x.labelOffset = 0;
     y.labelTextStyle = ts;
     
-    barPlot.fill = [CPTFill fillWithColor:[CPTColor whiteColor]];
+    barPlot.fill = [CPTFill fillWithColor:[CPTColor blackColor]];
     barPlot.borderWidth = 0;
     
     [graph addPlot:barPlot toPlotSpace:plotSpace];
