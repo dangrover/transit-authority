@@ -15,8 +15,8 @@
 
 @class CCLayerPanZoom;
 
-#define STATION_SPRITE_SCALE_LONG_PLATFORM 0.7
-#define STATION_SPRITE_SCALE_UNSELECTED 0.5
+#define STATION_SPRITE_SCALE_LONG_PLATFORM 1
+#define STATION_SPRITE_SCALE_UNSELECTED 0.7
 
 #define SoundEffect_BuildStation @"build-station.wav"
 #define SoundEffect_CashRegister @"cash-register.wav"

@@ -48,7 +48,7 @@
 		"logan-airport":{
 			"name":"Logan Airport",
 			"type":"airport",
-			"location":[147,15],
+			"location":[158,24],
 			"emit-res":{"strength":500,
 						"weight-by-hour":[0.1, 0.1, 0.1, 0.1, 0.1, 0.5, 0.3, 0.3, 0.3, 0.3, 0.4, 0.4,
 										0.4,0.4,0.4,0.4,0.4,0.3,0.3,0.3,0.3,0.2,0.1,0.1]},

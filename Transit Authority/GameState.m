@@ -324,7 +324,7 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
                     
                     if (t.timeToWait > GAME_STATION_BOARDING_TIME_IN_GAME_SECONDS)
                     {
-                        NSLog(@"The regular stop time was not enough to off/onload all passengers so I'm stopping a total of %d game seconds.", t.timeToWait);
+                        //NSLog(@"The regular stop time was not enough to off/onload all passengers so I'm stopping a total of %d game seconds.", t.timeToWait);
                     }
                     
                     [self pruneImpatientPassengersAtStation:stationWereStoppedIn];

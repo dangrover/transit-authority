@@ -20,10 +20,10 @@
         _dot = [[CCSprite alloc] initWithImageNamed:@"station.png"];
         [self addChild:_dot];
         
-        _countLabel = [[CCLabelTTF alloc] initWithString:@"" fontName:@"Helvetica-Bold" fontSize:26];
+        _countLabel = [[CCLabelTTF alloc] initWithString:@"" fontName:@"Raleway-Medium" fontSize:24];
         _countLabel.anchorPoint = CGPointMake(0.5, 0.5);
-        _countLabel.position = CGPointMake(_dot.contentSize.width/2, _dot.contentSize.height / 2);
-        _countLabel.color = [CCColor whiteColor];
+        _countLabel.position = CGPointMake(_dot.contentSize.width/2, _dot.contentSize.height / 2 + 3);
+        _countLabel.color = [CCColor colorWithWhite:0.1 alpha:1];
         [_dot addChild:_countLabel];
         
         self.passengerCount = 0;

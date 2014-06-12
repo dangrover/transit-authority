@@ -398,8 +398,10 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
             secondColor.b*progressThroughHour + firstColor.b*(1.0f-progressThroughHour),
             secondColor.a*progressThroughHour + firstColor.a*(1.0f-progressThroughHour)};
         
-        _dayNightOverlay.color = [CCColor colorWithRed:mix.r green:mix.g blue:mix.b alpha:mix.a];
-        //_dayNightOverlay.opacity = mix.a;
+        //NSLog(@"Mixing colors %f/%f/%f/%f",mix.r,  mix.b, mix.g, mix.a);
+        
+        _dayNightOverlay.color = [CCColor colorWithRed:mix.r green:mix.g blue:mix.b alpha:mix.a/255.0];
+      //  _dayNightOverlay.opacity = mix.a;
         
         //NSLog(@"setting color for hour %d", hour);
         
@@ -482,8 +484,8 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     if(currentSpeed == 0){
         currentSpeed = 1;
     }else if(currentSpeed == 1){
-        currentSpeed = 4;
-    }else if(currentSpeed == 4){
+        currentSpeed = 5;
+    }else if(currentSpeed == 5){
         currentSpeed = 0;
     }
     [self _updateSpeedIcon];
@@ -496,7 +498,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
         iconName = @"pause.png";
     }else if(currentSpeed == 1){
         iconName = @"play.png";
-    }else if(currentSpeed == 4){
+    }else if(currentSpeed == 5){
         iconName = @"fast-forward.png";
     }else{
         NSLog(@"UNKNOWN SPEED");
@@ -1069,6 +1071,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
         
         _coverageOverlay = [[StationCoverageOverlay alloc] init];
         _coverageOverlay.position = stationNode.position;
+        _coverageOverlay.scale = 1.0f/_panZoomLayer.scale;
         _coverageOverlay.walkTiles = GAME_STATION_WALK_RADIUS_TILES;
         _coverageOverlay.carTiles = GAME_STATION_CAR_RADIUS_TILES;
         _coverageOverlay.makeCarPartDarker = [s.upgrades containsObject:StationUpgrade_ParkingLot];

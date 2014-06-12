@@ -23,11 +23,14 @@
 
 - (id) init{
     if(self = [super init]){
-        _walkLabel = [[CCLabelTTF alloc] initWithString:@"WALKING" fontName:@"Raleway" fontSize:12];
-        _carLabel = [[CCLabelTTF alloc] initWithString:@"DRIVING" fontName:@"Raleway" fontSize:12];
+        _walkLabel = [[CCLabelTTF alloc] initWithString:@"WALKING" fontName:@"Raleway-Semibold" fontSize:12];
+        _carLabel = [[CCLabelTTF alloc] initWithString:@"DRIVING" fontName:@"Raleway-Semibold" fontSize:12];
         [self addChild:_walkLabel];
         [self addChild:_carLabel];
-        _walkLabel.opacity = _carLabel.opacity = 175;
+        _walkLabel.opacity = _carLabel.opacity = 1;
+        _walkLabel.shadowColor = _carLabel.shadowColor = [CCColor blackColor];
+        _walkLabel.shadowOffset = _carLabel.shadowOffset = CGPointMake(0, 0);
+        _walkLabel.shadowBlurRadius = _carLabel.shadowBlurRadius = 1;
       //  NSLog(@"added labels");
     }
     return self;

@@ -18,7 +18,10 @@
 
 - (BOOL) touchBegan:(UITouch *)touch withEvent:(UIEvent *)event{
     costLabel = [[CCLabelTTF alloc] initWithString:@"" fontName:@"Helvetica-Bold" fontSize:20];
- //   [costLabel enableShadowWithOffset:CGSizeMake(0, 1) opacity:1 blur:2 updateImage:NO];
+    costLabel.shadowColor = [CCColor blackColor];
+    costLabel.shadowBlurRadius = 1;
+    costLabel.shadowOffset = CGPointZero;
+    
     [self.parent addChild:costLabel z:95];
     
     return YES;
