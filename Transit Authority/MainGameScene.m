@@ -480,6 +480,62 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     return correctScale / _panZoomLayer.scale;
 }
 
+- (void) hideMenuNodes
+{
+    if (_buildSubmenuNode)
+    {
+        self.currentTool = nil;
+        buildButton.selected = NO;
+        buildButtonSprite.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"hammer.png"];
+        
+        [_buildSubmenuNode runAction:[CCActionSequence actions:[CCActionFadeOut actionWithDuration:UI_FADE_DURATION],[CCActionCallBlock actionWithBlock:^{
+            [_buildSubmenuNode removeFromParentAndCleanup:YES];
+            _buildSubmenuNode = nil;
+        }], nil]];
+    }
+    if (_moreMenuNode)
+    {
+        menuButton.selected = NO;
+        menuButtonSprite.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"more.png"];
+        
+        [_moreMenuNode runAction:[CCActionSequence actions:[CCActionFadeOut actionWithDuration:UI_FADE_DURATION],[CCActionCallBlock actionWithBlock:^{
+            [_moreMenuNode removeFromParentAndCleanup:YES];
+            _moreMenuNode = nil;
+        }], nil]];
+    }
+    if (_linesTopView)
+    {
+        manageButton.selected = NO;
+        manageButtonSprite.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"lines.png"];
+        
+        [UIView animateWithDuration:UI_FADE_DURATION animations:^{
+            _linesTopView.alpha = 0;
+        } completion:^(BOOL finished) {
+            [_linesTopView removeFromSuperview];
+        }];
+        
+        _linesTopView = nil;
+        linesTool.parent = nil;
+        linesTool = nil;
+    }
+    if (_dataTopView)
+    {
+        dataButton.selected = NO;
+        dataButtonSprite.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"graph.png"];
+        
+        [dataTool finished];
+        [UIView animateWithDuration:UI_FADE_DURATION animations:^{
+            _dataTopView.alpha = 0;
+        } completion:^(BOOL finished) {
+            [_dataTopView removeFromSuperview];
+        }];
+        
+        _dataTopView = nil;
+        dataTool.parent = nil;
+        dataTool = nil;
+    }
+}
+
 - (void) newSpeed{
     if(currentSpeed == 0){
         currentSpeed = 1;
@@ -538,6 +594,8 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     NSLog(@"Build");
     
     if(!_buildSubmenuNode){
+        
+        [self hideMenuNodes];
         buildButton.selected = YES;
         buildButtonSprite.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"hammer-selected.png"];
         
@@ -553,20 +611,15 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
         [_buildSubmenuNode runAction:[CCActionFadeIn actionWithDuration:UI_FADE_DURATION]];
         
     }else{
-        self.currentTool = nil;
-        buildButton.selected = NO;
-        buildButtonSprite.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"hammer.png"];
-        
-        [_buildSubmenuNode runAction:[CCActionSequence actions:[CCActionFadeOut actionWithDuration:UI_FADE_DURATION],[CCActionCallBlock actionWithBlock:^{
-                [_buildSubmenuNode removeFromParentAndCleanup:YES];
-                _buildSubmenuNode = nil;
-        }], nil]];
+        [self hideMenuNodes];
     }
 }
 
 - (void) manageButtonPressed{
   
     if(!linesTool){
+        
+        [self hideMenuNodes];
         manageButton.selected = YES;
         manageButtonSprite.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"lines-selected.png"];
         
@@ -589,23 +642,14 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
         } completion:^(BOOL finished) {}];
         
     }else{
-        manageButton.selected = NO;
-        manageButtonSprite.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"lines.png"];
-        
-        [UIView animateWithDuration:UI_FADE_DURATION animations:^{
-            _linesTopView.alpha = 0;
-        } completion:^(BOOL finished) {
-            [_linesTopView removeFromSuperview];
-        }];
-        
-        _linesTopView = nil;
-        linesTool.parent = nil;
-        linesTool = nil;
+        [self hideMenuNodes];
     }
 }
 
 - (void) dataButtonPressed{
     if(!dataTool){
+        
+        [self hideMenuNodes];
         dataButton.selected = YES;
         dataButtonSprite.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"graph-selected.png"];
         
@@ -634,19 +678,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
                          completion:^(BOOL finished){}];
         
     }else{
-        dataButton.selected = NO;
-        dataButtonSprite.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"graph.png"];
-        
-        [dataTool finished];
-        [UIView animateWithDuration:UI_FADE_DURATION animations:^{
-            _dataTopView.alpha = 0;
-        } completion:^(BOOL finished) {
-            [_dataTopView removeFromSuperview];
-        }];
-        
-        _dataTopView = nil;
-        dataTool.parent = nil;
-        dataTool = nil;
+        [self hideMenuNodes];
     }
 }
 
@@ -655,6 +687,8 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     NSLog(@"Menu");
     
     if(!_moreMenuNode){
+        
+        [self hideMenuNodes];
         _moreMenuNode = [CCBReader load:@"MoreSubmenu"];
     
         menuButton.selected = YES;
@@ -670,13 +704,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
         [_moreMenuNode runAction:[CCActionFadeIn actionWithDuration:UI_FADE_DURATION]];
         
     }else{
-        menuButton.selected = NO;
-        menuButtonSprite.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"more.png"];
-        
-        [_moreMenuNode runAction:[CCActionSequence actions:[CCActionFadeOut actionWithDuration:UI_FADE_DURATION],[CCActionCallBlock actionWithBlock:^{
-            [_moreMenuNode removeFromParentAndCleanup:YES];
-            _moreMenuNode = nil;
-        }], nil]];
+        [self hideMenuNodes];
     }
 }
 
