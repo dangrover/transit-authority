@@ -690,7 +690,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     if(!_moreMenuNode){
         
         [self hideMenuNodes];
-        _moreMenuNode = [CCBReader load:@"MoreSubmenu"];
+        _moreMenuNode = [CCBReader load:@"MoreSubmenu" owner:self];
         
         menuButton.selected = YES;
         menuButtonSprite.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"more-selected.png"];
@@ -710,19 +710,19 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 }
 
 - (void) saveGame{
-    NSLog(@"Save game");
+    QuickAlert(@"Coming soon", @"");
 }
 
 - (void) share{
-    NSLog(@"Share");
+    QuickAlert(@"Coming soon", @"");
 }
 
 - (void) showSettings{
     NSLog(@"Settings");
+    QuickAlert(@"Coming soon", @"");
 }
 
 - (void) exitGame{
-    NSLog(@"Exit game");
     [UIAlertView bk_showAlertViewWithTitle:@"Exit game?" message:@"" cancelButtonTitle:@"Cancel" otherButtonTitles:@[@"OK"] handler:^(UIAlertView *alertView, NSInteger buttonIndex) {
         if(buttonIndex == 1){
             [((AppController *)[UIApplication sharedApplication].delegate) exitToMainMenu];
