@@ -79,7 +79,8 @@
     coverageOverlay.walkTiles = GAME_STATION_WALK_RADIUS_TILES;
     coverageOverlay.carTiles = GAME_STATION_CAR_RADIUS_TILES;
     coverageOverlay.scale = 1.0f/self.parent->tiledMap.parent.scale;
-    CGFloat r = GAME_STATION_CAR_RADIUS_TILES * (1.0f/self.parent->tiledMap.parent.scale) * self.parent.gameState.map.map.tileSize.width*2;
+    CGFloat r = GAME_STATION_CAR_RADIUS_TILES * self.parent.gameState.map.map.tileSize.width*2;
+    NSLog(@"Making overlay, tiled map scale is %f", self.parent->tiledMap.parent.scale);
     [_clippingMask drawDot:CGPointMake(-0.5*r, -0.5*r)
                     radius:r
                      color:[CCColor colorWithWhite:0 alpha:1]];

@@ -1127,7 +1127,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 - (void) goalCompleted:(NSNotification *)notification{
     ScenarioGoal *goal = notification.userInfo[@"goal"];
     
-    [[OALSimpleAudio sharedInstance] playEffect:SoundEffect_CompleteGoal];
+   /* [[OALSimpleAudio sharedInstance] playEffect:SoundEffect_CompleteGoal];
     
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Goal Completed"
                                                     message:[NSString stringWithFormat:@"You completed the goal '%@!'",goal.caption]
@@ -1135,7 +1135,8 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
                                           cancelButtonTitle:@"OK"
                                           otherButtonTitles: nil];
     
-    [alert show];
+    [alert show];*/
+    
 }
 
 - (void) bondIssued{

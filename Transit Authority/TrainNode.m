@@ -27,7 +27,7 @@
 - (id) init{
     if(self = [super initWithTexture:[self _textureForColor:LineColor_Red]]){
         _countLabel = [[CCLabelTTF alloc] initWithString:@""
-                                                    fontName:@"Helvetica-Bold"
+                                                    fontName:@"Raleway-Light"
                                                     fontSize:11.0];
         
         _emptyProgress = [[CCSprite alloc] initWithImageNamed:@"progress-indicator-empty.png"];
