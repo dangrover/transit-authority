@@ -34,6 +34,7 @@
 #import "CCScrollView.h"
 #import "CCBReader.h"
 #import "CCButton.h"
+#import "AppDelegate.h"
 
 #define TRAIN_UPDATE_INTERVAL 0.5
 #define EVENT_LOOP_INTERVAL (1.0/60.0)
@@ -648,7 +649,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     if(visible && !menuButton.selected){
         [self _hideAllTools];
         
-        _moreMenuNode = [CCBReader load:@"MoreSubmenu"];
+        _moreMenuNode = [CCBReader load:@"MoreSubmenu" owner:self];
         
         menuButton.selected = YES;
         menuButtonSprite.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"more-selected.png"];
@@ -696,18 +697,29 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 
 - (void) saveGame{
     NSLog(@"Save game");
+    QuickAlert(@"Coming Soon", @"OK");
 }
 
 - (void) share{
     NSLog(@"Share");
+    QuickAlert(@"Coming Soon", @"OK");
 }
 
 - (void) showSettings{
     NSLog(@"Settings");
+    QuickAlert(@"Coming Soon", @"OK");
 }
 
 - (void) exitGame{
-    NSLog(@"Exit game");
+    [UIAlertView bk_showAlertViewWithTitle:@"Exit game?"
+                                   message:@""
+                         cancelButtonTitle:@"Cancel"
+                         otherButtonTitles:@[@"Exit"]
+                                   handler:^(UIAlertView *alertView, NSInteger buttonIndex) {
+        if(buttonIndex == 1){
+            [((AppController *)[[UIApplication sharedApplication] delegate]) exitToMainMenu];
+        }
+    }];
 }
 
 

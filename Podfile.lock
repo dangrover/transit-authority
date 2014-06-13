@@ -1,23 +1,37 @@
 PODS:
+  - BlocksKit (2.2.3):
+    - BlocksKit/All
+  - BlocksKit/All (2.2.3):
+    - BlocksKit/Core
+    - BlocksKit/DynamicDelegate
+    - BlocksKit/MessageUI
+    - BlocksKit/UIKit
+  - BlocksKit/Core (2.2.3)
+  - BlocksKit/DynamicDelegate (2.2.3)
+  - BlocksKit/MessageUI (2.2.3):
+    - BlocksKit/Core
+    - BlocksKit/DynamicDelegate
+  - BlocksKit/UIKit (2.2.3):
+    - BlocksKit/Core
+    - BlocksKit/DynamicDelegate
   - CorePlot (1.4)
   - FMDB (2.1):
     - FMDB/standard
   - FMDB/common (2.1)
   - FMDB/standard (2.1):
     - FMDB/common
-  - FontAwesome+iOS (0.1.1)
   - TestFlightSDK (3.0.0)
 
 DEPENDENCIES:
+  - BlocksKit
   - CorePlot (~> 1.4)
   - FMDB
-  - FontAwesome+iOS
   - TestFlightSDK (~> 3.0)
 
 SPEC CHECKSUMS:
-  CorePlot: 0c6cfe42f4cc458062dfd765d5b8f59a0d0fdddf
-  FMDB: d47c9f71888fcbbf6ca7d37bd3e145672477d921
-  FontAwesome+iOS: 243c5309e90d5788909b0f859f75ecff4a20f88f
-  TestFlightSDK: fe0567a897456b6f65b180541892ef0154986e01
+  BlocksKit: 07c8a80f04275efac6a5f8b973782489c083a182
+  CorePlot: 72ed564770dc4e123b5c88bc5dfc8a2ef4e5bc86
+  FMDB: 2a4025247d22fb28865db84c744706385f806d7d
+  TestFlightSDK: 36b8a207c5a119a3144aa2e6d24973eb9d5e0d0a
 
 COCOAPODS: 0.32.1

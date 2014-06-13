@@ -217,6 +217,13 @@
 			<key>scaleFrom</key>
 			<integer>1</integer>
 		</dict>
+		<key>prefs.png</key>
+		<dict>
+			<key>isDirty</key>
+			<true/>
+			<key>scaleFrom</key>
+			<integer>1</integer>
+		</dict>
 		<key>save.png</key>
 		<dict>
 			<key>scaleFrom</key>

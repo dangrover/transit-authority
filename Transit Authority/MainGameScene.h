@@ -7,6 +7,8 @@
 //
 
 #import <AVFoundation/AVFoundation.h>
+#import <BlocksKit/BlocksKit+UIKit.h>
+
 #import "cocos2d.h"
 #import "GameState.h"
 #import "GameTool.h"

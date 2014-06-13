@@ -208,12 +208,11 @@
 
 - (void) exitToMainMenu{
    
-    //for(UIView *v in director_.view.subviews){
-    //    [v removeFromSuperview];
-   // }
+    for(UIView *v in [CCDirector sharedDirector].view.subviews){
+        [v removeFromSuperview];
+    }
     
- //   MainMenuViewController *mm = [[MainMenuViewController alloc] initWithNibName:nil bundle:nil];
-   // [navController_ pushViewController:mm animated:NO];
+    [[CCDirector sharedDirector] replaceScene:[self startScene]];
     
 }
 @end

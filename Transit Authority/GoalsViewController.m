@@ -46,7 +46,6 @@
                           @[tier3goal1Check, tier3goal2Check]];
     
     
-    
     // Okay, now go populate everything
     NSArray *tiers = self.state.originalScenario.goalGroups;
     
