@@ -61,7 +61,7 @@
     scenario.cityName = @"Sticky-outy-ville";
     scenario.startingCash = 1000000;
     scenario.startingDate = [NSDate dateWithTimeIntervalSince1970:822128236];
-    scenario.tmxMapPath = [[NSBundle mainBundle] pathForResource:@"sillysburg" ofType:@"tmx"];
+    scenario.tmxMapPath = [[NSBundle mainBundle] pathForResource:@"boston" ofType:@"tmx"];
     
     
     GameState *state = [[GameState alloc] initWithScenario:scenario];
@@ -98,7 +98,7 @@
     
     XCTAssertTrue(redLine.segmentsServed.count > 0, @"should add to segments served");
     
-    NSArray *terms = [GameState terminiForSegments:redLine.segmentsServed line:redLine];
+    NSOrderedSet *terms = [GameState terminiForSegments:redLine.segmentsServed line:redLine];
     XCTAssertTrue([terms containsObject:northStation], @"wrong terminals");
     XCTAssertTrue([terms containsObject:southStation], @"wrong terminals");
     XCTAssertTrue(![terms containsObject:middleStation], @"wrong terminals");
