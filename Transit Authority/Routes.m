@@ -129,13 +129,22 @@ static NSArray *uiColorsForLines;
     
     for(unsigned chunkIndex = 0; chunkIndex < self.routeChunks.count; chunkIndex++){
         RouteChunk *thisChunk = self.routeChunks[chunkIndex];
+        
+        // Find the origin.
         if([thisChunk.origin isEqual:a]){
             originIndex = chunkIndex;
         }
         
+        // If the origin is already found, find the destination.
         if((originIndex != NSNotFound) && [thisChunk.destination isEqual:b]){
             destIndex = chunkIndex;
             break;
+        }
+        
+        // The destination can be before the origin if the track is a circle.
+        // Just add the length of the entire route to the index so it's greater than the orgin index.
+        if(self.isCircular && [thisChunk.destination isEqual:b]){
+            destIndex = self.routeChunks.count + chunkIndex;
         }
     }
     
@@ -158,7 +167,9 @@ static NSArray *uiColorsForLines;
 - (float) tileDistanceOfTrackCoveredByChunks:(NSRange)range{
     float distance = 0;
     for(unsigned i = range.location; i <= (range.location + range.length); i++){
-        distance += ((RouteChunk *)self.routeChunks[i]).trackSegment.distanceInTiles;
+        // If the route goes past the last station, it must be a circle. Continue at the beginning.
+        RouteChunk *chunk = self.routeChunks[i % self.routeChunks.count];
+        distance += chunk.trackSegment.distanceInTiles;
     }
     return distance;
 }
