@@ -223,12 +223,14 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     tiledMap.position = CGPointMake(-1*(startPos.x - (self.boundingBox.size.width/2)),
                                     -1*(startPos.y - (self.boundingBox.size.height/2)));
     
-    
-    [_panZoomLayer addChild:tiledMap];
-    _panZoomLayer.position = CGPointMake(self.boundingBox.size.width/2, self.boundingBox.size.height/2);
-    
     [self addChild:_panZoomLayer z:-100];
     _panZoomLayer.scale = _panZoomLayer.minScale;
+    
+    [_panZoomLayer addChild:tiledMap];
+    
+    CGRect bb = self.boundingBox;
+    _panZoomLayer.contentSize = tiledMap.contentSize;
+    _panZoomLayer.position = CGPointMake(bb.size.width/2, bb.size.height/2);
     
     [self _makeStreetSprites];
     [self _makeNeighborhoodNameSprites];
@@ -344,6 +346,19 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 
 - (void) layerPanZoom:(CCLayerPanZoom *)sender updatedPosition:(CGPoint)pos scale:(CGFloat)scale{
     //NSLog(@"PAN ZOOM LAYER MOVED. POSITION IS NOW %@", NSStringFromCGPoint(pos));
+    
+    if (scale != _lastScale)
+    {
+        CGRect bb = self.boundingBox;
+        _panZoomLayer.panBoundsRect = CGRectMake(
+                                                 -1 * tiledMap.position.x * _panZoomLayer.scale,
+                                                 -1 * tiledMap.position.y * _panZoomLayer.scale,
+                                                 bb.size.width,
+                                                 bb.size.height);
+        _panZoomLayer.scale = scale;
+        _panZoomLayer.position = pos;
+    }
+    _lastScale = scale;
     
     CGPoint centerOfScreenInWorldSpace = [self convertToWorldSpace:CGPointMake(self.boundingBox.size.width/2,self.boundingBox.size.height/2)];
     

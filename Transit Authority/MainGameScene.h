@@ -34,6 +34,7 @@
     @public
     CCTiledMap *tiledMap;
     CCLayerPanZoom *_panZoomLayer;
+    float _lastScale;
 
 
     IBOutlet UIView *toolHelpOverlay;
