@@ -228,9 +228,8 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     
     [_panZoomLayer addChild:tiledMap];
     
-    CGRect bb = self.boundingBox;
     _panZoomLayer.contentSize = tiledMap.contentSize;
-    _panZoomLayer.position = CGPointMake(bb.size.width/2, bb.size.height/2);
+    _panZoomLayer.position = CGPointMake(self.boundingBox.size.width/2, self.boundingBox.size.height/2);
     
     [self _makeStreetSprites];
     [self _makeNeighborhoodNameSprites];
@@ -347,14 +346,17 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 - (void) layerPanZoom:(CCLayerPanZoom *)sender updatedPosition:(CGPoint)pos scale:(CGFloat)scale{
     //NSLog(@"PAN ZOOM LAYER MOVED. POSITION IS NOW %@", NSStringFromCGPoint(pos));
     
+    // If the zoom level changes then update the boundary rectangle.
     if (scale != _lastScale)
     {
-        CGRect bb = self.boundingBox;
         _panZoomLayer.panBoundsRect = CGRectMake(
+                                                 // Account for a translated map.
                                                  -1 * tiledMap.position.x * _panZoomLayer.scale,
                                                  -1 * tiledMap.position.y * _panZoomLayer.scale,
-                                                 bb.size.width,
-                                                 bb.size.height);
+                                                 // The bounding box size stays the same.
+                                                 self.boundingBox.size.width,
+                                                 self.boundingBox.size.height);
+        // Update the scale and position.
         _panZoomLayer.scale = scale;
         _panZoomLayer.position = pos;
     }
