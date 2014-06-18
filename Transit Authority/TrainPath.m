@@ -59,7 +59,7 @@
         distanceToNextPoint = PointDistance([self controlPointAtIndex:i], [self controlPointAtIndex:i+1]);
         
         // If it would push us past distanceTravelled, we're in the right spot.
-        if (distanceToPointI + distanceToNextPoint >= distanceTravelled) break;
+        if (distanceToPointI + distanceToNextPoint >= distanceTravelled && distanceToNextPoint > 0) break;
         
         // Otherwise, move to the next point.
         distanceToPointI += distanceToNextPoint;
