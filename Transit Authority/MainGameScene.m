@@ -1022,7 +1022,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     // add sprites for trains that need them
     for(NSString *uuid in self.gameState.assignedTrains.allKeys){
         Train *t = self.gameState.assignedTrains[uuid];
-        if(!_trainSprites[uuid]){
+        if(!_trainSprites[uuid] && t.line.segmentsServed.count > 0){
             
             TrainNode *tNode = [[TrainNode alloc] init];
             tNode.color = t.currentRoute.line.color;
