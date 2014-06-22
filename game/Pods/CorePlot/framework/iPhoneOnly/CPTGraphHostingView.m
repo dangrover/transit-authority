@@ -139,40 +139,56 @@
         return;
     }
 
+    CPTGraph *theHostedGraph = self.hostedGraph;
+
+    theHostedGraph.frame = self.bounds;
+    [theHostedGraph layoutIfNeeded];
+
     CGPoint pointOfTouch = [[[event touchesForView:self] anyObject] locationInView:self];
-    if ( !self.collapsesLayers ) {
-        pointOfTouch = [self.layer convertPoint:pointOfTouch toLayer:self.hostedGraph];
-    }
-    else {
+
+    if ( self.collapsesLayers ) {
         pointOfTouch.y = self.frame.size.height - pointOfTouch.y;
     }
-    [self.hostedGraph pointingDeviceDownEvent:event atPoint:pointOfTouch];
+    else {
+        pointOfTouch = [self.layer convertPoint:pointOfTouch toLayer:theHostedGraph];
+    }
+    [theHostedGraph pointingDeviceDownEvent:event atPoint:pointOfTouch];
 }
 
 -(void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
+    CPTGraph *theHostedGraph = self.hostedGraph;
+
+    theHostedGraph.frame = self.bounds;
+    [theHostedGraph layoutIfNeeded];
+
     CGPoint pointOfTouch = [[[event touchesForView:self] anyObject] locationInView:self];
 
-    if ( !self.collapsesLayers ) {
-        pointOfTouch = [self.layer convertPoint:pointOfTouch toLayer:self.hostedGraph];
-    }
-    else {
+    if ( self.collapsesLayers ) {
         pointOfTouch.y = self.frame.size.height - pointOfTouch.y;
     }
-    [self.hostedGraph pointingDeviceDraggedEvent:event atPoint:pointOfTouch];
+    else {
+        pointOfTouch = [self.layer convertPoint:pointOfTouch toLayer:theHostedGraph];
+    }
+    [theHostedGraph pointingDeviceDraggedEvent:event atPoint:pointOfTouch];
 }
 
 -(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
+    CPTGraph *theHostedGraph = self.hostedGraph;
+
+    theHostedGraph.frame = self.bounds;
+    [theHostedGraph layoutIfNeeded];
+
     CGPoint pointOfTouch = [[[event touchesForView:self] anyObject] locationInView:self];
 
-    if ( !self.collapsesLayers ) {
-        pointOfTouch = [self.layer convertPoint:pointOfTouch toLayer:self.hostedGraph];
-    }
-    else {
+    if ( self.collapsesLayers ) {
         pointOfTouch.y = self.frame.size.height - pointOfTouch.y;
     }
-    [self.hostedGraph pointingDeviceUpEvent:event atPoint:pointOfTouch];
+    else {
+        pointOfTouch = [self.layer convertPoint:pointOfTouch toLayer:theHostedGraph];
+    }
+    [theHostedGraph pointingDeviceUpEvent:event atPoint:pointOfTouch];
 }
 
 -(void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
@@ -214,11 +230,14 @@
     CGPoint interactionPoint = [aPinchGestureRecognizer locationInView:self];
     CPTGraph *theHostedGraph = self.hostedGraph;
 
-    if ( !self.collapsesLayers ) {
-        interactionPoint = [self.layer convertPoint:interactionPoint toLayer:theHostedGraph];
+    theHostedGraph.frame = self.bounds;
+    [theHostedGraph layoutIfNeeded];
+
+    if ( self.collapsesLayers ) {
+        interactionPoint.y = self.frame.size.height - interactionPoint.y;
     }
     else {
-        interactionPoint.y = self.frame.size.height - interactionPoint.y;
+        interactionPoint = [self.layer convertPoint:interactionPoint toLayer:theHostedGraph];
     }
 
     CGPoint pointInPlotArea = [theHostedGraph convertPoint:interactionPoint toLayer:theHostedGraph.plotAreaFrame.plotArea];
@@ -229,7 +248,7 @@
         }
     }
 
-    [pinchGestureRecognizer setScale:1.0f];
+    [pinchGestureRecognizer setScale:CPTFloat(1.0)];
 }
 
 /// @endcond
@@ -266,9 +285,9 @@
 
 -(void)updateNotifications
 {
-    if ( self.collapsesLayers ) {
-        [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 
+    if ( self.collapsesLayers ) {
         CPTGraph *theHostedGraph = self.hostedGraph;
         if ( theHostedGraph ) {
             [[NSNotificationCenter defaultCenter] addObserver:self
@@ -303,14 +322,14 @@
     }
     hostedGraph.hostingView = self;
 
-    if ( !self.collapsesLayers ) {
+    if ( self.collapsesLayers ) {
+        [self setNeedsDisplay];
+    }
+    else {
         if ( hostedGraph ) {
             hostedGraph.frame = self.layer.bounds;
             [self.layer addSublayer:hostedGraph];
         }
-    }
-    else {
-        [self setNeedsDisplay];
     }
 
     [self updateNotifications];

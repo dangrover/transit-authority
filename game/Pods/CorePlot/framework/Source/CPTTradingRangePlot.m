@@ -897,33 +897,36 @@ static const CPTCoordinate dependentCoord   = CPTCoordinateY;
 -(void)drawSwatchForLegend:(CPTLegend *)legend atIndex:(NSUInteger)idx inRect:(CGRect)rect inContext:(CGContextRef)context
 {
     [super drawSwatchForLegend:legend atIndex:idx inRect:rect inContext:context];
-    [self.lineStyle setLineStyleInContext:context];
 
-    switch ( self.plotStyle ) {
-        case CPTTradingRangePlotStyleOHLC:
-            [self drawOHLCInContext:context
-                            atIndex:idx
-                                  x:CGRectGetMidX(rect)
-                               open:CGRectGetMinY(rect) + rect.size.height / CPTFloat(3.0)
-                              close:CGRectGetMinY(rect) + rect.size.height * (CGFloat)(2.0 / 3.0)
-                               high:CGRectGetMaxY(rect)
-                                low:CGRectGetMinY(rect)
-                        alignPoints:YES];
-            break;
+    if ( self.drawLegendSwatchDecoration ) {
+        [self.lineStyle setLineStyleInContext:context];
 
-        case CPTTradingRangePlotStyleCandleStick:
-            [self drawCandleStickInContext:context
-                                   atIndex:idx
-                                         x:CGRectGetMidX(rect)
-                                      open:CGRectGetMinY(rect) + rect.size.height / CPTFloat(3.0)
-                                     close:CGRectGetMinY(rect) + rect.size.height * (CGFloat)(2.0 / 3.0)
-                                      high:CGRectGetMaxY(rect)
-                                       low:CGRectGetMinY(rect)
-                               alignPoints:YES];
-            break;
+        switch ( self.plotStyle ) {
+            case CPTTradingRangePlotStyleOHLC:
+                [self drawOHLCInContext:context
+                                atIndex:idx
+                                      x:CGRectGetMidX(rect)
+                                   open:CGRectGetMinY(rect) + rect.size.height / CPTFloat(3.0)
+                                  close:CGRectGetMinY(rect) + rect.size.height * (CGFloat)(2.0 / 3.0)
+                                   high:CGRectGetMaxY(rect)
+                                    low:CGRectGetMinY(rect)
+                            alignPoints:YES];
+                break;
 
-        default:
-            break;
+            case CPTTradingRangePlotStyleCandleStick:
+                [self drawCandleStickInContext:context
+                                       atIndex:idx
+                                             x:CGRectGetMidX(rect)
+                                          open:CGRectGetMinY(rect) + rect.size.height / CPTFloat(3.0)
+                                         close:CGRectGetMinY(rect) + rect.size.height * (CGFloat)(2.0 / 3.0)
+                                          high:CGRectGetMaxY(rect)
+                                           low:CGRectGetMinY(rect)
+                                   alignPoints:YES];
+                break;
+
+            default:
+                break;
+        }
     }
 }
 
@@ -1129,7 +1132,10 @@ static const CPTCoordinate dependentCoord   = CPTCoordinateY;
     CPTPlotRange *yRange         = thePlotSpace.yRange;
 
     CGPoint openPoint, highPoint, lowPoint, closePoint;
-    CGFloat lastViewX, lastViewMin, lastViewMax;
+
+    CGFloat lastViewX   = CPTFloat(0.0);
+    CGFloat lastViewMin = CPTFloat(0.0);
+    CGFloat lastViewMax = CPTFloat(0.0);
 
     NSUInteger result              = NSNotFound;
     CGFloat minimumDistanceSquared = NAN;
@@ -1321,7 +1327,7 @@ static const CPTCoordinate dependentCoord   = CPTCoordinateY;
     }
 
     if ( result != NSNotFound ) {
-        CGFloat offset;
+        CGFloat offset = CPTFloat(0.0);
 
         switch ( self.plotStyle ) {
             case CPTTradingRangePlotStyleOHLC:

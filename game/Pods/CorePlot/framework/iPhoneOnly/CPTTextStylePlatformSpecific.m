@@ -66,7 +66,7 @@
     if ( hasParagraphAttributeName ) {
         NSParagraphStyle *paragraphStyle = [attributes valueForKey:NSParagraphStyleAttributeName];
         if ( paragraphStyle ) {
-            newStyle.textAlignment = paragraphStyle.alignment;
+            newStyle.textAlignment = (CPTTextAlignment)paragraphStyle.alignment;
             newStyle.lineBreakMode = paragraphStyle.lineBreakMode;
         }
     }
@@ -112,7 +112,7 @@
 
     if ( hasParagraphAttributeName ) {
         NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-        paragraphStyle.alignment     = self.textAlignment;
+        paragraphStyle.alignment     = (NSTextAlignment)self.textAlignment;
         paragraphStyle.lineBreakMode = self.lineBreakMode;
 
         [myAttributes setValue:paragraphStyle
@@ -168,7 +168,7 @@
         NSParagraphStyle *paragraphStyle = [attributes valueForKey:NSParagraphStyleAttributeName];
 
         if ( paragraphStyle ) {
-            newStyle.textAlignment = paragraphStyle.alignment;
+            newStyle.textAlignment = (CPTTextAlignment)paragraphStyle.alignment;
             newStyle.lineBreakMode = paragraphStyle.lineBreakMode;
         }
     }
@@ -195,10 +195,13 @@
 {
     CGSize textSize;
 
-    // -sizeWithAttributes: method is available in iOS 7.0 and later
-    if ( [self respondsToSelector:@selector(sizeWithAttributes:)] ) {
-        textSize = [self sizeWithAttributes:style.attributes];
-
+    // -boundingRectWithSize:options:attributes:context: is available in iOS 7.0 and later
+    if ( [self respondsToSelector:@selector(boundingRectWithSize:options:attributes:context:)] ) {
+        CGRect rect = [self boundingRectWithSize:CPTSizeMake(10000.0, 10000.0)
+                                         options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading | NSStringDrawingTruncatesLastVisibleLine
+                                      attributes:style.attributes
+                                         context:nil];
+        textSize        = rect.size;
         textSize.width  = ceil(textSize.width);
         textSize.height = ceil(textSize.height);
     }
@@ -236,10 +239,11 @@
 
     CPTPushCGContext(context);
 
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
     // -drawWithRect:options:attributes:context: method is available in iOS 7.0 and later
     if ( [self respondsToSelector:@selector(drawWithRect:options:attributes:context:)] ) {
         [self drawWithRect:rect
-                   options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading
+                   options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading | NSStringDrawingTruncatesLastVisibleLine
                 attributes:style.attributes
                    context:nil];
     }
@@ -254,6 +258,14 @@
                alignment:(NSTextAlignment)style.textAlignment];
 #pragma clang diagnostic pop
     }
+#else
+    UIFont *theFont = [UIFont fontWithName:style.fontName size:style.fontSize];
+
+    [self drawInRect:rect
+            withFont:theFont
+       lineBreakMode:style.lineBreakMode
+           alignment:(NSTextAlignment)style.textAlignment];
+#endif
 
     CGContextRestoreGState(context);
     CPTPopCGContext();

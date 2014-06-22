@@ -540,6 +540,7 @@ static const CGFloat colorLookupTable[10][3] =
     }
 
     [borderStyle setLineStyleInContext:context];
+    Class fillClass = [CPTFill class];
 
     while ( currentIndex < sampleCount ) {
         CGFloat currentWidth = (CGFloat)[self cachedDoubleForField : CPTPieChartFieldSliceWidthNormalized recordIndex : currentIndex];
@@ -573,7 +574,7 @@ static const CGFloat colorLookupTable[10][3] =
             CGPathCloseSubpath(slicePath);
 
             CPTFill *currentFill = [self sliceFillForIndex:currentIndex];
-            if ( currentFill ) {
+            if ( [currentFill isKindOfClass:fillClass] ) {
                 CGContextBeginPath(context);
                 CGContextAddPath(context, slicePath);
                 [currentFill fillPathInContext:context];
@@ -683,23 +684,25 @@ static const CGFloat colorLookupTable[10][3] =
 {
     [super drawSwatchForLegend:legend atIndex:idx inRect:rect inContext:context];
 
-    CPTFill *theFill           = [self sliceFillForIndex:idx];
-    CPTLineStyle *theLineStyle = self.borderLineStyle;
+    if ( self.drawLegendSwatchDecoration ) {
+        CPTFill *theFill           = [self sliceFillForIndex:idx];
+        CPTLineStyle *theLineStyle = self.borderLineStyle;
 
-    if ( theFill || theLineStyle ) {
-        CGFloat radius = legend.swatchCornerRadius;
+        if ( theFill || theLineStyle ) {
+            CGFloat radius = legend.swatchCornerRadius;
 
-        if ( theFill ) {
-            CGContextBeginPath(context);
-            AddRoundedRectPath(context, CPTAlignIntegralRectToUserSpace(context, rect), radius);
-            [theFill fillPathInContext:context];
-        }
+            if ( [theFill isKindOfClass:[CPTFill class]] ) {
+                CGContextBeginPath(context);
+                AddRoundedRectPath(context, CPTAlignIntegralRectToUserSpace(context, rect), radius);
+                [theFill fillPathInContext:context];
+            }
 
-        if ( theLineStyle ) {
-            [theLineStyle setLineStyleInContext:context];
-            CGContextBeginPath(context);
-            AddRoundedRectPath(context, CPTAlignRectToUserSpace(context, rect), radius);
-            [theLineStyle strokePathInContext:context];
+            if ( theLineStyle ) {
+                [theLineStyle setLineStyleInContext:context];
+                CGContextBeginPath(context);
+                AddRoundedRectPath(context, CPTAlignBorderedRectToUserSpace(context, rect, theLineStyle), radius);
+                [theLineStyle strokePathInContext:context];
+            }
         }
     }
 }
@@ -748,28 +751,28 @@ static const CGFloat colorLookupTable[10][3] =
 }
 
 /** @brief Computes the halfway-point between the starting and ending angles of a given pie slice.
- *  @param index A pie slice index.
+ *  @param idx A pie slice index.
  *  @return The angle that is halfway between the slice's starting and ending angles, or @NAN if
  *  an angle matching the given index cannot be found.
  **/
--(CGFloat)medianAngleForPieSliceIndex:(NSUInteger)index
+-(CGFloat)medianAngleForPieSliceIndex:(NSUInteger)idx
 {
     NSUInteger sampleCount = self.cachedDataCount;
 
-    NSParameterAssert(index < sampleCount);
+    NSParameterAssert(idx < sampleCount);
 
     if ( sampleCount == 0 ) {
         return NAN;
     }
 
-    CGFloat startingWidth = 0.0;
+    CGFloat startingWidth = CPTFloat(0.0);
 
     // Iterate through the pie slices until the slice with the given index is found
     for ( NSUInteger currentIndex = 0; currentIndex < sampleCount; currentIndex++ ) {
         CGFloat currentWidth = CPTFloat([self cachedDoubleForField:CPTPieChartFieldSliceWidthNormalized recordIndex:currentIndex]);
 
         // If the slice index is a match...
-        if ( !isnan(currentWidth) && (index == currentIndex) ) {
+        if ( !isnan(currentWidth) && (idx == currentIndex) ) {
             // Compute and return the angle that is halfway between the slice's starting and ending angles
             CGFloat startingAngle  = [self radiansForPieSliceValue:startingWidth];
             CGFloat finishingAngle = [self radiansForPieSliceValue:startingWidth + currentWidth];

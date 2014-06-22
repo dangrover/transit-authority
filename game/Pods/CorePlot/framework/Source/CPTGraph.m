@@ -147,7 +147,7 @@ NSString *const CPTGraphNeedsRedrawNotification = @"CPTGraphNeedsRedrawNotificat
  *  only—the legend may be inserted in the layer tree and positioned like any other CPTLayer
  *  if more flexibility is needed.
  **/
-@dynamic legend;
+@synthesize legend;
 
 /** @property CPTRectAnchor legendAnchor
  *  @brief The location of the legend with respect to the graph frame.
@@ -666,11 +666,6 @@ NSString *const CPTGraphNeedsRedrawNotification = @"CPTGraphNeedsRedrawNotificat
 
 /// @cond
 
--(CPTLegend *)legend
-{
-    return (CPTLegend *)self.legendAnnotation.contentLayer;
-}
-
 -(void)setLegend:(CPTLegend *)newLegend
 {
     if ( newLegend != legend ) {
@@ -727,7 +722,7 @@ NSString *const CPTGraphNeedsRedrawNotification = @"CPTGraphNeedsRedrawNotificat
 
     switch ( anchor ) {
         case CPTRectAnchorBottomLeft:
-            contentAnchor = CPTPointMake(0.0, 0.0);
+            contentAnchor = CGPointZero;
             break;
 
         case CPTRectAnchorBottom:
@@ -996,7 +991,12 @@ NSString *const CPTGraphNeedsRedrawNotification = @"CPTGraphNeedsRedrawNotificat
         handledEvent |= handled;
     }
 
-    return handledEvent;
+    if ( handledEvent ) {
+        return YES;
+    }
+    else {
+        return [super pointingDeviceDownEvent:event atPoint:interactionPoint];
+    }
 }
 
 /**
@@ -1052,7 +1052,12 @@ NSString *const CPTGraphNeedsRedrawNotification = @"CPTGraphNeedsRedrawNotificat
         handledEvent |= handled;
     }
 
-    return handledEvent;
+    if ( handledEvent ) {
+        return YES;
+    }
+    else {
+        return [super pointingDeviceUpEvent:event atPoint:interactionPoint];
+    }
 }
 
 /**
@@ -1108,7 +1113,12 @@ NSString *const CPTGraphNeedsRedrawNotification = @"CPTGraphNeedsRedrawNotificat
         handledEvent |= handled;
     }
 
-    return handledEvent;
+    if ( handledEvent ) {
+        return YES;
+    }
+    else {
+        return [super pointingDeviceDraggedEvent:event atPoint:interactionPoint];
+    }
 }
 
 /**
@@ -1162,7 +1172,12 @@ NSString *const CPTGraphNeedsRedrawNotification = @"CPTGraphNeedsRedrawNotificat
         handledEvent |= handled;
     }
 
-    return handledEvent;
+    if ( handledEvent ) {
+        return YES;
+    }
+    else {
+        return [super pointingDeviceCancelledEvent:event];
+    }
 }
 
 /// @}
