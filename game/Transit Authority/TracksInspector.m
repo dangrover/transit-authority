@@ -12,6 +12,10 @@
 @interface TracksInspector ()
 @property(assign, readwrite) GameState *state;
 @property(assign, readwrite) TrackSegment *tracks;
+
+// Variables for drawing buttons.
+@property(assign, readwrite) CGFloat xCursor, y, segmentPadding;
+@property(assign, readwrite) int segmentSize;
 @end
 
 @implementation TracksInspector
@@ -24,30 +28,71 @@
     return self;
 }
 
+- (void)prepareButton:(UIButton *)button
+            lineColor:(LineColor)c
+{
+    [button removeTarget:self action:NULL forControlEvents:UIControlEventTouchUpInside];
+    if (self.state.lines[@(c)])
+    {
+        [button addTarget:self action:@selector(colorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+        [button setTitle:@"" forState:UIControlStateNormal];
+        [button setTitle:@"\u2713" forState:UIControlStateSelected];
+        [button setContentVerticalAlignment:UIControlContentVerticalAlignmentBottom];
+    }
+    else
+    {
+        [button addTarget:self action:@selector(newLineButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+        [button setTitle:@"+" forState:UIControlStateNormal];
+        [button setContentVerticalAlignment:UIControlContentVerticalAlignmentTop];
+    }
+    
+    button.tag = c;
+    button.selected = (self.tracks.lines[@(c)] != nil);
+    
+    button.layer.borderColor = [Line uiColorForLineColor:c].CGColor;
+    button.layer.borderWidth = 2;
+    button.layer.cornerRadius = button.frame.size.width/2;
+    
+    [button setTitleColor:[UIColor colorWithWhite:0.1f alpha:1] forState:UIControlStateNormal];
+
+}
+
+- (void)addNewLineButton
+{
+    if (self.state.lines.count <= LineColor_Max)
+    {
+        LineColor c;
+        for(c = LineColor_Min; c <= LineColor_Max; c++)
+        {
+            if(!self.state.lines[@(c)]) break;
+        }
+        
+        UIButton *colorButton = [[UIButton alloc] initWithFrame:CGRectMake(_xCursor, _y, _segmentSize, _segmentSize)];
+        [self prepareButton:colorButton lineColor:c];
+        [self.view addSubview:colorButton];
+        _xCursor += _segmentSize + _segmentPadding;
+    }
+}
+
 - (void)viewDidLoad{
     [super viewDidLoad];
     
-    CGFloat xCursor = chooseLinesLabel.frame.origin.x;
-    CGFloat y = chooseLinesLabel.frame.origin.y + chooseLinesLabel.frame.size.height + 3;
-    CGSize segmentSize = CGSizeMake(floor(chooseLinesLabel.frame.size.width / (LineColor_Max)),
-                                    30);
-    CGFloat segmentPadding = 2;
+    _segmentPadding = 3;
+    _xCursor = chooseLinesLabel.frame.origin.x;
+    _y = chooseLinesLabel.frame.origin.y + chooseLinesLabel.frame.size.height + 3;
+    _segmentSize = floor(chooseLinesLabel.frame.size.width / (LineColor_Max) - _segmentPadding);
     
-    for(LineColor c = LineColor_Red; c <= LineColor_Max; c++){
+    // Add a color button for every line included in the selected tracks.
+    for(LineColor c = LineColor_Min; c <= LineColor_Max; c++){
         if(self.state.lines[@(c)]){
-            UIButton *colorButton = [[UIButton alloc] initWithFrame:CGRectMake(xCursor, y, segmentSize.width, segmentSize.height)];
-            colorButton.backgroundColor = [Line uiColorForLineColor:c];
-            [colorButton setTitle:@"X" forState:UIControlStateSelected];
-            [colorButton addTarget:self action:@selector(colorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-            colorButton.selected = (self.tracks.lines[@(c)] != nil);
-            colorButton.tag = c;
-            colorButton.layer.cornerRadius = 3;
-            
+            UIButton *colorButton = [[UIButton alloc] initWithFrame:CGRectMake(_xCursor, _y, _segmentSize, _segmentSize)];
+            [self prepareButton:colorButton lineColor:c];
             [self.view addSubview:colorButton];
-            
-            xCursor += segmentSize.width + segmentPadding;
+            _xCursor += _segmentSize + _segmentPadding;
         }
     }
+    
+    [self addNewLineButton];
 }
 
 
@@ -76,8 +121,17 @@
     // we did something!
     [self.state regenerateAllTrainRoutes];
     
-    
     sender.selected = shouldHaveLineHere;
+    [self prepareButton:sender lineColor:sender.tag];
+}
+
+- (IBAction)newLineButtonPressed:(UIButton *)sender{
+    Line *line = [_state addLineWithColor:sender.tag];
+    [line applyToSegment:self.tracks];
+    [self.state regenerateAllTrainRoutes];
+    
+    [self prepareButton:sender lineColor:sender.tag];
+    [self addNewLineButton];
 }
 
 - (void) _cancelWithErrorHeading:(NSString *)heading body:(NSString *)body{

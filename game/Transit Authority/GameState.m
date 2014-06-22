@@ -132,11 +132,11 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
         
         [self _createTileDestinationIndex];
         
-        // You start the game with a line and a free train
-        Line *freeLine = [self addLineWithColor:LineColor_Blue];
+        // You start the game with a free train
         Train *freeTrain = [[Train alloc] init];
-        freeTrain.line = freeLine;
-        self.assignedTrains[freeTrain.UUID] = freeTrain;
+        self.unassignedTrains[freeTrain.UUID] = freeTrain;
+        // Creating a line adds the free train to it
+        [self addLineWithColor:LineColor_Blue];
         
         // set up subsidies
         self.dailyFederalSubsidy = [self recommendedDailySubsidy:YES];
@@ -1477,7 +1477,18 @@ static inline TripGenerationTally TripGenerationTallyAdd(TripGenerationTally a, 
 
 - (Line *) addLineWithColor:(LineColor)color{
     if(!_linesByColor[@(color)]){
-        _linesByColor[@(color)] = [[Line alloc] initWithColor:color];
+        Line *l = _linesByColor[@(color)] = [[Line alloc] initWithColor:color];
+        
+        // The line should get an initial train, buy a new one if we have to.
+        Train *trainForThisLine = nil;
+        if(self.unassignedTrains.count){
+            trainForThisLine = [self.unassignedTrains.allValues lastObject];
+        }else{
+            trainForThisLine = [self buyNewTrain];
+        }
+        trainForThisLine.line = l;
+        [self.unassignedTrains removeObjectForKey:trainForThisLine.UUID];
+        self.assignedTrains[trainForThisLine.UUID] = trainForThisLine;
     }
     
     NSAssert(_linesByColor[@(color)], @"should have added line");

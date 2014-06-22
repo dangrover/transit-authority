@@ -80,18 +80,6 @@
 
 - (void) makeNewLineWithColor:(LineColor)color{
     Line *l = [self.parent.gameState addLineWithColor:color];
-    
-    // The line should get an initial train, buy a new one if we have to.
-    Train *trainForThisLine = nil;
-    if(self.parent.gameState.unassignedTrains.count){
-        trainForThisLine = [self.parent.gameState.unassignedTrains.allValues lastObject];
-    }else{
-        trainForThisLine = [self.parent.gameState buyNewTrain];
-    }
-    
-    trainForThisLine.line = l;
-    [self.parent.gameState.unassignedTrains removeObjectForKey:trainForThisLine.UUID];
-    self.parent.gameState.assignedTrains[trainForThisLine.UUID] = trainForThisLine;
 }
 
 - (void) editLine:(Line *)l{
