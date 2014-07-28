@@ -223,12 +223,13 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     tiledMap.position = CGPointMake(-1*(startPos.x - (self.boundingBox.size.width/2)),
                                     -1*(startPos.y - (self.boundingBox.size.height/2)));
     
-    
-    [_panZoomLayer addChild:tiledMap];
-    _panZoomLayer.position = CGPointMake(self.boundingBox.size.width/2, self.boundingBox.size.height/2);
-    
     [self addChild:_panZoomLayer z:-100];
     _panZoomLayer.scale = _panZoomLayer.minScale;
+    
+    [_panZoomLayer addChild:tiledMap];
+    
+    _panZoomLayer.contentSize = tiledMap.contentSize;
+    _panZoomLayer.position = CGPointMake(self.boundingBox.size.width/2, self.boundingBox.size.height/2);
     
     [self _makeStreetSprites];
     [self _makeNeighborhoodNameSprites];
@@ -344,6 +345,22 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
 
 - (void) layerPanZoom:(CCLayerPanZoom *)sender updatedPosition:(CGPoint)pos scale:(CGFloat)scale{
     //NSLog(@"PAN ZOOM LAYER MOVED. POSITION IS NOW %@", NSStringFromCGPoint(pos));
+    
+    // If the zoom level changes then update the boundary rectangle.
+    if (scale != _lastScale)
+    {
+        _panZoomLayer.panBoundsRect = CGRectMake(
+                                                 // Account for a translated map.
+                                                 -1 * tiledMap.position.x * _panZoomLayer.scale,
+                                                 -1 * tiledMap.position.y * _panZoomLayer.scale,
+                                                 // The bounding box size stays the same.
+                                                 self.boundingBox.size.width,
+                                                 self.boundingBox.size.height);
+        // Update the scale and position.
+        _panZoomLayer.scale = scale;
+        _panZoomLayer.position = pos;
+    }
+    _lastScale = scale;
     
     CGPoint centerOfScreenInWorldSpace = [self convertToWorldSpace:CGPointMake(self.boundingBox.size.width/2,self.boundingBox.size.height/2)];
     
@@ -1005,7 +1022,7 @@ ccColor4B COLOR_OVERLAYS_BY_HOUR[24] = {
     // add sprites for trains that need them
     for(NSString *uuid in self.gameState.assignedTrains.allKeys){
         Train *t = self.gameState.assignedTrains[uuid];
-        if(!_trainSprites[uuid]){
+        if(!_trainSprites[uuid] && t.line.segmentsServed.count > 0){
             
             TrainNode *tNode = [[TrainNode alloc] init];
             tNode.color = t.currentRoute.line.color;

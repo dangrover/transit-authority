@@ -34,6 +34,7 @@
     @public
     CCTiledMap *tiledMap;
     CCLayerPanZoom *_panZoomLayer;
+    float _lastScale; // The most recent zoom scale, to watch for changes.
 
 
     IBOutlet UIView *toolHelpOverlay;
