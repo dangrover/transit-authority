@@ -112,6 +112,17 @@
 		4D5E92C317612ABE0041A073 /* GameState.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D5E92C217612ABE0041A073 /* GameState.m */; };
 		4D5E92C617612AD80041A073 /* GameScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D5E92C517612AD80041A073 /* GameScenario.m */; };
 		4D6479041762BE0E004D7C48 /* CCTMXTiledMap+Extras.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D6479031762BE0E004D7C48 /* CCTMXTiledMap+Extras.m */; };
+		4D6AAF8B19861B89000FE9BF /* tileset-com-density-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D6AAF8119861B88000FE9BF /* tileset-com-density-hd.png */; };
+		4D6AAF8C19861B89000FE9BF /* tileset-elevation-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D6AAF8219861B88000FE9BF /* tileset-elevation-hd.png */; };
+		4D6AAF8D19861B89000FE9BF /* tileset-res-density-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D6AAF8319861B88000FE9BF /* tileset-res-density-hd.png */; };
+		4D6AAF8E19861B89000FE9BF /* train-pin-0-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D6AAF8419861B88000FE9BF /* train-pin-0-hd.png */; };
+		4D6AAF8F19861B89000FE9BF /* train-pin-1-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D6AAF8519861B88000FE9BF /* train-pin-1-hd.png */; };
+		4D6AAF9019861B89000FE9BF /* train-pin-2-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D6AAF8619861B88000FE9BF /* train-pin-2-hd.png */; };
+		4D6AAF9119861B89000FE9BF /* train-pin-3-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D6AAF8719861B88000FE9BF /* train-pin-3-hd.png */; };
+		4D6AAF9219861B89000FE9BF /* train-pin-4-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D6AAF8819861B89000FE9BF /* train-pin-4-hd.png */; };
+		4D6AAF9319861B89000FE9BF /* train-pin-5-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D6AAF8919861B89000FE9BF /* train-pin-5-hd.png */; };
+		4D6AAF9419861B89000FE9BF /* train-pin-6-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D6AAF8A19861B89000FE9BF /* train-pin-6-hd.png */; };
+		4D6AAF9619861BCB000FE9BF /* poi-placeholder-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D6AAF9519861BCB000FE9BF /* poi-placeholder-hd.png */; };
 		4D6BF79717EA488F007E2FD6 /* PointOfInterest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D6BF79617EA488F007E2FD6 /* PointOfInterest.m */; };
 		4D6BF79C17EA69B0007E2FD6 /* POIPlaceholderNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D6BF79B17EA69B0007E2FD6 /* POIPlaceholderNode.m */; };
 		4D6BF7A517EA720F007E2FD6 /* connection-stadium-baseball.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D6BF79D17EA720F007E2FD6 /* connection-stadium-baseball.png */; };
@@ -545,6 +556,17 @@
 		4D5E92C8176146BF0041A073 /* MainGameScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainGameScene.m; sourceTree = "<group>"; };
 		4D6479021762BE0E004D7C48 /* CCTMXTiledMap+Extras.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CCTMXTiledMap+Extras.h"; sourceTree = "<group>"; };
 		4D6479031762BE0E004D7C48 /* CCTMXTiledMap+Extras.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CCTMXTiledMap+Extras.m"; sourceTree = "<group>"; };
+		4D6AAF8119861B88000FE9BF /* tileset-com-density-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "tileset-com-density-hd.png"; path = "TransitAuthority.spritebuilder/SpriteBuilder Resources/tileset-com-density-hd.png"; sourceTree = SOURCE_ROOT; };
+		4D6AAF8219861B88000FE9BF /* tileset-elevation-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "tileset-elevation-hd.png"; path = "TransitAuthority.spritebuilder/SpriteBuilder Resources/tileset-elevation-hd.png"; sourceTree = SOURCE_ROOT; };
+		4D6AAF8319861B88000FE9BF /* tileset-res-density-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "tileset-res-density-hd.png"; path = "TransitAuthority.spritebuilder/SpriteBuilder Resources/tileset-res-density-hd.png"; sourceTree = SOURCE_ROOT; };
+		4D6AAF8419861B88000FE9BF /* train-pin-0-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "train-pin-0-hd.png"; path = "TransitAuthority.spritebuilder/SpriteBuilder Resources/train-pin-0-hd.png"; sourceTree = SOURCE_ROOT; };
+		4D6AAF8519861B88000FE9BF /* train-pin-1-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "train-pin-1-hd.png"; path = "TransitAuthority.spritebuilder/SpriteBuilder Resources/train-pin-1-hd.png"; sourceTree = SOURCE_ROOT; };
+		4D6AAF8619861B88000FE9BF /* train-pin-2-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "train-pin-2-hd.png"; path = "TransitAuthority.spritebuilder/SpriteBuilder Resources/train-pin-2-hd.png"; sourceTree = SOURCE_ROOT; };
+		4D6AAF8719861B88000FE9BF /* train-pin-3-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "train-pin-3-hd.png"; path = "TransitAuthority.spritebuilder/SpriteBuilder Resources/train-pin-3-hd.png"; sourceTree = SOURCE_ROOT; };
+		4D6AAF8819861B89000FE9BF /* train-pin-4-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "train-pin-4-hd.png"; path = "TransitAuthority.spritebuilder/SpriteBuilder Resources/train-pin-4-hd.png"; sourceTree = SOURCE_ROOT; };
+		4D6AAF8919861B89000FE9BF /* train-pin-5-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "train-pin-5-hd.png"; path = "TransitAuthority.spritebuilder/SpriteBuilder Resources/train-pin-5-hd.png"; sourceTree = SOURCE_ROOT; };
+		4D6AAF8A19861B89000FE9BF /* train-pin-6-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "train-pin-6-hd.png"; path = "TransitAuthority.spritebuilder/SpriteBuilder Resources/train-pin-6-hd.png"; sourceTree = SOURCE_ROOT; };
+		4D6AAF9519861BCB000FE9BF /* poi-placeholder-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "poi-placeholder-hd.png"; path = "TransitAuthority.spritebuilder/SpriteBuilder Resources/poi-placeholder-hd.png"; sourceTree = SOURCE_ROOT; };
 		4D6BF79517EA488F007E2FD6 /* PointOfInterest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PointOfInterest.h; sourceTree = "<group>"; };
 		4D6BF79617EA488F007E2FD6 /* PointOfInterest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PointOfInterest.m; sourceTree = "<group>"; };
 		4D6BF79A17EA69B0007E2FD6 /* POIPlaceholderNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POIPlaceholderNode.h; sourceTree = "<group>"; };
@@ -1325,6 +1347,17 @@
 		4D5E913C176129300041A073 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				4D6AAF9519861BCB000FE9BF /* poi-placeholder-hd.png */,
+				4D6AAF8119861B88000FE9BF /* tileset-com-density-hd.png */,
+				4D6AAF8219861B88000FE9BF /* tileset-elevation-hd.png */,
+				4D6AAF8319861B88000FE9BF /* tileset-res-density-hd.png */,
+				4D6AAF8419861B88000FE9BF /* train-pin-0-hd.png */,
+				4D6AAF8519861B88000FE9BF /* train-pin-1-hd.png */,
+				4D6AAF8619861B88000FE9BF /* train-pin-2-hd.png */,
+				4D6AAF8719861B88000FE9BF /* train-pin-3-hd.png */,
+				4D6AAF8819861B89000FE9BF /* train-pin-4-hd.png */,
+				4D6AAF8919861B89000FE9BF /* train-pin-5-hd.png */,
+				4D6AAF8A19861B89000FE9BF /* train-pin-6-hd.png */,
 				4D22CE0D19497D19001BF1F0 /* invalid-station-hd.png */,
 				4D22CE0E19497D19001BF1F0 /* invalid-station.png */,
 				4D22CE0F19497D19001BF1F0 /* station-hd.png */,
@@ -2312,6 +2345,7 @@
 				4D5E9142176129300041A073 /* fps_images.png in Resources */,
 				4D5E9144176129300041A073 /* fps_images-hd.png in Resources */,
 				4D0851001948FF2D0079ECD7 /* share-hd.png in Resources */,
+				4D6AAF9419861B89000FE9BF /* train-pin-6-hd.png in Resources */,
 				4DCA2CAB18D4D4350016F5F6 /* MainMenu.ccbi in Resources */,
 				4D5E9146176129300041A073 /* fps_images-ipadhd.png in Resources */,
 				4D0851051948FF2D0079ECD7 /* exit.png in Resources */,
@@ -2332,6 +2366,7 @@
 				4D5A962617E0E5E7008175B8 /* build-station.wav in Resources */,
 				4D5A963717E17689008175B8 /* error.aiff in Resources */,
 				4DA55CDE19455CCB00E599C5 /* graph-selected.png in Resources */,
+				4D6AAF8C19861B89000FE9BF /* tileset-elevation-hd.png in Resources */,
 				4DA55CEA19458A8100E599C5 /* build-tracks-hd.png in Resources */,
 				4DF0E8691771579C00D46A07 /* LineToolUI.xib in Resources */,
 				4DE1F7A71943866F006AADD0 /* theme-music.mp3 in Resources */,
@@ -2354,6 +2389,8 @@
 				4DA55CDA19455CCB00E599C5 /* hammer-selected.png in Resources */,
 				4D0851021948FF2D0079ECD7 /* white-pixel.png in Resources */,
 				4DA55CD119455CCB00E599C5 /* more-selected.png in Resources */,
+				4D6AAF9219861B89000FE9BF /* train-pin-4-hd.png in Resources */,
+				4D6AAF8E19861B89000FE9BF /* train-pin-0-hd.png in Resources */,
 				4DB2B6C018F213FF00236F75 /* pause.png in Resources */,
 				4DB2B6BF18F213FF00236F75 /* fast-forward.png in Resources */,
 				4D2642D117DEAC7C006D9652 /* goals.png in Resources */,
@@ -2375,6 +2412,7 @@
 				4D1B8D30178B525D0033DD70 /* tool-tracks-selected.png in Resources */,
 				4D3CD3FC19184974001268C6 /* Raleway-ExtraBold.ttf in Resources */,
 				4D6EDB6217E3EEC80071065B /* closebox@2x.png in Resources */,
+				4D6AAF9119861B89000FE9BF /* train-pin-3-hd.png in Resources */,
 				4DA55CE419455CCB00E599C5 /* dummypixel.png in Resources */,
 				4D1A638018E013A100BD179B /* dummypixel.png in Resources */,
 				4D3CD40219184974001268C6 /* Raleway-SemiBold.ttf in Resources */,
@@ -2403,9 +2441,11 @@
 				4D1B8D35178B525D0033DD70 /* tool-layers-selected@2x.png in Resources */,
 				4D0851071948FF2D0079ECD7 /* save.png in Resources */,
 				4D1B8D36178B525D0033DD70 /* tool-more-selected.png in Resources */,
+				4D6AAF9319861B89000FE9BF /* train-pin-5-hd.png in Resources */,
 				4D1B8D37178B525D0033DD70 /* tool-more-selected@2x.png in Resources */,
 				4DA55CE119455CCB00E599C5 /* fast-forward.png in Resources */,
 				4DA55CD219455CCB00E599C5 /* more-selected-hd.png in Resources */,
+				4D6AAF8D19861B89000FE9BF /* tileset-res-density-hd.png in Resources */,
 				4D0851031948FF2D0079ECD7 /* prefs-hd.png in Resources */,
 				4DA55CD519455CCB00E599C5 /* lines.png in Resources */,
 				4DC908C21944F14500D89A4C /* game-track-2.mp3 in Resources */,
@@ -2418,6 +2458,7 @@
 				4D298D30178B8069005964E3 /* disclosure-arrow@2x.png in Resources */,
 				4D298D33178BD151005964E3 /* blue-back.png in Resources */,
 				4D3CD40319184974001268C6 /* Raleway-Thin.ttf in Resources */,
+				4D6AAF8B19861B89000FE9BF /* tileset-com-density-hd.png in Resources */,
 				4D298D34178BD151005964E3 /* blue-back@2x.png in Resources */,
 				4D298D39178BD8C3005964E3 /* MoreToolUI.xib in Resources */,
 				4D298D48178C7F8F005964E3 /* FinancesViewController.xib in Resources */,
@@ -2439,6 +2480,8 @@
 				4DA55CCD19455CCB00E599C5 /* play-hd.png in Resources */,
 				4D3CD3FE19184974001268C6 /* Raleway-Heavy.ttf in Resources */,
 				4DCD3F03179768C30096587C /* FinanceRowCell.xib in Resources */,
+				4D6AAF8F19861B89000FE9BF /* train-pin-1-hd.png in Resources */,
+				4D6AAF9019861B89000FE9BF /* train-pin-2-hd.png in Resources */,
 				4DAB5BD61797ACB000CD35E2 /* FinancesBondsViewController.xib in Resources */,
 				4D4FD4D017D7951000172189 /* Default@2x.png in Resources */,
 				4DA55CE019455CCB00E599C5 /* graph-hd.png in Resources */,
@@ -2453,6 +2496,7 @@
 				4D3CD3FB19184974001268C6 /* Raleway-Bold.ttf in Resources */,
 				4DA55CE919458A8100E599C5 /* build-tracks.png in Resources */,
 				4D22CE1219497D19001BF1F0 /* invalid-station.png in Resources */,
+				4D6AAF9619861BCB000FE9BF /* poi-placeholder-hd.png in Resources */,
 				4DA55CCF19455CCB00E599C5 /* pause-hd.png in Resources */,
 				4DA55CD319455CCB00E599C5 /* more-hd.png in Resources */,
 				4D6BF7A917EA720F007E2FD6 /* connection-rail.png in Resources */,
@@ -2496,7 +2540,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "python ./Scripts/make-prototype-sprites.py";
+			shellScript = "#python ./Scripts/make-prototype-sprites.py";
 		};
 		6478E8B4E4D946B0A71040A2 /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
